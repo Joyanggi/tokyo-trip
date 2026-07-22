@@ -76,7 +76,7 @@
   .totbar b{ font-size:17px; color:var(--accent2);}
   /* stussy highlight */
   .special{ border:2px solid var(--gold); border-radius:12px; background:linear-gradient(180deg,#fffaf0,#fff); padding:16px; display:flex; gap:16px; flex-wrap:wrap;}
-  .special img{ width:190px; max-width:100%; border-radius:8px; background:#f3efe6;}
+  .special img{ width:auto; height:auto; max-width:150px; max-height:150px; object-fit:contain; border-radius:8px; align-self:flex-start;}
   .special .info{ flex:1; min-width:220px;}
   .special .info h3{ margin:2px 0 6px; font-size:18px;}
   .tip{ background:#fff6e6; border-left:4px solid var(--gold); padding:8px 12px; font-size:13px; margin-top:10px; border-radius:0 6px 6px 0;}
@@ -126,7 +126,7 @@
   .card .body .desc{ font-size:11px; margin-top:5px; padding-top:5px;}
   .card .imgwrap .chk{ width:16px; height:16px;}
   .card .imgwrap .soldout{ font-size:9px; padding:2px 5px;}
-  .special img{ width:128px;}
+  .special img{ max-width:130px; max-height:130px;}
 
   /* ===== 이미지 클릭 확대(라이트박스) ===== */
   .card img, .cvs li img, .noodlegrid .n img, .special img, .mcd img, .place img, .grid img{ cursor:zoom-in;}
@@ -441,7 +441,7 @@
 
   <section>
     <h2><span class="no">5</span> 미션 다섯 · 도쿄 빙수(카키고리) 맛집 🍧</h2>
-    <p class="muted" style="margin-top:-4px;">인스타 "도쿄 대표 빙수 7곳"에서 정리. 대부분 <b>1인 1메뉴</b> 주문제이고, 여름 성수기라 대기가 깁니다.</p>
+    <p class="muted" style="margin-top:-4px;">도쿄 대표 빙수 맛집 7곳. 대부분 <b>1인 1메뉴</b> 주문제이고, 여름 성수기라 대기가 깁니다.</p>
     <table class="ov">
       <thead>
         <tr><th style="width:auto;">가게</th><th style="width:130px;">지역</th><th style="width:auto;">영업 · 특이사항</th></tr>
@@ -498,7 +498,7 @@
 
   <section>
     <h2><span class="no">6</span> 미션 여섯 · 편의점 먹거리 (편의점별) 🏪</h2>
-    <p class="muted" style="margin-top:-4px;">인스타 <b>오니기리 24종 + 컵라면 24종</b> 등 편의점 먹거리를 편의점별로 정리했어요. 사진·이름 클릭하면 확대되고, <b>체크박스는 눌러두면 저장</b>돼요(같은 기기·브라우저 기준). 새 품목은 해당 편의점 밑에 계속 추가하면 됩니다. (음식이라 면세 대상 아님)</p>
+    <p class="muted" style="margin-top:-4px;"><b>오니기리 24종 + 컵라면 24종</b> 등 편의점 먹거리를 편의점별로 정리했어요. 사진·이름 클릭하면 확대되고, <b>체크박스는 눌러두면 저장</b>돼요(같은 기기·브라우저 기준). 새 품목은 해당 편의점 밑에 계속 추가하면 됩니다. (음식이라 면세 대상 아님)</p>
 
     <div class="cvs-head cvs-7" style="border-radius:10px 10px 0 0;">🟢 세븐일레븐 · 7-ELEVEN <span style="font-weight:400;font-size:12px;">(오니기리 8종)</span></div>
     <div class="noodlegrid" data-cl="seven" style="margin-top:0; border:1px solid var(--line); border-top:none; border-radius:0 0 10px 10px; padding:10px 12px;">
@@ -569,7 +569,7 @@
     <div class="warn">
       ⚠️ <b>특이사항</b>
       <ul style="margin:6px 0 0; padding-left:18px;">
-        <li><b>상품명은 게시글 슬라이드를 직접 읽어 반영</b>했어요(오니기리·컵라면 각 24종 정확). 이미지는 공식 홈페이지·상품DB에서 매칭 — 포장 리뉴얼로 실제와 미세하게 다를 수 있어요.</li>
+        <li><b>이미지는 공식 홈페이지·상품 DB에서 매칭</b>했어요 — 포장 리뉴얼로 실제 진열과 미세하게 다를 수 있어요.</li>
         <li><b>진열은 지점·시기별로 상이</b>. 오니기리는 편의점별 상품이지만, <b>컵라면·신상은 대체로 3사 공통</b>(단, 一燈=로손 계열 등 일부 한정).</li>
         <li><b>여름 한정</b> — 냉시 컵누들·냉시추카·수박스틱 등은 9월엔 빠졌을 수 있어요. 보이면 바로 득템!</li>
       </ul>
