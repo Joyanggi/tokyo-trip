@@ -134,6 +134,25 @@
   #lb.open{ display:flex;}
   #lb img{ max-width:96%; max-height:96%; border-radius:10px; box-shadow:0 12px 48px rgba(0,0,0,.6); cursor:zoom-out;}
   #lb .hint{ position:fixed; top:14px; right:20px; color:#fff; font-size:13px; opacity:.75;}
+
+  /* ===== 컴팩트 리스트형 제품(몽벨·포터) ===== */
+  .plist{ margin-top:8px; border:1px solid var(--line); border-radius:10px; overflow:hidden; background:#fff;}
+  .prow{ display:flex; gap:12px; padding:10px 12px; border-bottom:1px solid var(--soft); align-items:center;}
+  .prow:last-child{ border-bottom:none;}
+  .prow > img{ width:66px; height:66px; object-fit:contain; background:#f6f2e8; border-radius:8px; border:1px solid var(--line); flex:0 0 auto; cursor:zoom-in;}
+  .prow .pb{ flex:1; min-width:0;}
+  .prow .prtop{ display:flex; justify-content:space-between; align-items:baseline; gap:8px;}
+  .prow .pnm{ font-weight:700; font-size:13.5px;}
+  .prow .ppr{ color:var(--accent); font-weight:800; font-size:14px; white-space:nowrap;}
+  .prow .pmeta{ font-size:12px; color:#7a7263; margin:2px 0;}
+  .prow .pmeta .pcode{ background:var(--tag); padding:1px 6px; border-radius:4px; font-family:ui-monospace,Menlo,monospace;}
+  .prow .pdesc{ font-size:11.5px; color:#6f685a;}
+  .prow .psold{ display:inline-block; background:var(--accent); color:#fff; font-size:9px; font-weight:700; padding:1px 5px; border-radius:3px; margin-left:5px; vertical-align:middle;}
+
+  /* ===== 체크박스(구매/방문 체크, 저장됨) ===== */
+  input.ckbox{ width:17px; height:17px; flex:0 0 auto; margin-right:3px; accent-color:#2e6e5a; cursor:pointer; vertical-align:middle;}
+  .n.ckd, .prow.ckd, .special.ckd, .mcd .item.ckd, tr.ckd{ opacity:.45;}
+  .n.ckd > span, .prow.ckd .pnm, tr.ckd td:nth-child(2){ text-decoration:line-through;}
 </style>
 </head>
 <body>
@@ -179,103 +198,54 @@
     <h2><span class="no">1</span> 미션 하나 · 몽벨(mont-bell) 탐방 🎒</h2>
     <p class="muted" style="margin-top:-4px;">매장에서 태그의 <b>품번(#)</b>을 확인하면 가장 정확합니다. 직원에게 품번을 보여주면 재고 확인도 빨라요. 가격은 몽벨 일본 온라인 정가(¥, 세금포함) 기준.</p>
 
-    <div class="grid">
-      <!-- 1 -->
-      <div class="card">
-        <div class="imgwrap"><span class="chk"></span><span class="soldout">온라인 품절</span>
-          <img src="https://www.montbell.com/storage/products/images/origin/1133470_bk.webp" alt="Pocketable Light Pack 15">
-        </div>
-        <div class="body">
-          <p class="nm">Pocketable Light Pack 15</p>
-          <p class="cat">데이팩 · 접이식 15L</p>
-          <p class="kv">품번 <span class="pcode">#1133470</span></p>
-          <p class="kv">색상 <b>BK (BLACK)</b></p>
-          <p class="price">¥6,000</p>
-          <p class="desc">주머니 속으로 접혀 들어가는 초경량 데이팩. 보조가방으로 딱.</p>
+    <div class="plist" data-cl="montbell">
+      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1133470_bk.webp" alt="Pocketable Light Pack 15">
+        <div class="pb">
+          <div class="prtop"><span class="pnm">Pocketable Light Pack 15 <span class="psold">온라인 품절</span></span><span class="ppr">¥6,000</span></div>
+          <div class="pmeta">데이팩·접이식 15L · <span class="pcode">#1133470</span> · BK (BLACK)</div>
+          <div class="pdesc">주머니 속으로 접혀 들어가는 초경량 데이팩. 보조가방으로 딱.</div>
         </div>
       </div>
-      <!-- 2 -->
-      <div class="card">
-        <div class="imgwrap"><span class="chk"></span>
-          <img src="https://www.montbell.com/storage/products/images/origin/1134185_cler.webp" alt="Flex Water Pack 1.0L">
-        </div>
-        <div class="body">
-          <p class="nm">Flex Water Pack 1.0L</p>
-          <p class="cat">접이식 물통 · 1.0L</p>
-          <p class="kv">품번 <span class="pcode">#1134185</span></p>
-          <p class="kv">색상 <b>CLER (CLEAR)</b></p>
-          <p class="price">¥2,000</p>
-          <p class="desc">냄새 배지 않고, 안 쓸 땐 돌돌 말아 보관. 자립형 디자인.</p>
+      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1134185_cler.webp" alt="Flex Water Pack 1.0L">
+        <div class="pb">
+          <div class="prtop"><span class="pnm">Flex Water Pack 1.0L</span><span class="ppr">¥2,000</span></div>
+          <div class="pmeta">접이식 물통·1.0L · <span class="pcode">#1134185</span> · CLER (CLEAR)</div>
+          <div class="pdesc">냄새 배지 않고, 안 쓸 땐 돌돌 말아 보관. 자립형 디자인.</div>
         </div>
       </div>
-      <!-- 3 -->
-      <div class="card">
-        <div class="imgwrap"><span class="chk"></span><span class="soldout">온라인 품절</span>
-          <img src="https://www.montbell.com/storage/products/images/origin/1133374_pu.webp" alt="Coin Purse">
-        </div>
-        <div class="body">
-          <p class="nm">Coin Purse</p>
-          <p class="cat">동전지갑 · 초경량</p>
-          <p class="kv">품번 <span class="pcode">#1133374</span></p>
-          <p class="kv">색상 <b>GY (GRAY)</b></p>
-          <p class="price">¥1,400</p>
-          <p class="desc">손바닥 크기의 지퍼형 동전지갑. 열기 편한 컴팩트 사이즈.</p>
+      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1133374_pu.webp" alt="Coin Purse">
+        <div class="pb">
+          <div class="prtop"><span class="pnm">Coin Purse <span class="psold">온라인 품절</span></span><span class="ppr">¥1,400</span></div>
+          <div class="pmeta">동전지갑·초경량 · <span class="pcode">#1133374</span> · GY (GRAY)</div>
+          <div class="pdesc">손바닥 크기의 지퍼형 동전지갑. 열기 편한 컴팩트 사이즈.</div>
         </div>
       </div>
-      <!-- 4 -->
-      <div class="card">
-        <div class="imgwrap"><span class="chk"></span>
-          <img src="https://www.montbell.com/storage/products/images/origin/1133373_gy.webp" alt="Mini Zip Wallet">
-        </div>
-        <div class="body">
-          <p class="nm">Mini Zip Wallet</p>
-          <p class="cat">미니지갑 · 지퍼형</p>
-          <p class="kv">품번 <span class="pcode">#1133373</span></p>
-          <p class="kv">색상 <b>GY (GRAY)</b></p>
-          <p class="price">¥1,700</p>
-          <p class="desc">열쇠·동전·카드·지폐 몇 장을 안전하게. 초컴팩트.</p>
+      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1133373_gy.webp" alt="Mini Zip Wallet">
+        <div class="pb">
+          <div class="prtop"><span class="pnm">Mini Zip Wallet</span><span class="ppr">¥1,700</span></div>
+          <div class="pmeta">미니지갑·지퍼형 · <span class="pcode">#1133373</span> · GY (GRAY)</div>
+          <div class="pdesc">열쇠·동전·카드·지폐 몇 장을 안전하게. 초컴팩트.</div>
         </div>
       </div>
-      <!-- 5 -->
-      <div class="card">
-        <div class="imgwrap"><span class="chk"></span>
-          <img src="https://www.montbell.com/storage/products/images/origin/1109131_sm!lg.webp" alt="Trekking Glass">
-        </div>
-        <div class="body">
-          <p class="nm">Trekking Glass</p>
-          <p class="cat">선글라스 · UV 99%+ 차단</p>
-          <p class="kv">품번 <span class="pcode">#1109131</span></p>
-          <p class="kv">색상 <b>SM/LG (SILVER METALLIC/LIGHT GRAY)</b></p>
-          <p class="price">¥7,700</p>
-          <p class="desc">가볍고 스포티한 플라스틱 프레임. 케이스·클리닝천 포함.</p>
+      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1109131_sm!lg.webp" alt="Trekking Glass">
+        <div class="pb">
+          <div class="prtop"><span class="pnm">Trekking Glass</span><span class="ppr">¥7,700</span></div>
+          <div class="pmeta">선글라스·UV 99%+ 차단 · <span class="pcode">#1109131</span> · SM/LG (SILVER METALLIC/LIGHT GRAY)</div>
+          <div class="pdesc">가볍고 스포티한 플라스틱 프레임. 케이스·클리닝천 포함.</div>
         </div>
       </div>
-      <!-- 6 -->
-      <div class="card">
-        <div class="imgwrap"><span class="chk"></span><span class="soldout">온라인 품절</span>
-          <img src="https://www.montbell.com/storage/products/images/origin/1133552_bgn.webp" alt="Light Paper Pouch S">
-        </div>
-        <div class="body">
-          <p class="nm">Light Paper Pouch S</p>
-          <p class="cat">파우치 · S 사이즈</p>
-          <p class="kv">품번 <span class="pcode">#1133552</span></p>
-          <p class="kv">색상 <b>BGN (BLUE GREEN)</b></p>
-          <p class="price">¥1,100</p>
-          <p class="desc">가볍고 튼튼한 소품 정리용 파우치. 가방 속 정리템.</p>
+      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1133552_bgn.webp" alt="Light Paper Pouch S">
+        <div class="pb">
+          <div class="prtop"><span class="pnm">Light Paper Pouch S <span class="psold">온라인 품절</span></span><span class="ppr">¥1,100</span></div>
+          <div class="pmeta">파우치·S 사이즈 · <span class="pcode">#1133552</span> · BGN (BLUE GREEN)</div>
+          <div class="pdesc">가볍고 튼튼한 소품 정리용 파우치. 가방 속 정리템.</div>
         </div>
       </div>
-      <!-- 7 -->
-      <div class="card">
-        <div class="imgwrap"><span class="chk"></span>
-          <img src="https://www.montbell.com/storage/products/images/origin/1124338_gm.webp" alt="Key Carabiner Nasu-Kan 6">
-        </div>
-        <div class="body">
-          <p class="nm">Key Carabiner Nasu-Kan 6</p>
-          <p class="cat">키 카라비너 · 알루미늄</p>
-          <p class="kv">품번 <span class="pcode">#1124338</span></p>
-          <p class="kv">색상 <b>GM (GUNMETAL)</b></p>
-          <p class="price">¥600</p>
-          <p class="desc">알루미늄 합금 열쇠고리 카라비너. 가방에 하나쯤.</p>
+      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1124338_gm.webp" alt="Key Carabiner Nasu-Kan 6">
+        <div class="pb">
+          <div class="prtop"><span class="pnm">Key Carabiner Nasu-Kan 6</span><span class="ppr">¥600</span></div>
+          <div class="pmeta">키 카라비너·알루미늄 · <span class="pcode">#1124338</span> · GM (GUNMETAL)</div>
+          <div class="pdesc">알루미늄 합금 열쇠고리 카라비너. 가방에 하나쯤.</div>
         </div>
       </div>
     </div>
@@ -297,8 +267,8 @@
 
   <section>
     <h2><span class="no">2</span> 미션 둘 · 스투시 스탁 도쿄 티셔츠 👕</h2>
-    <div class="special">
-      <img src="https://kream-phinf.pstatic.net/MjAyNTA3MzBfMTcg/MDAxNzUzODcxMzU5MDEy.1jduBhcfFFTeseDIIrzHemzFWBTq3wiEb7fq4DniJ5Ig.KKEqHKvZMpJzgF6CfCa5ElH4BWhsIE_9VRcymiwrRFgg.PNG/a_61b7b2d7593f4b8a940df9e85edd8f91.png" alt="Stussy Stock Tokyo Tee Black">
+    <div class="special" data-cl="stussy">
+      <img src="https://images.stockx.com/images/stussy-stock-tokyo-tee-black-3.jpg" alt="Stussy Stock Tokyo Tee Black">
       <div class="info">
         <div class="cat muted">반소매 티셔츠 · 상의</div>
         <h3>Stussy Stock Tokyo T-Shirt (Black)</h3>
@@ -436,31 +406,19 @@
     <h2><span class="no">4</span> 미션 넷 · 포터(PORTER) 카드케이스 👛</h2>
     <p class="muted" style="margin-top:-4px;">포터는 일본 브랜드(요시다 카반). 아래는 <b>일본 현지 정가(¥)</b>로, 한국 Kream 리셀가보다 훨씬 저렴해요. 판매처: <b>Sac's Bar(サックスバー)</b> 및 포터 직영·취급점.</p>
 
-    <div class="grid">
-      <div class="card">
-        <div class="imgwrap"><span class="chk"></span>
-          <img src="https://kream-phinf.pstatic.net/MjAyNjA3MDZfMTY3/MDAxNzgzMzI0MDYyMDU3.ku6I5uO6GAP9O4cgbEJ9ZvP_hZUOQUGMVZgVJnrCUUEg.h9rKhITHvUpi-1lQ1J9mU_cf5iyFA-1Inemv-qIOBQcg.PNG/a_38898b78072540dbbd8b4c3209208ddd.png" alt="Porter Calm Card Case Black">
-        </div>
-        <div class="body">
-          <p class="nm">Porter CALM Card Case</p>
-          <p class="cat">카드케이스/명함지갑 · 프리미엄 레더</p>
-          <p class="kv">품번 <span class="pcode">041-03127</span></p>
-          <p class="kv">색상 <b>블랙 (BLACK)</b></p>
-          <p class="price">¥15,400</p>
-          <p class="desc">천연 태닝 슈링크 레더. 포터 특유의 오렌지 내장. Kream 리셀 245,000원(발매가 188,000원).</p>
+    <div class="plist" data-cl="porter">
+      <div class="prow"><img src="https://m.media-amazon.com/images/I/61GMVfrM79L._AC_UY900_.jpg" alt="Porter CALM Card Case">
+        <div class="pb">
+          <div class="prtop"><span class="pnm">Porter CALM Card Case</span><span class="ppr">¥15,400</span></div>
+          <div class="pmeta">카드케이스/명함지갑·프리미엄 레더 · <span class="pcode">041-03127</span> · 블랙</div>
+          <div class="pdesc">천연 태닝 슈링크 레더, 포터 특유의 오렌지 내장. Kream 리셀 245,000원(발매가 188,000원).</div>
         </div>
       </div>
-      <div class="card">
-        <div class="imgwrap"><span class="chk"></span>
-          <img src="https://kream-phinf.pstatic.net/MjAyNTA3MzBfNDEg/MDAxNzUzODY4MjU1Mzk5.lG0NKZEvDDvfUN9e5gGU_Q_yv_F6R11NlsR-XAsvheQg.IaPew_Xz4tSSMPWo4Vkf3akuEE5EhjqcDUQnBusz06sg.PNG/a_376b6dee230f47e090739c12f02f70c8.png" alt="Porter Free Style Card Case Black">
-        </div>
-        <div class="body">
-          <p class="nm">Porter FREE STYLE Card Case</p>
-          <p class="cat">카드케이스/명함지갑 · 캔버스</p>
-          <p class="kv">품번 <span class="pcode">707-08227</span></p>
-          <p class="kv">색상 <b>블랙 (BLACK)</b></p>
-          <p class="price">¥9,900</p>
-          <p class="desc">포터 스테디셀러. 스냅 개폐, 카드 다수 수납. W115×H75×D20mm.</p>
+      <div class="prow"><img src="https://shopping.c.yimg.jp/lib/selection/707-08227-70.jpg" alt="Porter FREE STYLE Card Case">
+        <div class="pb">
+          <div class="prtop"><span class="pnm">Porter FREE STYLE Card Case</span><span class="ppr">¥9,900</span></div>
+          <div class="pmeta">카드케이스/명함지갑·캔버스 · <span class="pcode">707-08227</span> · 블랙</div>
+          <div class="pdesc">포터 스테디셀러. 스냅 개폐, 카드 다수 수납. W115×H75×D20mm.</div>
         </div>
       </div>
     </div>
@@ -488,7 +446,7 @@
       <thead>
         <tr><th style="width:auto;">가게</th><th style="width:130px;">지역</th><th style="width:auto;">영업 · 특이사항</th></tr>
       </thead>
-      <tbody>
+      <tbody data-cl="bingsu">
         <tr>
           <td><b>히미츠도</b><br><span class="muted">秘密堂</span></td>
           <td>야나카/닛포리</td>
@@ -540,114 +498,48 @@
 
   <section>
     <h2><span class="no">6</span> 미션 여섯 · 편의점 먹거리 (편의점별) 🏪</h2>
-    <p class="muted" style="margin-top:-4px;">인스타 게시글의 <b>3사 × 각 8종 = 총 24종</b>을 편의점별로 전부 정리했어요. 먹고 싶은 게 생기면 해당 편의점 밑에 계속 추가하면 됩니다. (음식이라 면세 대상 아님)</p>
+    <p class="muted" style="margin-top:-4px;">인스타 <b>오니기리 24종 + 컵라면 24종</b> 등 편의점 먹거리를 편의점별로 정리했어요. 사진·이름 클릭하면 확대되고, <b>체크박스는 눌러두면 저장</b>돼요(같은 기기·브라우저 기준). 새 품목은 해당 편의점 밑에 계속 추가하면 됩니다. (음식이라 면세 대상 아님)</p>
 
-    <div class="cvs">
-      <div class="cvs-head cvs-7">🟢 세븐일레븐 · 7-ELEVEN <span style="font-weight:400;font-size:12px;">(8종)</span></div>
-      <ul>
-        <li><img src="https://s.mognavi.jp/image/food/02/39/01/2997174_original.jpg" alt="연어"><span>연어 오니기리 <span class="jp">サーモンの寿司 · ¥275</span></span></li>
-        <li><img src="https://img-afd.7api-01.dp1.sej.co.jp/item-image/041505/1F29E8EDA52070F4EF17A24DEAB7B5E0.jpg" alt="게살마요"><span>게살 마요네즈 오니기리 <span class="jp">カニカマの寿司 · ¥198</span></span></li>
-        <li><img src="https://img-afd.7api-01.dp1.sej.co.jp/item-image/041910/007FBFEC1BE98EBF55071112CDC089FB.jpg" alt="매콤명란"><span>매콤 명란 오니기리 <span class="jp">辛子明太子 · ¥215</span></span></li>
-        <li><img src="https://s.mognavi.jp/image/food/02/39/01/3485974_original.jpg" alt="데리야키 함박"><span>데리야키 함박 계란 오니기리 <span class="jp">てりたまハンバーグ · ¥238</span></span></li>
-        <li><img src="https://mognavi.jp/image/food/02/39/01/2272010_original.jpg" alt="반숙계란"><span>반숙 계란 오니기리 <span class="jp">半熟煮玉子 · ¥180</span></span></li>
-        <li><img src="https://img-afd.7api-01.dp1.sej.co.jp/item-image/041956/6FECF48DA60AA6DE5FBA4B9C8F0E6738.jpg" alt="다시마"><span>홋카이도산 다시마 오니기리 <span class="jp">北海道産昆布</span></span></li>
-        <li><img src="https://img-afd.7api-01.dp1.sej.co.jp/item-image/041842/3EA1A0407018E2936E14B111DF7AE5A3.jpg" alt="새우마요"><span>새우 마요네즈 오니기리 <span class="jp">海老マヨネーズ · ¥218</span></span></li>
-        <li><img src="https://img-afd.7api-01.dp1.sej.co.jp/item-image/041909/5A8170082B23485EEA569269894651FF.jpg" alt="참치마요"><span>참치 마요네즈 오니기리 <span class="jp">ツナマヨネーズ · ¥182</span></span></li>
-        <li class="fill">↳ 여기에 세븐 먹거리 계속 추가</li>
-      </ul>
+    <div class="cvs-head cvs-7" style="border-radius:10px 10px 0 0;">🟢 세븐일레븐 · 7-ELEVEN <span style="font-weight:400;font-size:12px;">(오니기리 8종)</span></div>
+    <div class="noodlegrid" data-cl="seven" style="margin-top:0; border:1px solid var(--line); border-top:none; border-radius:0 0 10px 10px; padding:10px 12px;">
+      <div class="n"><img src="https://s.mognavi.jp/image/food/02/39/01/2997174_original.jpg" alt="연어"><span>연어 오니기리 <span class="jp">サーモンの寿司 · ¥275</span></span></div>
+      <div class="n"><img src="https://img-afd.7api-01.dp1.sej.co.jp/item-image/041505/1F29E8EDA52070F4EF17A24DEAB7B5E0.jpg" alt="게살마요"><span>게살 마요네즈 오니기리 <span class="jp">カニカマの寿司 · ¥198</span></span></div>
+      <div class="n"><img src="https://img-afd.7api-01.dp1.sej.co.jp/item-image/041910/007FBFEC1BE98EBF55071112CDC089FB.jpg" alt="매콤명란"><span>매콤 명란 오니기리 <span class="jp">辛子明太子 · ¥215</span></span></div>
+      <div class="n"><img src="https://s.mognavi.jp/image/food/02/39/01/3485974_original.jpg" alt="데리야키 함박"><span>데리야키 함박 계란 오니기리 <span class="jp">てりたまハンバーグ · ¥238</span></span></div>
+      <div class="n"><img src="https://mognavi.jp/image/food/02/39/01/2272010_original.jpg" alt="반숙계란"><span>반숙 계란 오니기리 <span class="jp">半熟煮玉子 · ¥180</span></span></div>
+      <div class="n"><img src="https://img-afd.7api-01.dp1.sej.co.jp/item-image/041956/6FECF48DA60AA6DE5FBA4B9C8F0E6738.jpg" alt="다시마"><span>홋카이도산 다시마 오니기리 <span class="jp">北海道産昆布</span></span></div>
+      <div class="n"><img src="https://img-afd.7api-01.dp1.sej.co.jp/item-image/041842/3EA1A0407018E2936E14B111DF7AE5A3.jpg" alt="새우마요"><span>새우 마요네즈 오니기리 <span class="jp">海老マヨネーズ · ¥218</span></span></div>
+      <div class="n"><img src="https://img-afd.7api-01.dp1.sej.co.jp/item-image/041909/5A8170082B23485EEA569269894651FF.jpg" alt="참치마요"><span>참치 마요네즈 오니기리 <span class="jp">ツナマヨネーズ · ¥182</span></span></div>
     </div>
 
-    <div class="cvs">
-      <div class="cvs-head cvs-l">🔵 로손 · LAWSON <span style="font-weight:400;font-size:12px;">(8종)</span></div>
-      <ul>
-        <li><img src="https://www.lawson.co.jp/recommend/original/detail/img/l810846.png" alt="연어알 간장"><span>연어알 간장 오니기리 <span class="jp">いくら醤油漬</span></span></li>
-        <li><img src="https://www.lawson.co.jp/recommend/original/detail/img/l786917.png" alt="구운연어 하라미"><span>구운 연어(하라미) 오니기리 <span class="jp">焼さけハラミ · ¥225</span></span></li>
-        <li><img src="https://www.lawson.co.jp/recommend/original/detail/img/l20240116chubo0003.png" alt="연어명태"><span>연어 명태 오니기리 <span class="jp">鮭明太 · ¥228</span></span></li>
-        <li><img src="https://newsatcl-pctr.c.yimg.jp/t/iwiz-yn/creators/kyaputenfukuda/02465793/image-1773322256955.jpeg" alt="새우텐동"><span>새우 텐동 오니기리 <span class="jp">海老天丼</span></span></li>
-        <li><img src="https://www.lawson.co.jp/recommend/original/detail/img/l812940.png" alt="매실명란"><span>매실 명란 오니기리 <span class="jp">梅明太 · ¥218</span></span></li>
-        <li><img src="https://www.lawson.co.jp/recommend/original/detail/img/l787520.png" alt="숙성연어"><span>숙성 연어 오니기리 <span class="jp">炙り熟成紅鮭 · ¥205</span></span></li>
-        <li><img src="https://www.lawson.co.jp/recommend/original/detail/img/l787518.png" alt="참치마요"><span>참치 마요네즈 오니기리 <span class="jp">シーチキンマヨネーズ · ¥168</span></span></li>
-        <li><img src="https://www.lawson.co.jp/recommend/original/detail/img/l810854.png" alt="미역"><span>미역 오니기리 <span class="jp">三陸産わかめごはん · ¥158</span></span></li>
-        <li><img src="https://www.lawson.co.jp/recommend/original/detail/img/l806171.png" alt="수박 스틱"><span>🍉 <b>생 수박 스틱</b> <span class="jp">すいか · 여름 한정 (시즌·지점 한정, 냉장코너)</span></span></li>
-        <li class="fill">↳ 여기에 로손 먹거리 계속 추가</li>
-      </ul>
+    <div class="cvs-head cvs-l" style="border-radius:10px 10px 0 0; margin-top:14px;">🔵 로손 · LAWSON <span style="font-weight:400;font-size:12px;">(오니기리 8종 + 수박스틱)</span></div>
+    <div class="noodlegrid" data-cl="lawson" style="margin-top:0; border:1px solid var(--line); border-top:none; border-radius:0 0 10px 10px; padding:10px 12px;">
+      <div class="n"><img src="https://www.lawson.co.jp/recommend/original/detail/img/l810846.png" alt="연어알 간장"><span>연어알 간장 오니기리 <span class="jp">いくら醤油漬</span></span></div>
+      <div class="n"><img src="https://www.lawson.co.jp/recommend/original/detail/img/l786917.png" alt="구운연어 하라미"><span>구운 연어(하라미) 오니기리 <span class="jp">焼さけハラミ · ¥225</span></span></div>
+      <div class="n"><img src="https://www.lawson.co.jp/recommend/original/detail/img/l20240116chubo0003.png" alt="연어명태"><span>연어 명태 오니기리 <span class="jp">鮭明太 · ¥228</span></span></div>
+      <div class="n"><img src="https://newsatcl-pctr.c.yimg.jp/t/iwiz-yn/creators/kyaputenfukuda/02465793/image-1773322256955.jpeg" alt="새우텐동"><span>새우 텐동 오니기리 <span class="jp">海老天丼</span></span></div>
+      <div class="n"><img src="https://www.lawson.co.jp/recommend/original/detail/img/l812940.png" alt="매실명란"><span>매실 명란 오니기리 <span class="jp">梅明太 · ¥218</span></span></div>
+      <div class="n"><img src="https://www.lawson.co.jp/recommend/original/detail/img/l787520.png" alt="숙성연어"><span>숙성 연어 오니기리 <span class="jp">炙り熟成紅鮭 · ¥205</span></span></div>
+      <div class="n"><img src="https://www.lawson.co.jp/recommend/original/detail/img/l787518.png" alt="참치마요"><span>참치 마요네즈 오니기리 <span class="jp">シーチキンマヨネーズ · ¥168</span></span></div>
+      <div class="n"><img src="https://www.lawson.co.jp/recommend/original/detail/img/l810854.png" alt="미역"><span>미역 오니기리 <span class="jp">三陸産わかめごはん · ¥158</span></span></div>
+      <div class="n"><img src="https://www.lawson.co.jp/recommend/original/detail/img/l806171.png" alt="수박 스틱"><span>🍉 생 수박 스틱 <span class="jp">すいか · 여름 한정(냉장코너)</span></span></div>
     </div>
 
-    <div class="cvs">
-      <div class="cvs-head cvs-f">🟢 패밀리마트 · FamilyMart <span style="font-weight:400;font-size:12px;">(8종)</span></div>
-      <ul>
-        <li><img src="https://s.mognavi.jp/image/food/00/01/01/3503308_original.jpg" alt="반숙계란차슈"><span>반숙 계란 차슈 오니기리 <span class="jp">マヨたまチャーシュー</span></span></li>
-        <li><img src="https://www.family.co.jp/content/dam/family/goods/0410120.jpg" alt="명란"><span>명란 오니기리 <span class="jp">辛子明太子</span></span></li>
-        <li><img src="https://s.mognavi.jp/image/food/00/01/01/3012973_original.jpg" alt="연어마요"><span>연어 마요네즈 오니기리 <span class="jp">サーモンマヨネーズ</span></span></li>
-        <li><img src="https://www.family.co.jp/content/dam/family/goods/0416108.jpg" alt="구운연어"><span>구운 연어(하라미) 오니기리 <span class="jp">藻塩焼 鮭はらみ</span></span></li>
-        <li><img src="https://www.family.co.jp/content/dam/family/goods/0411530.jpg" alt="다시마참치마요"><span>다시마 참치 마요네즈 오니기리 <span class="jp">昆布とツナマヨネーズ</span></span></li>
-        <li><img src="https://mognavi.jp/image/food/00/01/01/3263466_original.jpg" alt="새우마요"><span>새우 마요네즈 오니기리 <span class="jp">海老マヨネーズ</span></span></li>
-        <li><img src="https://mognavi.jp/image/food/00/01/01/3354998_original.jpg" alt="치킨마요"><span>치킨 마요네즈 오니기리 <span class="jp">チキンマヨネーズ</span></span></li>
-        <li><img src="https://mognavi.jp/image/food/00/01/01/3509902_original.jpg" alt="치킨커틀릿"><span>치킨 커틀릿 오니기리 <span class="jp">チキンカツ サンドおむすび</span></span></li>
-        <li class="fill">↳ 여기에 패미마 먹거리 계속 추가</li>
-      </ul>
+    <div class="cvs-head cvs-f" style="border-radius:10px 10px 0 0; margin-top:14px;">🟢 패밀리마트 · FamilyMart <span style="font-weight:400;font-size:12px;">(오니기리 8종)</span></div>
+    <div class="noodlegrid" data-cl="famima" style="margin-top:0; border:1px solid var(--line); border-top:none; border-radius:0 0 10px 10px; padding:10px 12px;">
+      <div class="n"><img src="https://s.mognavi.jp/image/food/00/01/01/3503308_original.jpg" alt="반숙계란차슈"><span>반숙 계란 차슈 오니기리 <span class="jp">マヨたまチャーシュー</span></span></div>
+      <div class="n"><img src="https://www.family.co.jp/content/dam/family/goods/0410120.jpg" alt="명란"><span>명란 오니기리 <span class="jp">辛子明太子</span></span></div>
+      <div class="n"><img src="https://s.mognavi.jp/image/food/00/01/01/3012973_original.jpg" alt="연어마요"><span>연어 마요네즈 오니기리 <span class="jp">サーモンマヨネーズ</span></span></div>
+      <div class="n"><img src="https://www.family.co.jp/content/dam/family/goods/0416108.jpg" alt="구운연어"><span>구운 연어(하라미) 오니기리 <span class="jp">藻塩焼 鮭はらみ</span></span></div>
+      <div class="n"><img src="https://www.family.co.jp/content/dam/family/goods/0411530.jpg" alt="다시마참치마요"><span>다시마 참치 마요네즈 오니기리 <span class="jp">昆布とツナマヨネーズ</span></span></div>
+      <div class="n"><img src="https://mognavi.jp/image/food/00/01/01/3263466_original.jpg" alt="새우마요"><span>새우 마요네즈 오니기리 <span class="jp">海老マヨネーズ</span></span></div>
+      <div class="n"><img src="https://mognavi.jp/image/food/00/01/01/3354998_original.jpg" alt="치킨마요"><span>치킨 마요네즈 오니기리 <span class="jp">チキンマヨネーズ</span></span></div>
+      <div class="n"><img src="https://mognavi.jp/image/food/00/01/01/3509902_original.jpg" alt="치킨커틀릿"><span>치킨 커틀릿 오니기리 <span class="jp">チキンカツ サンドおむすび</span></span></div>
     </div>
 
-    <div class="cvs">
-      <div class="cvs-head" style="background:#444;">🆕 신상 · 전국 편의점 공통</div>
-      <ul>
-        <li><img src="https://cdn.nissin.com/gr-documents/attachments/articles/67120/8caf6e6aa7c04df8/limited/20260713-1_2.png" alt="냉시 컵누들"><span><b>냉시 컵누들 (냉수 전용)</b> <span class="jp">冷しカップヌードル</span> — 닛신 최초 찬물 전용 컵라면, 찬물 붓고 5분. <b>①매콤 김치맛 ②닭소금 레몬맛</b>. <span class="jp">2026.7.20 출시</span></span></li>
-      </ul>
-    </div>
-
-    <div class="warn">
-      ⚠️ <b>특이사항</b>
-      <ul style="margin:6px 0 0; padding-left:18px;">
-        <li><b>상품명은 게시글 슬라이드를 직접 읽어 반영</b>했어요(24종 정확). 이미지는 각 상품명으로 <b>공식 홈페이지·상품DB에서 매칭</b>한 것 — 포장 리뉴얼로 실제 진열과 미세하게 다를 수 있어요.</li>
-        <li><b>진열은 지점·시기별로 상이</b>. 특정 상품이 안 보여도 다른 지점엔 있을 수 있어요.</li>
-        <li><b>냉시 컵누들</b>은 여름 한정 신상이라 9월엔 재고가 빠졌을 수 있어요. 보이면 바로 득템!</li>
-      </ul>
-    </div>
-  </section>
-
-  <section>
-    <h2><span class="no">7</span> 미션 일곱 · 맥도날드 기간한정 디저트 🍟</h2>
-    <p class="muted" style="margin-top:-4px;">일본 맥도날드 × 모리나가제과 컬래버 디저트 3종. 2026.7.15부터 <b>기간 한정</b> 판매, ¥200~.</p>
-    <div class="mcd">
-      <div class="item">
-        <div class="emo">🥧</div>
-        <div><div class="nm">모리나가 밀크캐러멜 파이 <span class="jp">森永ミルクキャラメルパイ</span></div>
-          <div class="jp">진한 캐러멜 크림 + 부드러운 캐러멜 크림 두 겹, 고소하고 깊은 단맛</div></div>
-      </div>
-      <div class="item">
-        <div class="emo">🍦</div>
-        <div><div class="nm">맥플러리 초코볼 <span class="jp">McFlurry チョコボール</span></div>
-          <div class="jp">모리나가 초코볼을 얹은 맥플러리</div></div>
-      </div>
-      <div class="item">
-        <div class="emo">🥤</div>
-        <div><div class="nm">맥셰이크 모리나가 라무네 <span class="jp">McShake 森永ラムネ</span></div>
-          <div class="jp">6년 만에 복귀한 라무네맛 셰이크</div></div>
-      </div>
-    </div>
-    <div class="warn">
-      ⚠️ <b>특이사항 — 기간 한정!</b> 7/15 출시라 통상 4~6주 판매인 점을 감안하면 <b>9월 초 방문 땐 이미 판매 종료됐을 가능성</b>이 있어요. 방문 전 일본 맥도날드 앱/공홈에서 판매 여부 확인 권장. (있으면 무조건 득템 대상!)
-    </div>
-  </section>
-
-  <section>
-    <h2><span class="no">8</span> 미션 여덟 · 회전초밥 쿠라스시 🍣</h2>
-    <div class="special">
-      <img src="https://www.kurasushi.co.jp/upload/topic/2006_bikkurapon_lp.jpg" alt="쿠라스시 빗쿠라퐁">
-      <div class="info">
-        <div class="cat muted">회전초밥 체인 · 도쿄 다수 지점(시부야·이케부쿠로·아사쿠사 등)</div>
-        <h3>쿠라스시 <span class="jp" style="color:#8a8272;font-size:14px;">くら寿司 / Kura Sushi</span></h3>
-        <p class="kv"><b>빈 접시 5장</b>을 테이블 반납구에 넣으면 <b>'빗쿠라퐁'(ビッくらポン)</b> 게임 도전! 당첨되면 오리지널 캡슐 굿즈가 나와요 🎁</p>
-        <div class="tip">💡 접시당 약 ¥115~. 항균 캡슐 커버 레인, 터치패널 다국어 주문이라 편해요. 저렴한 가격 + 뽑기 재미가 포인트.</div>
-        <div class="warn">⚠️ <b>특이사항</b> — 인기 지점은 대기가 길어요 → <b>앱/EPARK 사전 발권(예약)</b> 추천. 빗쿠라퐁은 <b>당첨식</b>이라 5접시마다 1회 추첨, 매번 나오는 건 아니에요.</div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2><span class="no">9</span> 미션 아홉 · 편의점 컵라면 24종 🍜</h2>
-    <p class="muted" style="margin-top:-4px;">인스타 '일본 존맛 컵라면' 게시글 전체(24종). 대부분 세븐·로손·패미마 어디서나 살 수 있어요. (이미지는 공식·쇼핑몰에서 상품명으로 매칭)</p>
-    <div class="noodlegrid">
+    <div class="cvs-head" style="background:#444; border-radius:10px 10px 0 0; margin-top:14px;">🆕 전국 공통 · 신상 &amp; 컵라면 <span style="font-weight:400;font-size:12px;">(냉시 컵누들 + 컵라면 24종)</span></div>
+    <div class="noodlegrid" data-cl="common" style="margin-top:0; border:1px solid var(--line); border-top:none; border-radius:0 0 10px 10px; padding:10px 12px;">
+      <div class="n"><img src="https://cdn.nissin.com/gr-documents/attachments/articles/67120/8caf6e6aa7c04df8/limited/20260713-1_2.png" alt="냉시 컵누들"><span>냉시 컵누들 (냉수 전용) <span class="jp">冷しカップヌードル · 김치/레몬 2종 · 여름한정 신상</span></span></div>
       <div class="n"><img src="https://m.media-amazon.com/images/I/719FldKgMrL.jpg" alt=""><span>닛신 UFO 명란 야끼소바 <span class="jp">U.F.O 濃い濃いたらこ</span></span></div>
       <div class="n"><img src="https://m.media-amazon.com/images/I/71vRDflB+wL.jpg" alt=""><span>닛신 UFO 멕시칸 타코 야끼소바 <span class="jp">U.F.O メキシカンタコス</span></span></div>
       <div class="n"><img src="https://www.sanpofoods.co.jp/wp-content/uploads/2026/02/918_matsurimori-nigihakatatonkotu_1000.jpg" alt=""><span>산포 쪽파 하카타 돈코츠 라멘 <span class="jp">祭盛 ねぎ博多豚骨</span></span></div>
@@ -673,10 +565,56 @@
       <div class="n"><img src="https://s.mognavi.jp/image/food/00/01/43/2617185_original.jpg" alt=""><span>로손 멘야 이토우 컵라면 <span class="jp">一燈 魚介鶏白湯</span></span></div>
       <div class="n"><img src="https://m.media-amazon.com/images/I/51jsrAnNYiL._AC_UF1000,1000_QL80_.jpg" alt=""><span>잇푸도 하카타 돈코츠 라멘 <span class="jp">一風堂 博多とんこつ</span></span></div>
     </div>
+
     <div class="warn">
-      ⚠️ <b>특이사항</b> — 대부분 3사 공통 판매지만 <b>一燈(멘야 이토우)은 로손 계열</b> 등 일부는 특정 편의점·시즌 한정일 수 있어요. 냉시추카·냉면류는 <b>여름 한정</b>. 봉지·컵 리뉴얼로 실제 포장과 이미지가 다를 수 있어요.
+      ⚠️ <b>특이사항</b>
+      <ul style="margin:6px 0 0; padding-left:18px;">
+        <li><b>상품명은 게시글 슬라이드를 직접 읽어 반영</b>했어요(오니기리·컵라면 각 24종 정확). 이미지는 공식 홈페이지·상품DB에서 매칭 — 포장 리뉴얼로 실제와 미세하게 다를 수 있어요.</li>
+        <li><b>진열은 지점·시기별로 상이</b>. 오니기리는 편의점별 상품이지만, <b>컵라면·신상은 대체로 3사 공통</b>(단, 一燈=로손 계열 등 일부 한정).</li>
+        <li><b>여름 한정</b> — 냉시 컵누들·냉시추카·수박스틱 등은 9월엔 빠졌을 수 있어요. 보이면 바로 득템!</li>
+      </ul>
     </div>
   </section>
+
+  <section>
+    <h2><span class="no">7</span> 미션 일곱 · 맥도날드 기간한정 디저트 🍟</h2>
+    <p class="muted" style="margin-top:-4px;">일본 맥도날드 × 모리나가제과 컬래버 디저트 3종. 2026.7.15부터 <b>기간 한정</b> 판매, ¥200~.</p>
+    <div class="mcd" data-cl="mcd">
+      <div class="item">
+        <div class="emo">🥧</div>
+        <div><div class="nm">모리나가 밀크캐러멜 파이 <span class="jp">森永ミルクキャラメルパイ</span></div>
+          <div class="jp">진한 캐러멜 크림 + 부드러운 캐러멜 크림 두 겹, 고소하고 깊은 단맛</div></div>
+      </div>
+      <div class="item">
+        <div class="emo">🍦</div>
+        <div><div class="nm">맥플러리 초코볼 <span class="jp">McFlurry チョコボール</span></div>
+          <div class="jp">모리나가 초코볼을 얹은 맥플러리</div></div>
+      </div>
+      <div class="item">
+        <div class="emo">🥤</div>
+        <div><div class="nm">맥셰이크 모리나가 라무네 <span class="jp">McShake 森永ラムネ</span></div>
+          <div class="jp">6년 만에 복귀한 라무네맛 셰이크</div></div>
+      </div>
+    </div>
+    <div class="warn">
+      ⚠️ <b>특이사항 — 기간 한정!</b> 7/15 출시라 통상 4~6주 판매인 점을 감안하면 <b>9월 초 방문 땐 이미 판매 종료됐을 가능성</b>이 있어요. 방문 전 일본 맥도날드 앱/공홈에서 판매 여부 확인 권장. (있으면 무조건 득템 대상!)
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="no">8</span> 미션 여덟 · 회전초밥 쿠라스시 🍣</h2>
+    <div class="special" data-cl="kura">
+      <img src="https://www.kurasushi.co.jp/upload/topic/2006_bikkurapon_lp.jpg" alt="쿠라스시 빗쿠라퐁">
+      <div class="info">
+        <div class="cat muted">회전초밥 체인 · 도쿄 다수 지점(시부야·이케부쿠로·아사쿠사 등)</div>
+        <h3>쿠라스시 <span class="jp" style="color:#8a8272;font-size:14px;">くら寿司 / Kura Sushi</span></h3>
+        <p class="kv"><b>빈 접시 5장</b>을 테이블 반납구에 넣으면 <b>'빗쿠라퐁'(ビッくらポン)</b> 게임 도전! 당첨되면 오리지널 캡슐 굿즈가 나와요 🎁</p>
+        <div class="tip">💡 접시당 약 ¥115~. 항균 캡슐 커버 레인, 터치패널 다국어 주문이라 편해요. 저렴한 가격 + 뽑기 재미가 포인트.</div>
+        <div class="warn">⚠️ <b>특이사항</b> — 인기 지점은 대기가 길어요 → <b>앱/EPARK 사전 발권(예약)</b> 추천. 빗쿠라퐁은 <b>당첨식</b>이라 5접시마다 1회 추첨, 매번 나오는 건 아니에요.</div>
+      </div>
+    </div>
+  </section>
+
 
   <section>
     <h2><span class="no">!</span> 준비물 및 유의사항</h2>
@@ -709,6 +647,30 @@
     }
   });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') lb.classList.remove('open'); });
+})();
+</script>
+<script>
+(function(){
+  var KEY='tokyoTripChecks', saved={};
+  try{ saved=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(saved)); }catch(e){} }
+  function slug(t){ return (t||'').replace(/\s+/g,' ').trim().slice(0,80); }
+  function attach(item, cl){
+    if(item.getAttribute('data-ckd')) return; item.setAttribute('data-ckd','1');
+    var k = cl + '::' + slug(item.textContent);
+    var cb = document.createElement('input'); cb.type='checkbox'; cb.className='ckbox';
+    if(saved[k]){ cb.checked=true; item.classList.add('ckd'); }
+    cb.addEventListener('click', function(e){ e.stopPropagation(); });
+    cb.addEventListener('change', function(){ if(cb.checked){saved[k]=1;} else {delete saved[k];} save(); item.classList.toggle('ckd', cb.checked); });
+    if(item.tagName==='TR'){ var td=item.querySelector('td'); if(td){ td.insertBefore(cb, td.firstChild); } }
+    else { item.insertBefore(cb, item.firstChild); }
+  }
+  document.querySelectorAll('[data-cl]').forEach(function(c){
+    var cl=c.getAttribute('data-cl');
+    var kids=c.querySelectorAll(':scope > .n, :scope > .prow, :scope > .item, :scope > tr');
+    if(kids.length){ Array.prototype.forEach.call(kids, function(k){ attach(k, cl); }); }
+    else { attach(c, cl); }
+  });
 })();
 </script>
 </body>
