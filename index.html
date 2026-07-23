@@ -153,6 +153,10 @@
   input.ckbox{ width:17px; height:17px; flex:0 0 auto; margin-right:3px; accent-color:#2e6e5a; cursor:pointer; vertical-align:middle;}
   .n.ckd, .prow.ckd, .special.ckd, .mcd .item.ckd, tr.ckd{ opacity:.45;}
   .n.ckd > span, .prow.ckd .pnm, tr.ckd td:nth-child(2){ text-decoration:line-through;}
+
+  /* ===== 구글맵 핀 ===== */
+  a.mappin{ display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; margin-left:5px; border-radius:5px; background:var(--soft); border:1px solid var(--line); text-decoration:none; font-size:11px; vertical-align:middle; line-height:1; transition:background .15s;}
+  a.mappin:hover{ background:var(--accent2); }
 </style>
 </head>
 <body>
@@ -175,7 +179,7 @@
     <table class="ov">
       <tr><th>기간</th><td>2026년 9월 5일(토) ~ 9월 9일(수) · <b>4박 5일</b></td></tr>
       <tr><th>참가자</th><td>조양기, 김보람 (성인 2인)</td></tr>
-      <tr><th>거점 숙소</th><td>APA Hotel &amp; Resort 니시신주쿠 고초메 에키마에 타워<br>
+      <tr><th>거점 숙소</th><td data-mapq="アパホテル 西新宿五丁目駅前タワー"><b style="font-weight:600;">APA Hotel &amp; Resort 니시신주쿠 고초메 에키마에 타워</b><br>
         <span class="muted">西新宿五丁目駅前タワー · 東京都渋谷区本町3-14-1 · ☎ +81-3-5304-7011 · 스몰더블룸(금연)</span></td></tr>
     </table>
     <div class="flight" style="margin-top:14px;">
@@ -294,8 +298,8 @@
           ⚠️ <b>특이사항 — 특정 매장에서만 판매</b>
           <ul style="margin:6px 0 0; padding-left:18px;">
             <li>"Stock <b>Tokyo</b>"는 도쿄 챕터 전용 상품이라 일반 편집숍·타 도시 매장엔 없어요. 도쿄 <b>Chapter 매장</b>을 노리세요:
-              <br>· <b>Stüssy Harajuku(하라주쿠)</b> — 4-28-2 Jingumae, Shibuya-ku
-              <br>· <b>Stüssy Shibuya(시부야)</b> — 1-14-5 Jinnan, Shibuya
+              <br>· <b data-mapq="STUSSY Chapter 原宿">Stüssy Harajuku(하라주쿠)</b> — 4-28-2 Jingumae, Shibuya-ku
+              <br>· <b data-mapq="STUSSY 渋谷">Stüssy Shibuya(시부야)</b> — 1-14-5 Jinnan, Shibuya
             </li>
             <li>인기 사이즈(M/L)는 <b>조기 품절</b>이 잦아요. 방문 전 매장에 사이즈 재고 문의 권장.</li>
           </ul>
@@ -311,7 +315,7 @@
       <div class="thumb">🏰</div>
       <div class="info">
         <div class="cat muted">테마파크 · 지바현 우라야스 (도쿄 근교)</div>
-        <h3 style="margin:2px 0 6px; font-size:18px;">도쿄 디즈니랜드 (Tokyo Disneyland)</h3>
+        <h3 style="margin:2px 0 6px; font-size:18px;" data-mapq="東京ディズニーランド" data-cl="disney">도쿄 디즈니랜드 (Tokyo Disneyland)</h3>
         <p class="kv">숙소(니시신주쿠)에서 <b>전철 약 1시간</b> — JR로 마이하마역(舞浜) 하차</p>
         <div class="warn">
           ⚠️ <b>특이사항 — 예약(사전구매) 필수!</b>
@@ -345,7 +349,7 @@
       <thead>
         <tr><th style="width:auto;">장소</th><th style="width:150px;">운영시간</th><th style="width:auto;">특이사항</th></tr>
       </thead>
-      <tbody>
+      <tbody data-map="1" data-cl="shibuya">
         <tr>
           <td><b>시부야 스크램블 교차로</b><br><span class="muted">랜드마크 · 무료</span></td>
           <td>24시간</td>
@@ -384,7 +388,7 @@
       </tbody>
     </table>
 
-    <h3 style="font-size:16px; margin:22px 0 4px; color:var(--accent2);">🗼 롯폰기 · 모리타워 전망대 (Tokyo City View)</h3>
+    <h3 style="font-size:16px; margin:22px 0 4px; color:var(--accent2);" data-mapq="六本木ヒルズ 森タワー 東京シティビュー" data-cl="mori">🗼 롯폰기 · 모리타워 전망대 (Tokyo City View)</h3>
     <div class="resbox">
       <table>
         <tr><td>위치</td><td>롯폰기 힐즈 모리타워 52F (시부야에서 전철 약 10분)</td></tr>
@@ -399,7 +403,7 @@
       <thead>
         <tr><th style="width:auto;">장소</th><th style="width:140px;">유형·지역</th><th style="width:auto;">메모 · 특이사항</th></tr>
       </thead>
-      <tbody>
+      <tbody data-map="1" data-cl="shopping">
         <tr><td><b>스타벅스 리저브 로스터리 도쿄</b></td><td>카페 · 나카메구로</td><td>세계 최대급 스타벅스(4층 규모). <b style="color:var(--accent);">⚠️ 매우 인기 — 주말·피크 대기</b>. 여기 한정 굿즈·원두.</td></tr>
         <tr><td><b>이케부쿠로</b></td><td>지역 · 쇼핑/서브컬처</td><td>선샤인시티, <b>포켓몬센터 메가도쿄</b>, 애니메이트 본점, 오토메로드 등 집약.</td></tr>
         <tr><td><b>로프트 (LOFT)</b></td><td>잡화점 · 시부야 등</td><td>문구·팬시·기념품 성지. 시부야 로프트가 대형.</td></tr>
@@ -456,7 +460,7 @@
       <thead>
         <tr><th style="width:auto;">가게</th><th style="width:130px;">지역</th><th style="width:auto;">영업 · 특이사항</th></tr>
       </thead>
-      <tbody data-cl="bingsu">
+      <tbody data-cl="bingsu" data-map="1">
         <tr>
           <td><b>히미츠도</b><br><span class="muted">秘密堂</span></td>
           <td>야나카/닛포리</td>
@@ -617,7 +621,7 @@
       <img src="https://www.kurasushi.co.jp/upload/topic/2006_bikkurapon_lp.jpg" alt="쿠라스시 빗쿠라퐁">
       <div class="info">
         <div class="cat muted">회전초밥 체인 · 도쿄 다수 지점(시부야·이케부쿠로·아사쿠사 등)</div>
-        <h3>쿠라스시 <span class="jp" style="color:#8a8272;font-size:14px;">くら寿司 / Kura Sushi</span></h3>
+        <h3 data-mapq="くら寿司 渋谷">쿠라스시 <span class="jp" style="color:#8a8272;font-size:14px;">くら寿司 / Kura Sushi</span></h3>
         <p class="kv"><b>빈 접시 5장</b>을 테이블 반납구에 넣으면 <b>'빗쿠라퐁'(ビッくらポン)</b> 게임 도전! 당첨되면 오리지널 캡슐 굿즈가 나와요 🎁</p>
         <div class="tip">💡 접시당 약 ¥115~. 항균 캡슐 커버 레인, 터치패널 다국어 주문이라 편해요. 저렴한 가격 + 뽑기 재미가 포인트.</div>
         <div class="warn">⚠️ <b>특이사항</b> — 인기 지점은 대기가 길어요 → <b>앱/EPARK 사전 발권(예약)</b> 추천. 빗쿠라퐁은 <b>당첨식</b>이라 5접시마다 1회 추첨, 매번 나오는 건 아니에요.</div>
@@ -633,7 +637,7 @@
       <thead>
         <tr><th style="width:auto;">장소 · 먹거리</th><th style="width:130px;">지역</th><th style="width:auto;">왜 로컬 · 특이사항</th></tr>
       </thead>
-      <tbody>
+      <tbody data-map="1" data-cl="local">
         <tr><td><b>오모이데 요코초 &amp; 골든가이</b><br><span class="muted">思い出横丁 / ゴールデン街</span></td><td>신주쿠<br>(숙소 도보권)</td><td>퇴근길 직장인 <b>야키토리 골목</b>(오모이데요코초) + 미니 바가 밀집한 <b>골든가이</b>. 저녁~심야, 현금 위주. 관광객도 늘었지만 로컬 감성 진함.</td></tr>
         <tr><td><b>츠키시마 몬자 스트리트</b><br><span class="muted">月島もんじゃ</span></td><td>츠키시마</td><td>몬자야키 전문 골목(모헤지 등). 철판에 직접 구워 먹는 <b>도쿄 소울푸드</b>. 현지인·가족 단위 많음.</td></tr>
         <tr><td><b>야나카 긴자</b><br><span class="muted">谷中銀座</span></td><td>야나카/닛포리</td><td>옛 정취 상점가·<b>노을 계단(유야케단단)</b>, 길거리 간식(멘치카츠·고로케). 노포 로컬 거리. <b>빙수 히미츠도와 같은 동네</b>라 묶기 좋음.</td></tr>
@@ -707,6 +711,24 @@
     var kids=c.querySelectorAll(':scope > .n, :scope > .prow, :scope > .item, :scope > tr');
     if(kids.length){ Array.prototype.forEach.call(kids, function(k){ attach(k, cl); }); }
     else { attach(c, cl); }
+  });
+})();
+</script>
+<script>
+(function(){
+  function mapUrl(q){ return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q); }
+  function pin(q){ var a=document.createElement('a'); a.className='mappin'; a.href=mapUrl(q); a.target='_blank'; a.rel='noopener'; a.title='구글맵에서 보기'; a.textContent='📍'; a.addEventListener('click',function(e){e.stopPropagation();}); return a; }
+  document.querySelectorAll('[data-map] tr').forEach(function(tr){
+    var td=tr.querySelector('td'); if(!td || td.querySelector('a.mappin')) return;
+    var b=td.querySelector('b'); var name=(b?b.textContent:td.textContent).trim();
+    var m=td.querySelector('.muted'); var extra='';
+    if(m && /[぀-ヿ㐀-鿿]/.test(m.textContent)) extra=' '+m.textContent.trim();
+    if(!name) return;
+    (b||td).insertAdjacentElement('afterend', pin(name+extra+' 東京'));
+  });
+  document.querySelectorAll('[data-mapq]').forEach(function(el){
+    if(el.querySelector('a.mappin')) return;
+    el.appendChild(pin(el.getAttribute('data-mapq')));
   });
 })();
 </script>
