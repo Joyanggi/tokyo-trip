@@ -5,17 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2026 도쿄 현장체험학습 안내문</title>
 <style>
-  :root{
-    --ink:#2b2b2b; --paper:#fffdf7; --line:#d9cfb8;
-    --accent:#d94f3d; --accent2:#2e6e5a; --gold:#c9a34e;
-    --soft:#f4eddd; --tag:#eae0c8;
-  }
+  :root{ --ink:#2b2b2b; --paper:#fffdf7; --line:#d9cfb8; --accent:#d94f3d; --accent2:#2e6e5a; --gold:#c9a34e; --soft:#f4eddd; --tag:#eae0c8; }
   *{box-sizing:border-box;}
-  body{ margin:0; background:#e7e0cf; color:var(--ink);
-    font-family:"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
-    line-height:1.65; padding:24px 12px; }
-  .sheet{ max-width:860px; margin:0 auto; background:var(--paper);
-    border:2px solid var(--ink); border-radius:6px; box-shadow:0 10px 30px rgba(0,0,0,.18); padding:0 0 40px; }
+  body{ margin:0; background:#e7e0cf; color:var(--ink); font-family:"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif; line-height:1.65; padding:24px 12px; }
+  .sheet{ max-width:860px; margin:0 auto; background:var(--paper); border:2px solid var(--ink); border-radius:6px; box-shadow:0 10px 30px rgba(0,0,0,.18); padding:0 0 40px; }
   .topbar{ background:repeating-linear-gradient(45deg,var(--accent) 0 18px,#c8422f 18px 36px); height:14px; border-radius:4px 4px 0 0; }
   header{ text-align:center; padding:28px 30px 18px; border-bottom:3px double var(--line);}
   .stamp{ display:inline-block; border:2px solid var(--accent); color:var(--accent); font-weight:800; font-size:12px; letter-spacing:2px; padding:4px 10px; border-radius:4px; transform:rotate(-4deg); margin-bottom:10px; }
@@ -25,14 +18,13 @@
   section{ padding:6px 30px;}
   h2{ font-size:19px; margin:24px 0 12px; padding:8px 14px; background:var(--accent2); color:#fff; border-radius:6px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
   h2 .no{ background:#fff; color:var(--accent2); border-radius:50%; width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; flex:0 0 auto;}
-  /* 대분류 밴드 */
   .bigcat{ margin:34px 30px 2px; padding:13px 18px; border-radius:10px; font-size:20px; font-weight:800; color:#fff; letter-spacing:-.5px; display:flex; align-items:baseline; gap:10px;}
   .bigcat .sub{ font-size:12px; font-weight:500; opacity:.92;}
   .bigcat.buy{ background:linear-gradient(90deg,#c0392b,#e0503d);}
   .bigcat.eat{ background:linear-gradient(90deg,#bb7d18,#d99a2b);}
   .bigcat.go{ background:linear-gradient(90deg,#256b56,#3f9179);}
-  /* 지역 뱃지 */
-  .bdg{ display:inline-block; background:#5b6b7a; color:#fff; font-size:10.5px; font-weight:700; padding:1.5px 8px; border-radius:10px; margin-left:6px; vertical-align:middle; white-space:nowrap; letter-spacing:-.2px;}
+  .bdg{ display:inline-block; background:#5b6b7a; color:#fff; font-size:10.5px; font-weight:700; padding:1.5px 8px; border-radius:10px; margin-left:6px; vertical-align:middle; white-space:nowrap; letter-spacing:-.2px; cursor:pointer;}
+  .bdg:hover{ filter:brightness(1.12); outline:2px solid rgba(0,0,0,.15);}
   .bdg.nt{ background:#8a8272;} .bdg.sb{ background:#d94f3d;} .bdg.sj{ background:#2e6e5a;} .bdg.gz{ background:#7a5cc0;}
   h2 .bdg{ font-size:11px; margin-left:auto;}
   table.ov{ width:100%; border-collapse:collapse; font-size:14px;}
@@ -78,6 +70,7 @@
   ol.notes{ font-size:13.5px; padding-left:20px;}
   ol.notes li{ margin:7px 0;}
   footer{ text-align:center; font-size:12px; color:#9a927f; margin-top:26px; padding-top:14px; border-top:3px double var(--line);}
+  /* 컴팩트 리스트 카드(제품) */
   .plist{ margin-top:8px; border:1px solid var(--line); border-radius:10px; overflow:hidden; background:#fff;}
   .prow{ display:flex; gap:12px; padding:10px 12px; border-bottom:1px solid var(--soft); align-items:center;}
   .prow:last-child{ border-bottom:none;}
@@ -90,19 +83,26 @@
   .prow .pmeta .pcode{ background:var(--tag); padding:1px 6px; border-radius:4px; font-family:ui-monospace,Menlo,monospace;}
   .prow .pdesc{ font-size:11.5px; color:#6f685a;}
   .prow .psold{ display:inline-block; background:var(--accent); color:#fff; font-size:9px; font-weight:700; padding:1px 5px; border-radius:3px; margin-left:5px; vertical-align:middle;}
+  /* 컴팩트 리스트 카드(장소·맛집 등, 이미지 없음) */
+  .lcard{ margin-top:8px; border:1px solid var(--line); border-radius:10px; overflow:hidden; background:#fff;}
+  .litem{ display:flex; gap:9px; align-items:flex-start; padding:10px 13px; border-bottom:1px solid var(--soft);}
+  .litem:last-child{ border-bottom:none;}
+  .litem .lbody{ flex:1; min-width:0;}
+  .litem .lt{ display:flex; align-items:center; gap:4px; flex-wrap:wrap;}
+  .litem .lnm{ font-weight:700; font-size:14px;}
+  .litem .lsub{ font-size:11.5px; color:#8a8272; margin-left:auto; white-space:nowrap;}
+  .litem .ljp{ color:#8a8272; font-size:11.5px; display:block; margin:1px 0;}
+  .litem .ld{ font-size:12.5px; color:#5c5648; margin-top:2px;}
   .cvs li img, .noodlegrid .n img, .special img, .mcd img, .place img, .prow>img{ cursor:zoom-in;}
   #lb{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.88); z-index:99999; align-items:center; justify-content:center; padding:16px; cursor:zoom-out;}
   #lb.open{ display:flex;}
   #lb img{ max-width:96%; max-height:96%; border-radius:10px; box-shadow:0 12px 48px rgba(0,0,0,.6); cursor:zoom-out;}
   #lb .hint{ position:fixed; top:14px; right:20px; color:#fff; font-size:13px; opacity:.75;}
   input.ckbox{ width:17px; height:17px; flex:0 0 auto; margin-right:3px; accent-color:#2e6e5a; cursor:pointer; vertical-align:middle;}
-  .n.ckd, .prow.ckd, .special.ckd, .mcd .item.ckd, tr.ckd{ opacity:.45;}
-  .n.ckd > span, .prow.ckd .pnm, tr.ckd td:nth-child(2){ text-decoration:line-through;}
+  .n.ckd, .prow.ckd, .special.ckd, .mcd .item.ckd, .litem.ckd{ opacity:.45;}
+  .n.ckd > span, .prow.ckd .pnm, .litem.ckd .lnm{ text-decoration:line-through;}
   a.mappin{ display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; margin-left:5px; border-radius:5px; background:var(--soft); border:1px solid var(--line); text-decoration:none; font-size:11px; vertical-align:middle; line-height:1; transition:background .15s;}
   a.mappin:hover{ background:var(--accent2); }
-  /* 지역 필터 */
-  .bdg{ cursor:pointer; }
-  .bdg:hover{ filter:brightness(1.12); outline:2px solid rgba(0,0,0,.15);}
   #fbar{ display:none; position:sticky; top:6px; z-index:9000; background:var(--accent2); color:#fff; padding:9px 14px; border-radius:9px; margin:12px 30px 0; align-items:center; gap:10px; font-size:13.5px; box-shadow:0 4px 14px rgba(0,0,0,.22);}
   #fbar b{ background:#fff; color:var(--accent2); padding:2px 10px; border-radius:9px; font-size:12.5px;}
   #fbar .x{ margin-left:auto; cursor:pointer; font-weight:700; background:rgba(255,255,255,.22); padding:4px 11px; border-radius:8px; white-space:nowrap;}
@@ -133,6 +133,7 @@
     .noodlegrid{ grid-template-columns:1fr; }
     .special{ padding:13px; }
     .flight .leg{ min-width:100%; }
+    .litem .lsub{ margin-left:0; display:block;}
     #fbar{ margin:8px 14px 0; }
   }
 </style>
@@ -149,7 +150,7 @@
   <div class="banner">
     <b>2026년 9월 5일~9일</b> 도쿄 여행 안내문이에요. <b>🛍️ 사고 · 🍜 먹고 · 🗺️ 가고</b> 세 갈래로 나누고,
     각 항목엔 <b>지역 뱃지</b>(<span class="bdg sb">시부야</span><span class="bdg sj">신주쿠</span><span class="bdg gz">긴자</span><span class="bdg nt">전국</span>)를 달았어요.
-    "시부야 뭐 있더라?" 하면 <b>빨간 뱃지</b>만 훑으면 돼요. 사진·이름 누르면 확대, 📍는 구글맵, 체크박스는 저장됩니다.
+    <b>뱃지를 누르면 그 지역 것만</b> 남아요. 사진·이름 누르면 확대, 📍는 구글맵, 체크박스는 저장.
   </div>
 
   <div id="fbar">🔍 지역 필터 <b id="flab"></b> <span class="x">✕ 전체 보기</span></div>
@@ -163,18 +164,8 @@
         <span class="muted">西新宿五丁目駅前タワー · 東京都渋谷区本町3-14-1 · ☎ +81-3-5304-7011 · 스몰더블룸(금연)</span></td></tr>
     </table>
     <div class="flight" style="margin-top:14px;">
-      <div class="leg">
-        <div class="muted">가는편 · 9/5(토)</div>
-        <div class="route">인천(ICN) ✈ 나리타(NRT)</div>
-        <div><b>09:45</b> ICN T1 → <b>12:15</b> NRT T3</div>
-        <div class="muted">제주항공 7C1175 · 2시간 30분</div>
-      </div>
-      <div class="leg">
-        <div class="muted">오는편 · 9/9(수)</div>
-        <div class="route">나리타(NRT) ✈ 인천(ICN)</div>
-        <div><b>18:30</b> NRT T3 → <b>21:20</b> ICN T1</div>
-        <div class="muted">제주항공 7C1108 · 2시간 50분</div>
-      </div>
+      <div class="leg"><div class="muted">가는편 · 9/5(토)</div><div class="route">인천(ICN) ✈ 나리타(NRT)</div><div><b>09:45</b> ICN T1 → <b>12:15</b> NRT T3</div><div class="muted">제주항공 7C1175 · 2시간 30분</div></div>
+      <div class="leg"><div class="muted">오는편 · 9/9(수)</div><div class="route">나리타(NRT) ✈ 인천(ICN)</div><div><b>18:30</b> NRT T3 → <b>21:20</b> ICN T1</div><div class="muted">제주항공 7C1108 · 2시간 50분</div></div>
     </div>
     <h3 style="font-size:16px; margin:20px 0 4px; color:var(--accent2);">🛡️ 여행자보험 (가입 완료)</h3>
     <div class="resbox">
@@ -194,34 +185,13 @@
     <h2><span class="no">🎒</span> 몽벨 (mont-bell) <span class="bdg nt">전국·지점 다수</span></h2>
     <p class="muted" style="margin-top:-4px;">매장에서 태그의 <b>품번(#)</b>을 보여주면 재고 확인이 빨라요. 가격은 일본 정가(¥, 세금포함).</p>
     <div class="plist" data-cl="montbell">
-      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1133470_bk.webp" alt="Pocketable Light Pack 15">
-        <div class="pb"><div class="prtop"><span class="pnm">Pocketable Light Pack 15 <span class="psold">온라인 품절</span></span><span class="ppr">¥6,000</span></div>
-          <div class="pmeta">데이팩·접이식 15L · <span class="pcode">#1133470</span> · BK (BLACK)</div>
-          <div class="pdesc">주머니 속으로 접혀 들어가는 초경량 데이팩. 보조가방으로 딱.</div></div></div>
-      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1134185_cler.webp" alt="Flex Water Pack 1.0L">
-        <div class="pb"><div class="prtop"><span class="pnm">Flex Water Pack 1.0L</span><span class="ppr">¥2,000</span></div>
-          <div class="pmeta">접이식 물통·1.0L · <span class="pcode">#1134185</span> · CLER (CLEAR)</div>
-          <div class="pdesc">냄새 배지 않고, 안 쓸 땐 돌돌 말아 보관. 자립형 디자인.</div></div></div>
-      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1133374_pu.webp" alt="Coin Purse">
-        <div class="pb"><div class="prtop"><span class="pnm">Coin Purse <span class="psold">온라인 품절</span></span><span class="ppr">¥1,400</span></div>
-          <div class="pmeta">동전지갑·초경량 · <span class="pcode">#1133374</span> · GY (GRAY)</div>
-          <div class="pdesc">손바닥 크기의 지퍼형 동전지갑. 열기 편한 컴팩트 사이즈.</div></div></div>
-      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1133373_gy.webp" alt="Mini Zip Wallet">
-        <div class="pb"><div class="prtop"><span class="pnm">Mini Zip Wallet</span><span class="ppr">¥1,700</span></div>
-          <div class="pmeta">미니지갑·지퍼형 · <span class="pcode">#1133373</span> · GY (GRAY)</div>
-          <div class="pdesc">열쇠·동전·카드·지폐 몇 장을 안전하게. 초컴팩트.</div></div></div>
-      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1109131_sm!lg.webp" alt="Trekking Glass">
-        <div class="pb"><div class="prtop"><span class="pnm">Trekking Glass</span><span class="ppr">¥7,700</span></div>
-          <div class="pmeta">선글라스·UV 99%+ 차단 · <span class="pcode">#1109131</span> · SM/LG (SILVER METALLIC/LIGHT GRAY)</div>
-          <div class="pdesc">가볍고 스포티한 플라스틱 프레임. 케이스·클리닝천 포함.</div></div></div>
-      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1133552_bgn.webp" alt="Light Paper Pouch S">
-        <div class="pb"><div class="prtop"><span class="pnm">Light Paper Pouch S <span class="psold">온라인 품절</span></span><span class="ppr">¥1,100</span></div>
-          <div class="pmeta">파우치·S 사이즈 · <span class="pcode">#1133552</span> · BGN (BLUE GREEN)</div>
-          <div class="pdesc">가볍고 튼튼한 소품 정리용 파우치. 가방 속 정리템.</div></div></div>
-      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1124338_gm.webp" alt="Key Carabiner Nasu-Kan 6">
-        <div class="pb"><div class="prtop"><span class="pnm">Key Carabiner Nasu-Kan 6</span><span class="ppr">¥600</span></div>
-          <div class="pmeta">키 카라비너·알루미늄 · <span class="pcode">#1124338</span> · GM (GUNMETAL)</div>
-          <div class="pdesc">알루미늄 합금 열쇠고리 카라비너. 가방에 하나쯤.</div></div></div>
+      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1133470_bk.webp" alt="Pocketable Light Pack 15"><div class="pb"><div class="prtop"><span class="pnm">Pocketable Light Pack 15 <span class="psold">온라인 품절</span></span><span class="ppr">¥6,000</span></div><div class="pmeta">데이팩·접이식 15L · <span class="pcode">#1133470</span> · BK (BLACK)</div><div class="pdesc">주머니 속으로 접혀 들어가는 초경량 데이팩. 보조가방으로 딱.</div></div></div>
+      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1134185_cler.webp" alt="Flex Water Pack 1.0L"><div class="pb"><div class="prtop"><span class="pnm">Flex Water Pack 1.0L</span><span class="ppr">¥2,000</span></div><div class="pmeta">접이식 물통·1.0L · <span class="pcode">#1134185</span> · CLER (CLEAR)</div><div class="pdesc">냄새 배지 않고, 안 쓸 땐 돌돌 말아 보관. 자립형 디자인.</div></div></div>
+      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1133374_pu.webp" alt="Coin Purse"><div class="pb"><div class="prtop"><span class="pnm">Coin Purse <span class="psold">온라인 품절</span></span><span class="ppr">¥1,400</span></div><div class="pmeta">동전지갑·초경량 · <span class="pcode">#1133374</span> · GY (GRAY)</div><div class="pdesc">손바닥 크기의 지퍼형 동전지갑. 열기 편한 컴팩트 사이즈.</div></div></div>
+      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1133373_gy.webp" alt="Mini Zip Wallet"><div class="pb"><div class="prtop"><span class="pnm">Mini Zip Wallet</span><span class="ppr">¥1,700</span></div><div class="pmeta">미니지갑·지퍼형 · <span class="pcode">#1133373</span> · GY (GRAY)</div><div class="pdesc">열쇠·동전·카드·지폐 몇 장을 안전하게. 초컴팩트.</div></div></div>
+      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1109131_sm!lg.webp" alt="Trekking Glass"><div class="pb"><div class="prtop"><span class="pnm">Trekking Glass</span><span class="ppr">¥7,700</span></div><div class="pmeta">선글라스·UV 99%+ 차단 · <span class="pcode">#1109131</span> · SM/LG</div><div class="pdesc">가볍고 스포티한 플라스틱 프레임. 케이스·클리닝천 포함.</div></div></div>
+      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1133552_bgn.webp" alt="Light Paper Pouch S"><div class="pb"><div class="prtop"><span class="pnm">Light Paper Pouch S <span class="psold">온라인 품절</span></span><span class="ppr">¥1,100</span></div><div class="pmeta">파우치·S 사이즈 · <span class="pcode">#1133552</span> · BGN (BLUE GREEN)</div><div class="pdesc">가볍고 튼튼한 소품 정리용 파우치. 가방 속 정리템.</div></div></div>
+      <div class="prow"><img src="https://www.montbell.com/storage/products/images/origin/1124338_gm.webp" alt="Key Carabiner Nasu-Kan 6"><div class="pb"><div class="prtop"><span class="pnm">Key Carabiner Nasu-Kan 6</span><span class="ppr">¥600</span></div><div class="pmeta">키 카라비너·알루미늄 · <span class="pcode">#1124338</span> · GM (GUNMETAL)</div><div class="pdesc">알루미늄 합금 열쇠고리 카라비너. 가방에 하나쯤.</div></div></div>
     </div>
     <div class="totbar"><span>몽벨 7종 합계 (정가 기준)</span><span><b>¥20,500</b> <span class="muted">(면세 적용 시 더 저렴)</span></span></div>
     <div class="warn">⚠️ <b>몽벨</b> — 온라인 품절 3종도 오프라인 재고는 별도. 면세는 <b>직영점에서만</b>(한 매장 세금포함 ¥5,500↑). 인기 색은 매장별 재고 편차.</div>
@@ -231,17 +201,11 @@
     <h2><span class="no">👛</span> 포터 (PORTER) 카드케이스 <span class="bdg nt">전국·Sac's Bar</span></h2>
     <p class="muted" style="margin-top:-4px;">일본 브랜드(요시다 카반). 현지 정가가 Kream 리셀보다 훨씬 저렴. 판매처: Sac's Bar·포터 취급점.</p>
     <div class="plist" data-cl="porter">
-      <div class="prow"><img src="https://m.media-amazon.com/images/I/61GMVfrM79L._AC_UY900_.jpg" alt="Porter CALM Card Case">
-        <div class="pb"><div class="prtop"><span class="pnm">Porter CALM Card Case</span><span class="ppr">¥15,400</span></div>
-          <div class="pmeta">카드케이스/명함지갑·프리미엄 레더 · <span class="pcode">041-03127</span> · 블랙</div>
-          <div class="pdesc">천연 슈링크 레더, 포터 오렌지 내장. Kream 리셀 245,000원(발매가 188,000원).</div></div></div>
-      <div class="prow"><img src="https://shopping.c.yimg.jp/lib/selection/707-08227-70.jpg" alt="Porter FREE STYLE Card Case">
-        <div class="pb"><div class="prtop"><span class="pnm">Porter FREE STYLE Card Case</span><span class="ppr">¥9,900</span></div>
-          <div class="pmeta">카드케이스/명함지갑·캔버스 · <span class="pcode">707-08227</span> · 블랙</div>
-          <div class="pdesc">포터 스테디셀러. 스냅 개폐, 카드 다수 수납. W115×H75×D20mm.</div></div></div>
+      <div class="prow"><img src="https://m.media-amazon.com/images/I/61GMVfrM79L._AC_UY900_.jpg" alt="Porter CALM Card Case"><div class="pb"><div class="prtop"><span class="pnm">Porter CALM Card Case</span><span class="ppr">¥15,400</span></div><div class="pmeta">카드케이스/명함지갑·프리미엄 레더 · <span class="pcode">041-03127</span> · 블랙</div><div class="pdesc">천연 슈링크 레더. Kream 리셀 245,000원(발매가 188,000원).</div></div></div>
+      <div class="prow"><img src="https://shopping.c.yimg.jp/lib/selection/707-08227-70.jpg" alt="Porter FREE STYLE Card Case"><div class="pb"><div class="prtop"><span class="pnm">Porter FREE STYLE Card Case</span><span class="ppr">¥9,900</span></div><div class="pmeta">카드케이스/명함지갑·캔버스 · <span class="pcode">707-08227</span> · 블랙</div><div class="pdesc">포터 스테디셀러. 스냅 개폐, 카드 다수 수납. W115×H75×D20mm.</div></div></div>
     </div>
     <div class="totbar"><span>포터 2종 합계 (일본 정가 기준)</span><span><b>¥25,300</b> <span class="muted">(면세 적용 시 더 저렴)</span></span></div>
-    <div class="warn">⚠️ <b>포터</b> — 현지 정가가 압도적 저렴(Free Style 일본 ¥9,900 vs Kream 약 544,000원). 매장에서 <b>품번·색상(블랙) 확인</b>. CALM은 대형 매장 위주. Sac's Bar 등 대형 매장 여권 지참 면세.</div>
+    <div class="warn">⚠️ <b>포터</b> — 현지 정가가 압도적 저렴(Free Style 일본 ¥9,900 vs Kream 약 544,000원). 매장에서 <b>품번·색상(블랙) 확인</b>. Sac's Bar 등 대형 매장 여권 지참 면세.</div>
   </section>
 
   <section>
@@ -269,16 +233,13 @@
   <section>
     <h2><span class="no">🛒</span> 그 외 쇼핑 매장 (잡화·가전·패션)</h2>
     <p class="muted" style="margin-top:-4px;">여권 지참 시 대부분 <b>면세</b>(한 매장 세금포함 ¥5,500↑).</p>
-    <table class="ov">
-      <thead><tr><th style="width:auto;">매장</th><th style="width:auto;">뭘 사나 · 특이사항</th></tr></thead>
-      <tbody data-map="1" data-cl="shop">
-        <tr><td><b>로프트 (LOFT)</b> <span class="bdg sb">시부야</span><br><span class="muted">渋谷ロフト</span></td><td>문구·팬시·잡화·기념품 성지. 시부야 로프트가 대형.</td></tr>
-        <tr><td><b>맵카메라 (Map Camera)</b> <span class="bdg sj">신주쿠</span><br><span class="muted">マップカメラ 新宿</span></td><td>신품·중고 카메라 성지. <b style="color:var(--accent);">⚠️ 여권 면세</b>. 숙소 니시신주쿠에서 가까움.</td></tr>
-        <tr><td><b>빅카메라 (BIC CAMERA)</b> <span class="bdg sj">신주쿠·이케부쿠로</span><br><span class="muted">ビックカメラ</span></td><td>가전·잡화 종합. <b style="color:var(--accent);">⚠️ 여권 면세 + 할인쿠폰</b>.</td></tr>
-        <tr><td><b>유니클로 (UNIQLO)</b> <span class="bdg gz">긴자</span><br><span class="muted">ユニクロ 銀座</span></td><td>긴자 글로벌 플래그십. <b style="color:var(--accent);">⚠️ 여권 면세</b>.</td></tr>
-        <tr><td><b>GU</b> <span class="bdg gz">긴자·신주쿠</span><br><span class="muted">ジーユー</span></td><td>유니클로 자매 저가 브랜드. 여권 지참 면세 가능.</td></tr>
-      </tbody>
-    </table>
+    <div class="lcard" data-cl="shop" data-map="1">
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">로프트 (LOFT)</span> <span class="bdg sb">시부야</span></div><span class="ljp">渋谷ロフト</span><div class="ld">문구·팬시·잡화·기념품 성지. 시부야 로프트가 대형.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">맵카메라 (Map Camera)</span> <span class="bdg sj">신주쿠</span></div><span class="ljp">マップカメラ 新宿</span><div class="ld">신품·중고 카메라 성지. <b style="color:var(--accent);">⚠️ 여권 면세</b>. 숙소 니시신주쿠에서 가까움.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">빅카메라 (BIC CAMERA)</span> <span class="bdg sj">신주쿠·이케부쿠로</span></div><span class="ljp">ビックカメラ</span><div class="ld">가전·잡화 종합. <b style="color:var(--accent);">⚠️ 여권 면세 + 할인쿠폰</b>.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">유니클로 (UNIQLO)</span> <span class="bdg gz">긴자</span></div><span class="ljp">ユニクロ 銀座</span><div class="ld">긴자 글로벌 플래그십. <b style="color:var(--accent);">⚠️ 여권 면세</b>.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">GU</span> <span class="bdg gz">긴자·신주쿠</span></div><span class="ljp">ジーユー</span><div class="ld">유니클로 자매 저가 브랜드. 여권 지참 면세 가능.</div></div></div>
+    </div>
   </section>
 
   <!-- ======================= 🍜 먹고 싶은 것 ======================= -->
@@ -287,7 +248,6 @@
   <section>
     <h2><span class="no">🏪</span> 편의점 먹거리 <span class="bdg nt">전국 공통</span></h2>
     <p class="muted" style="margin-top:-4px;"><b>오니기리 24종 + 컵라면 24종</b>. 오니기리는 편의점별, 컵라면·신상은 3사 공통. (음식이라 면세 대상 아님)</p>
-
     <div class="cvs-head cvs-7" style="border-radius:10px 10px 0 0;">🟢 세븐일레븐 · 7-ELEVEN <span style="font-weight:400;font-size:12px;">(오니기리 8종)</span></div>
     <div class="noodlegrid" data-cl="seven" style="margin-top:0; border:1px solid var(--line); border-top:none; border-radius:0 0 10px 10px; padding:10px 12px;">
       <div class="n"><img src="https://s.mognavi.jp/image/food/02/39/01/2997174_original.jpg" alt="연어"><span>연어 오니기리 <span class="jp">サーモンの寿司 · ¥275</span></span></div>
@@ -299,7 +259,6 @@
       <div class="n"><img src="https://img-afd.7api-01.dp1.sej.co.jp/item-image/041842/3EA1A0407018E2936E14B111DF7AE5A3.jpg" alt="새우마요"><span>새우 마요네즈 오니기리 <span class="jp">海老マヨネーズ · ¥218</span></span></div>
       <div class="n"><img src="https://img-afd.7api-01.dp1.sej.co.jp/item-image/041909/5A8170082B23485EEA569269894651FF.jpg" alt="참치마요"><span>참치 마요네즈 오니기리 <span class="jp">ツナマヨネーズ · ¥182</span></span></div>
     </div>
-
     <div class="cvs-head cvs-l" style="border-radius:10px 10px 0 0; margin-top:14px;">🔵 로손 · LAWSON <span style="font-weight:400;font-size:12px;">(오니기리 8종 + 수박스틱)</span></div>
     <div class="noodlegrid" data-cl="lawson" style="margin-top:0; border:1px solid var(--line); border-top:none; border-radius:0 0 10px 10px; padding:10px 12px;">
       <div class="n"><img src="https://www.lawson.co.jp/recommend/original/detail/img/l810846.png" alt="연어알 간장"><span>연어알 간장 오니기리 <span class="jp">いくら醤油漬</span></span></div>
@@ -312,7 +271,6 @@
       <div class="n"><img src="https://www.lawson.co.jp/recommend/original/detail/img/l810854.png" alt="미역"><span>미역 오니기리 <span class="jp">三陸産わかめごはん · ¥158</span></span></div>
       <div class="n"><img src="https://www.lawson.co.jp/recommend/original/detail/img/l806171.png" alt="수박 스틱"><span>🍉 생 수박 스틱 <span class="jp">すいか · 여름 한정(냉장코너)</span></span></div>
     </div>
-
     <div class="cvs-head cvs-f" style="border-radius:10px 10px 0 0; margin-top:14px;">🟢 패밀리마트 · FamilyMart <span style="font-weight:400;font-size:12px;">(오니기리 8종)</span></div>
     <div class="noodlegrid" data-cl="famima" style="margin-top:0; border:1px solid var(--line); border-top:none; border-radius:0 0 10px 10px; padding:10px 12px;">
       <div class="n"><img src="https://s.mognavi.jp/image/food/00/01/01/3503308_original.jpg" alt="반숙계란차슈"><span>반숙 계란 차슈 오니기리 <span class="jp">マヨたまチャーシュー</span></span></div>
@@ -324,10 +282,9 @@
       <div class="n"><img src="https://mognavi.jp/image/food/00/01/01/3354998_original.jpg" alt="치킨마요"><span>치킨 마요네즈 오니기리 <span class="jp">チキンマヨネーズ</span></span></div>
       <div class="n"><img src="https://mognavi.jp/image/food/00/01/01/3509902_original.jpg" alt="치킨커틀릿"><span>치킨 커틀릿 오니기리 <span class="jp">チキンカツ サンドおむすび</span></span></div>
     </div>
-
     <div class="cvs-head" style="background:#444; border-radius:10px 10px 0 0; margin-top:14px;">🆕 전국 공통 · 신상 &amp; 컵라면 <span style="font-weight:400;font-size:12px;">(냉시 컵누들 + 컵라면 24종)</span></div>
     <div class="noodlegrid" data-cl="common" style="margin-top:0; border:1px solid var(--line); border-top:none; border-radius:0 0 10px 10px; padding:10px 12px;">
-      <div class="n"><img src="https://cdn.nissin.com/gr-documents/attachments/articles/67120/8caf6e6aa7c04df8/limited/20260713-1_2.png" alt="냉시 컵누들"><span>냉시 컵누들 (냉수 전용) <span class="jp">冷しカップヌードル · 김치/레몬 2종 · 여름한정</span></span></div>
+      <div class="n"><img src="https://cdn.nissin.com/gr-documents/attachments/articles/67120/8caf6e6aa7c04df8/limited/20260713-1_2.png" alt="냉시 컵누들"><span>냉시 컵누들 (냉수 전용) <span class="jp">冷しカップヌードル · 김치/레몬 2종</span></span></div>
       <div class="n"><img src="https://m.media-amazon.com/images/I/719FldKgMrL.jpg" alt=""><span>닛신 UFO 명란 야끼소바 <span class="jp">U.F.O 濃い濃いたらこ</span></span></div>
       <div class="n"><img src="https://m.media-amazon.com/images/I/71vRDflB+wL.jpg" alt=""><span>닛신 UFO 멕시칸 타코 야끼소바 <span class="jp">U.F.O メキシカンタコス</span></span></div>
       <div class="n"><img src="https://m.media-amazon.com/images/I/91K3kPXKNoL._AC_UF1000,1000_QL80_.jpg" alt=""><span>산포 쪽파 하카타 돈코츠 라멘 <span class="jp">祭盛 ねぎ博多豚骨</span></span></div>
@@ -358,20 +315,17 @@
 
   <section>
     <h2><span class="no">🍧</span> 도쿄 빙수(카키고리) 맛집</h2>
-    <p class="muted" style="margin-top:-4px;">대부분 <b>1인 1메뉴</b> 주문제, 여름 성수기라 대기가 깁니다.</p>
-    <table class="ov">
-      <thead><tr><th style="width:auto;">가게</th><th style="width:auto;">영업 · 특이사항</th></tr></thead>
-      <tbody data-cl="bingsu" data-map="1">
-        <tr><td><b>히미츠도</b> <span class="bdg">야나카/닛포리</span><br><span class="muted">秘密堂</span></td><td>손빙수·<b>132종 계절 토핑</b>, 시그니처 딸기. ¥1,200~1,900. <b style="color:var(--accent);">⚠️ 대기 최장(성수기 1~3시간)</b> — 이름 접수 후 재방문. 오픈런 권장.</td></tr>
-        <tr><td><b>와키친 칸나</b> <span class="bdg">세타가야</span><br><span class="muted">和kitchen かんな</span></td><td>일본+서양 퓨전 빙수. 11:00~19:00(LO 18:30). <b style="color:var(--accent);">⚠️ 수요일 휴무</b>(→ 9/9 불가).</td></tr>
-        <tr><td><b>쿠로기</b> <span class="bdg">우에노</span><br><span class="muted">くろぎ</span></td><td>카이세키 명가 디저트점. 10:00~20:00. 시그니처 <b>흑당 콩가루 빙수</b>.</td></tr>
-        <tr><td><b>시무라</b> <span class="bdg">메지로</span><br><span class="muted">志むら</span></td><td>노포 와가시점 찻집 빙수. 폭신 얼음·딸기·계절 한정. 연중 영업, 대기 있음.</td></tr>
-        <tr><td><b>코오리야 피스</b> <span class="bdg">키치조지</span><br><span class="muted">氷屋ぴぃす</span></td><td>화~토 10:00~20:00 / <b>일·월 10:00~18:00</b>. <b style="color:var(--accent);">⚠️ 현금 결제만!</b></td></tr>
-        <tr><td><b>사카노우에 카페</b> <span class="bdg">도쿄</span><br><span class="muted">坂の上カフェ</span></td><td><b style="color:var(--accent);">⚠️ 정리권제</b> — 선착순 발권(일부 예약), 번호 호출 후 재방문. 캐시리스 전용, 1인 1빙수.</td></tr>
-        <tr><td><b>Yuki Usagi</b> <span class="bdg">코마자와</span><br><span class="muted">雪うさぎ</span></td><td>11:30~20:00(LO 19:30). <b style="color:var(--accent);">⚠️ 월요일 휴무</b>(→ 9/7 불가) +월1회 화·공휴일 다음날 휴무.</td></tr>
-      </tbody>
-    </table>
-    <div class="warn">⚠️ <b>일정 체크(9/5~9/9)</b> — 칸나=수요일(9/9 ✕) · Yuki Usagi=월요일(9/7 ✕) · 코오리야 피스=일·월 18시 마감. 코오리야 피스 현금 전용 / 사카노우에 캐시리스. 지역이 흩어져 있으니 동선 짜서.</div>
+    <p class="muted" style="margin-top:-4px;">대부분 <b>1인 1메뉴</b> 주문제, 여름 성수기라 대기가 깁니다. (뱃지 눌러 지역별로 필터)</p>
+    <div class="lcard" data-cl="bingsu" data-map="1">
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">히미츠도</span> <span class="bdg">야나카/닛포리</span></div><span class="ljp">秘密堂</span><div class="ld">손빙수·<b>132종 계절 토핑</b>, 시그니처 딸기. ¥1,200~1,900. <b style="color:var(--accent);">⚠️ 대기 최장(성수기 1~3시간)</b> — 이름 접수 후 재방문. 오픈런 권장.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">와키친 칸나</span> <span class="bdg">세타가야</span></div><span class="ljp">和kitchen かんな</span><div class="ld">일본+서양 퓨전 빙수. 11:00~19:00(LO 18:30). <b style="color:var(--accent);">⚠️ 수요일 휴무</b>(→ 9/9 불가).</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">쿠로기</span> <span class="bdg">우에노</span></div><span class="ljp">くろぎ</span><div class="ld">카이세키 명가 디저트점. 10:00~20:00. 시그니처 <b>흑당 콩가루 빙수</b>.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">시무라</span> <span class="bdg">메지로</span></div><span class="ljp">志むら</span><div class="ld">노포 와가시점 찻집 빙수. 폭신 얼음·딸기·계절 한정. 연중 영업, 대기 있음.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">코오리야 피스</span> <span class="bdg">키치조지</span></div><span class="ljp">氷屋ぴぃす</span><div class="ld">화~토 10:00~20:00 / <b>일·월 10:00~18:00</b>. <b style="color:var(--accent);">⚠️ 현금 결제만!</b></div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">사카노우에 카페</span> <span class="bdg">도쿄</span></div><span class="ljp">坂の上カフェ</span><div class="ld"><b style="color:var(--accent);">⚠️ 정리권제</b> — 선착순 발권(일부 예약), 번호 호출 후 재방문. 캐시리스 전용, 1인 1빙수.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">Yuki Usagi</span> <span class="bdg">코마자와</span></div><span class="ljp">雪うさぎ</span><div class="ld">11:30~20:00(LO 19:30). <b style="color:var(--accent);">⚠️ 월요일 휴무</b>(→ 9/7 불가) +월1회 화·공휴일 다음날 휴무.</div></div></div>
+    </div>
+    <div class="warn">⚠️ <b>일정 체크(9/5~9/9)</b> — 칸나=수요일(9/9 ✕) · Yuki Usagi=월요일(9/7 ✕) · 코오리야 피스=일·월 18시 마감. 코오리야 피스 현금 전용 / 사카노우에 캐시리스.</div>
   </section>
 
   <section>
@@ -401,13 +355,10 @@
 
   <section>
     <h2><span class="no">☕</span> 그 외 먹거리 (코메다 · 시부야 요코초)</h2>
-    <table class="ov">
-      <thead><tr><th style="width:auto;">가게</th><th style="width:auto;">메뉴 · 특이사항</th></tr></thead>
-      <tbody data-map="1" data-cl="eat-etc">
-        <tr><td><b>코메다커피</b> <span class="bdg nt">전국</span><br><span class="muted">コメダ珈琲店</span></td><td>나고야식 카페. 시그니처 <b>시로노와르</b>·모닝세트. <b style="color:var(--accent2);">🛍️ 커피잔 세트 굿즈</b>(취급 지점 한정).</td></tr>
-        <tr><td><b>시부야 요코초</b> <span class="bdg sb">시부야</span><br><span class="muted">渋谷横丁</span></td><td>미야시타파크 1F. 일본 <b>지방별 향토요리</b> 이자카야 밀집. 왁자한 포장마차 감성, 심야까지.</td></tr>
-      </tbody>
-    </table>
+    <div class="lcard" data-cl="eat-etc" data-map="1">
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">코메다커피</span> <span class="bdg nt">전국</span></div><span class="ljp">コメダ珈琲店</span><div class="ld">나고야식 카페. 시그니처 <b>시로노와르</b>·모닝세트. <b style="color:var(--accent2);">🛍️ 커피잔 세트 굿즈</b>(취급 지점 한정).</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">시부야 요코초</span> <span class="bdg sb">시부야</span></div><span class="ljp">渋谷横丁</span><div class="ld">미야시타파크 1F. 일본 <b>지방별 향토요리</b> 이자카야 밀집. 왁자한 포장마차 감성, 심야까지.</div></div></div>
+    </div>
   </section>
 
   <!-- ======================= 🗺️ 가고 싶은 것 ======================= -->
@@ -443,17 +394,14 @@
   <section>
     <h2><span class="no">🚶</span> 시부야 원데이 코스 <span class="bdg sb">시부야</span></h2>
     <p class="muted" style="margin-top:-4px;">숙소에서 전철 약 10~15분. 아래는 <b>모두 도보권</b>이라 하루에 묶어 돌기 좋아요.</p>
-    <table class="ov">
-      <thead><tr><th style="width:auto;">장소</th><th style="width:150px;">운영시간</th><th style="width:auto;">특이사항</th></tr></thead>
-      <tbody data-map="1" data-cl="go-shibuya">
-        <tr><td><b>시부야 스크램블 교차로</b><br><span class="muted">랜드마크·무료</span></td><td>24시간</td><td>세계 최대 규모 교차로. 스타벅스 츠타야점 2층이 무료 뷰 명당. 야경 예쁨.</td></tr>
-        <tr><td><b>시부야 스카이 (SHIBUYA SKY)</b><br><span class="muted">전망대·유료</span></td><td>10:00~22:30<br><span class="muted">(막입장 21:20)</span></td><td><b style="color:var(--accent);">⚠️ 예약 필수!</b> 시간지정권, 방문 30일 전 오픈·노을/야경 조기매진. 옥상은 날씨 따라 폐쇄.</td></tr>
-        <tr><td><b>미야시타 파크 (MIYASHITA PARK)</b><br><span class="muted">옥상공원+쇼핑</span></td><td>공원 8:00~23:00<br>상점 11:00~23:00</td><td>고가 위 옥상 공원. 스타벅스·스케이트장. 1F에 시부야 요코초(먹거리).</td></tr>
-        <tr><td><b>시부야 파르코 (PARCO)</b><br><span class="muted">쇼핑몰</span></td><td>10:00~21:00</td><td>6F <b>닌텐도 도쿄·포켓몬센터·점프샵</b> 굿즈. ⚠️ 주말 팝업 정리권 → 오픈런.</td></tr>
-        <tr><td><b>메가 돈키호테 시부야</b><br><span class="muted">종합 디스카운트</span></td><td>24시간</td><td>⚠️ 여권 지참 면세. 심야 쇼핑 OK. 기념품·간식·잡화.</td></tr>
-        <tr><td><b>시부야 109 (SHIBUYA109)</b><br><span class="muted">패션빌딩</span></td><td>10:00~21:00</td><td>젊은 여성 패션·화장품. 시부야역 앞 원통형 랜드마크.</td></tr>
-      </tbody>
-    </table>
+    <div class="lcard" data-cl="go-shibuya" data-map="1">
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">시부야 스크램블 교차로</span> <span class="lsub">24시간</span></div><span class="ljp">渋谷スクランブル交差点 · 무료</span><div class="ld">세계 최대 규모 교차로. 스타벅스 츠타야점 2층이 무료 뷰 명당. 야경 예쁨.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">시부야 스카이 (SHIBUYA SKY)</span> <span class="lsub">10:00~22:30</span></div><span class="ljp">SHIBUYA SKY · 전망대(막입장 21:20)</span><div class="ld"><b style="color:var(--accent);">⚠️ 예약 필수!</b> 시간지정권, 방문 30일 전 오픈·노을/야경 조기매진. 옥상은 날씨 따라 폐쇄.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">미야시타 파크 (MIYASHITA PARK)</span> <span class="lsub">8:00~23:00</span></div><span class="ljp">MIYASHITA PARK · 옥상공원+쇼핑</span><div class="ld">고가 위 옥상 공원. 스타벅스·스케이트장. 1F에 시부야 요코초(먹거리).</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">시부야 파르코 (PARCO)</span> <span class="lsub">10:00~21:00</span></div><span class="ljp">渋谷PARCO · 쇼핑몰</span><div class="ld">6F <b>닌텐도 도쿄·포켓몬센터·점프샵</b> 굿즈. ⚠️ 주말 팝업 정리권 → 오픈런.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">메가 돈키호테 시부야</span> <span class="lsub">24시간</span></div><span class="ljp">MEGAドンキホーテ渋谷</span><div class="ld">⚠️ 여권 지참 면세. 심야 쇼핑 OK. 기념품·간식·잡화.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">시부야 109 (SHIBUYA109)</span> <span class="lsub">10:00~21:00</span></div><span class="ljp">SHIBUYA109 · 패션빌딩</span><div class="ld">젊은 여성 패션·화장품. 시부야역 앞 원통형 랜드마크.</div></div></div>
+    </div>
   </section>
 
   <section>
@@ -470,46 +418,80 @@
 
   <section>
     <h2><span class="no">📍</span> 그 외 가고 싶은 곳</h2>
-    <table class="ov">
-      <thead><tr><th style="width:auto;">장소</th><th style="width:auto;">메모 · 특이사항</th></tr></thead>
-      <tbody data-map="1" data-cl="places">
-        <tr><td><b>스타벅스 리저브 로스터리 도쿄</b> <span class="bdg">나카메구로</span></td><td>세계 최대급 스타벅스(4층). <b style="color:var(--accent);">⚠️ 매우 인기 — 주말·피크 대기</b>. 여기 한정 굿즈·원두. 메구로강 산책과 함께.</td></tr>
-        <tr><td><b>이케부쿠로</b> <span class="bdg">이케부쿠로</span><br><span class="muted">선샤인시티 일대</span></td><td>선샤인시티, <b>포켓몬센터 메가도쿄</b>, 애니메이트 본점, 오토메로드 집약. (빅카메라 이케부쿠로도 여기)</td></tr>
-      </tbody>
-    </table>
+    <div class="lcard" data-cl="places" data-map="1">
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">스타벅스 리저브 로스터리 도쿄</span> <span class="bdg">나카메구로</span></div><div class="ld">세계 최대급 스타벅스(4층). <b style="color:var(--accent);">⚠️ 매우 인기 — 주말·피크 대기</b>. 여기 한정 굿즈·원두. 메구로강 산책과 함께.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">이케부쿠로</span> <span class="bdg">이케부쿠로</span></div><span class="ljp">선샤인시티 일대</span><div class="ld">선샤인시티, <b>포켓몬센터 메가도쿄</b>, 애니메이트 본점, 오토메로드 집약. (빅카메라 이케부쿠로도 여기)</div></div></div>
+    </div>
+  </section>
+
+  <!-- ======================= 🚃 근교 당일치기 ======================= -->
+  <div class="bigcat" style="background:linear-gradient(90deg,#2b5a86,#4a86c5);">🚃 근교 당일치기 <span class="sub">반나절·하루 · 아직 미정(후보 수집)</span></div>
+
+  <section>
+    <h2><span class="no">⏱️</span> 반나절 코스</h2>
+    <p class="muted" style="margin-top:-4px;">숙소(신주쿠) 기준 편도 이동시간. 오전 또는 오후 반나절로 다녀오기 좋아요.</p>
+    <div class="lcard" data-cl="hanaltrip" data-map="1">
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">가와고에 (小江戸)</span> <span class="bdg">가와고에</span> <span class="lsub">신주쿠 ~1시간</span></div><span class="ljp">川越</span><div class="ld">에도 정취 <b>창고거리(쿠라즈쿠리)</b>·시간의 종루·과자골목(카시야요코초)·고구마 디저트. 실내외 섞여 <b>날씨 무난</b>.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">요코하마</span> <span class="bdg">요코하마</span> <span class="lsub">신주쿠 ~35분</span></div><span class="ljp">横浜</span><div class="ld">미나토미라이·붉은벽돌창고·<b>차이나타운</b>·<b>컵누들 뮤지엄</b>·야경. <b>비 오면 실내</b>(뮤지엄·몰)로 대응 좋음.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">다카오산</span> <span class="bdg">다카오산</span> <span class="lsub">신주쿠 ~50분</span></div><span class="ljp">高尾山</span><div class="ld">케이블카+가벼운 등산, 자연·텐구. <b>맑은 날</b> 추천. 비·폭염엔 비추.</div></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="no">🌅</span> 하루 코스</h2>
+    <div class="lcard" data-cl="daytrip" data-map="1">
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">가마쿠라 + 에노시마</span> <span class="bdg">가마쿠라</span> <span class="lsub">신주쿠 ~1시간</span></div><span class="ljp">鎌倉 · 江ノ島</span><div class="ld"><b>대불(고토쿠인)</b>·하세데라·츠루가오카하치만구 → 에노덴 타고 <b>에노시마(바다·전망·신사)</b>. 여름 바다 감성. 비 오면 사찰 위주.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">하코네</span> <span class="bdg">하코네</span> <span class="lsub">로망스카 ~1.5시간</span></div><span class="ljp">箱根</span><div class="ld"><b>온천</b>·오와쿠다니(검은달걀)·아시노코 해적선·오픈에어 미술관. 맑으면 <b>후지산</b>. <b style="color:var(--accent);">로망스카 예약 권장</b>. 비 와도 온천·미술관 OK.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">가와구치코 (후지산)</span> <span class="bdg">가와구치코</span> <span class="lsub">특급 ~2시간</span></div><span class="ljp">河口湖 · 富士山</span><div class="ld"><b>후지산 뷰</b>·오이시공원·호수. <b style="color:var(--accent);">맑은 날 필수</b>(흐리면 후지 안 보임). 후지큐하이랜드도 근처.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">닛코</span> <span class="bdg">닛코</span> <span class="lsub">신주쿠 ~2시간</span></div><span class="ljp">日光</span><div class="ld"><b>토쇼구(세계유산)</b>·케곤폭포·주젠지호수. 역사+자연. 이동 길어 <b>빡센 하루</b>.</div></div></div>
+    </div>
+    <div class="warn">🧭 <b>날씨·상황별 추천</b> — ☀️ <b>맑음</b>: 하코네·가와구치코(후지뷰) / 🌧️ <b>비·폭염</b>: 요코하마(실내)·가와고에 / 🌊 <b>바다 감성</b>: 가마쿠라+에노시마 / ⏱️ <b>시간 적을 때</b>: 가와고에·요코하마(반나절). 하코네·후지 특급은 <b>사전 예약</b> 권장.</div>
   </section>
 
   <!-- ======================= 🤖 클로드피셜 ======================= -->
-  <section>
+  <section data-solo="1">
     <h2 style="background:#5b57b3;"><span class="no" style="color:#5b57b3;">🤖</span> 클로드피셜 · 현지인 로컬 맛집 &amp; 명소 🏮</h2>
-    <p class="muted" style="margin-top:-4px;"><b style="color:#5b57b3;">※ 이 섹션은 제가(클로드) 추천드리는 곳</b>이에요 — 위(직접 고르신 항목)와 분리했어요. <b>현지인이 실제로 찾는</b> 동네·먹거리. 1끼 예산 대략 <b>¥1,500~3,000</b>, 로컬 골목은 <b>현금</b> 챙기는 게 안전.</p>
-    <table class="ov">
-      <thead><tr><th style="width:auto;">장소 · 먹거리</th><th style="width:auto;">왜 로컬 · 특이사항</th></tr></thead>
-      <tbody data-map="1" data-cl="local">
-        <tr><td><b>오모이데 요코초 &amp; 골든가이</b> <span class="bdg sj">신주쿠</span><br><span class="muted">思い出横丁 / ゴールデン街</span></td><td>퇴근길 <b>야키토리 골목</b> + 미니 바 <b>골든가이</b>. 저녁~심야, 현금 위주. 로컬 감성 진함.</td></tr>
-        <tr><td><b>츠키시마 몬자 스트리트</b> <span class="bdg">츠키시마</span><br><span class="muted">月島もんじゃ</span></td><td>몬자야키 전문 골목. 철판에 직접 구워 먹는 <b>도쿄 소울푸드</b>.</td></tr>
-        <tr><td><b>야나카 긴자</b> <span class="bdg">야나카</span><br><span class="muted">谷中銀座</span></td><td>옛 상점가·<b>노을 계단</b>, 길거리 간식. 빙수 히미츠도와 같은 동네.</td></tr>
-        <tr><td><b>시모키타자와</b> <span class="bdg">세타가야</span><br><span class="muted">下北沢</span></td><td>빈티지·인디음악·<b>카레</b>·이자카야. 젊은 로컬 감성 1번지.</td></tr>
-        <tr><td><b>가구라자카</b> <span class="bdg">신주쿠구</span><br><span class="muted">神楽坂</span></td><td>옛 게이샤 거리, 돌골목 <b>프렌치·와쇼쿠·찻집</b>. 어른 미식 동네.</td></tr>
-        <tr><td><b>키요스미시라카와</b> <span class="bdg">코토구</span><br><span class="muted">清澄白河</span></td><td><b>커피 성지</b>(블루보틀 1호점) + 현대미술관(MOT). 조용한 로컬.</td></tr>
-        <tr><td><b>나카메구로</b> <span class="bdg">나카메구로</span><br><span class="muted">中目黒</span></td><td>운하변 <b>카페·이자카야 산책</b>, 로컬 데이트. 스벅 로스터리와 함께.</td></tr>
-        <tr><td><b>츠키지 장외시장</b> <span class="bdg">츠키지</span><br><span class="muted">築地場外市場</span></td><td>현지 <b>해산물 아침</b>. 오전~이른 오후가 활기. 현금 유리.</td></tr>
-        <tr><td><b>후운지 츠케멘</b> <span class="bdg sj">신주쿠</span><br><span class="muted">風雲児</span></td><td>닭·생선 육수 <b>츠케멘</b> 명가. <b style="color:var(--accent);">⚠️ 오픈런/대기</b>.</td></tr>
-      </tbody>
-    </table>
+    <p class="muted" style="margin-top:-4px;"><b style="color:#5b57b3;">※ 제가(클로드) 추천드리는 곳</b> — 위(직접 고르신 항목)와 분리. <b>현지인이 실제로 찾는</b> 동네. 1끼 예산 대략 <b>¥1,500~3,000</b>, 로컬 골목은 <b>현금</b> 준비.</p>
+    <div class="lcard" data-cl="local" data-map="1">
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">오모이데 요코초 &amp; 골든가이</span> <span class="bdg sj">신주쿠</span></div><span class="ljp">思い出横丁 / ゴールデン街</span><div class="ld">퇴근길 <b>야키토리 골목</b> + 미니 바 <b>골든가이</b>. 저녁~심야, 현금 위주. 로컬 감성 진함.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">츠키시마 몬자 스트리트</span> <span class="bdg">츠키시마</span></div><span class="ljp">月島もんじゃ</span><div class="ld">몬자야키 전문 골목. 철판에 직접 구워 먹는 <b>도쿄 소울푸드</b>.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">야나카 긴자</span> <span class="bdg">야나카</span></div><span class="ljp">谷中銀座</span><div class="ld">옛 상점가·<b>노을 계단</b>, 길거리 간식. 빙수 히미츠도와 같은 동네.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">시모키타자와</span> <span class="bdg">세타가야</span></div><span class="ljp">下北沢</span><div class="ld">빈티지·인디음악·<b>카레</b>·이자카야. 젊은 로컬 감성 1번지.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">가구라자카</span> <span class="bdg">신주쿠구</span></div><span class="ljp">神楽坂</span><div class="ld">옛 게이샤 거리, 돌골목 <b>프렌치·와쇼쿠·찻집</b>. 어른 미식 동네.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">키요스미시라카와</span> <span class="bdg">코토구</span></div><span class="ljp">清澄白河</span><div class="ld"><b>커피 성지</b>(블루보틀 1호점) + 현대미술관(MOT). 조용한 로컬.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">나카메구로</span> <span class="bdg">나카메구로</span></div><span class="ljp">中目黒</span><div class="ld">운하변 <b>카페·이자카야 산책</b>, 로컬 데이트. 스벅 로스터리와 함께.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">츠키지 장외시장</span> <span class="bdg">츠키지</span></div><span class="ljp">築地場外市場</span><div class="ld">현지 <b>해산물 아침</b>. 오전~이른 오후가 활기. 현금 유리.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">후운지 츠케멘</span> <span class="bdg sj">신주쿠</span></div><span class="ljp">風雲児</span><div class="ld">닭·생선 육수 <b>츠케멘</b> 명가. <b style="color:var(--accent);">⚠️ 오픈런/대기</b>.</div></div></div>
+    </div>
     <div class="warn">💡 <b>로컬 팁</b> — 백화점 지하 <b>데파치카</b>는 저녁에 반찬·도시락 할인. "센베로(¥1,000 취함)" 이자카야는 가성비. 인기 노포는 현금·소액권 준비.</div>
-    <div class="warn" style="border-left-color:#5b57b3;">🔒 <b style="color:#5b57b3;">치안 메모</b> — 추천지는 밤에도 안전한 지역 위주. <b style="color:var(--accent);">단 오모이데요코초·골든가이는 환락가 가부키초에 인접</b> → 호객꾼 따라가지 않기·요금 미리 확인·바가지 바 주의. 밤엔 밝은 큰길 위주.</div>
+    <div class="warn" style="border-left-color:#5b57b3;">🔒 <b style="color:#5b57b3;">치안 메모</b> — 추천지는 밤에도 안전한 지역 위주. <b style="color:var(--accent);">단 오모이데요코초·골든가이는 환락가 가부키초에 인접</b> → 호객꾼 따라가지 않기·요금 미리 확인·바가지 바 주의.</div>
   </section>
 
-  <section>
+  <section data-solo="1">
+    <h2><span class="no">🆘</span> 긴급 연락처 (일본)</h2>
+    <table class="ov">
+      <tr><th>경찰 · 사건/사고</th><td><b>110</b> <span class="muted">(일본 어디서나, 무료)</span></td></tr>
+      <tr><th>화재 · 구급차</th><td><b>119</b> <span class="muted">(응급환자·화재)</span></td></tr>
+      <tr><th>해상 사고</th><td><b>118</b></td></tr>
+      <tr><th>주일본 대사관<br>(도쿄)</th><td><b style="color:var(--accent);">사건·사고 24시간: +81-70-2153-5454</b><br>영사(근무시간): +81-3-3455-2601</td></tr>
+      <tr><th>외교부 영사콜센터</th><td><b>24시간 +82-2-3210-0404</b> (로밍폰) · <span class="muted">'영사콜센터 무료전화' 앱 / 카톡·라인 채널로 무료 가능</span></td></tr>
+      <tr><th>여행자 헬프라인</th><td>Japan Visitor Hotline <b>050-3816-2787</b> <span class="muted">(24시간·다국어, 한국어 지원)</span></td></tr>
+      <tr><th>의료 상담</th><td>구급 상담센터 <b>#7119</b> <span class="muted">(도쿄 등. 응급이면 119)</span></td></tr>
+      <tr><th>여행자보험 사고</th><td>한화 24시간 <b>+82-2-360-2541</b> <span class="muted">(도난 시 폴리스리포트, 영수증 보관)</span></td></tr>
+    </table>
+    <div class="warn">💡 <b>여권 분실 시</b> → 가까운 <b>경찰서에서 분실·도난 신고</b> 후 <b>대사관</b>에서 긴급여권 발급. 이 번호들은 <b>스크린샷 저장</b> 추천(로밍/데이터 안 될 때 대비).</div>
+  </section>
+
+  <section data-solo="1">
     <h2><span class="no">!</span> 준비물 및 유의사항</h2>
     <ol class="notes">
       <li><b>여권 지참</b> — 면세(Tax-Free)엔 여권 필수. 한 매장 세금포함 5,500엔 이상이면 면세 대상.</li>
-      <li><b>품번 스크린샷</b> — 이 안내문을 매장에서 보여주면 재고를 바로 찾아줘요. (품번 = 만능 열쇠 🔑)</li>
+      <li><b>품번 스크린샷</b> — 이 안내문을 매장에서 보여주면 재고를 바로 찾아줘요.</li>
       <li><b>온라인 품절 ≠ 매장 품절</b> — 몽벨 품절 3종도 오프라인엔 있을 수 있어요.</li>
       <li><b>현금 챙기기</b> — 로컬 노포·빙수 일부(코오리야 피스 등)는 현금 전용.</li>
-      <li><b>예약 필수</b> — 디즈니랜드(사전구매)·시부야 스카이(시간지정)는 미리. 쿠라스시는 앱/EPARK 발권.</li>
-      <li>사고·먹고·간 곳은 <b>체크박스로 흔적</b>, <b>📍</b>로 구글맵 연결, <b>지역 뱃지</b>로 위치 스캔.</li>
+      <li><b>예약 필수</b> — 디즈니랜드·시부야 스카이는 미리. 쿠라스시는 앱/EPARK 발권.</li>
+      <li>사고·먹고·간 곳은 <b>체크박스로 흔적</b>, <b>📍</b>로 구글맵, <b>지역 뱃지</b>로 필터.</li>
+      <li><b>근교(외곽) 반나절~하루</b> — 아직 미정. 후보: 가와고에·요코하마(반나절), 가마쿠라+에노시마·하코네·가와구치코(하루). 정하면 섹션 추가 예정.</li>
     </ol>
   </section>
 
@@ -544,12 +526,11 @@
     if(saved[k]){ cb.checked=true; item.classList.add('ckd'); }
     cb.addEventListener('click', function(e){ e.stopPropagation(); });
     cb.addEventListener('change', function(){ if(cb.checked){saved[k]=1;} else {delete saved[k];} save(); item.classList.toggle('ckd', cb.checked); });
-    if(item.tagName==='TR'){ var td=item.querySelector('td'); if(td){ td.insertBefore(cb, td.firstChild); } }
-    else { item.insertBefore(cb, item.firstChild); }
+    item.insertBefore(cb, item.firstChild);
   }
   document.querySelectorAll('[data-cl]').forEach(function(c){
     var cl=c.getAttribute('data-cl');
-    var kids=c.querySelectorAll(':scope > .n, :scope > .prow, :scope > .item, :scope > tr');
+    var kids=c.querySelectorAll(':scope > .n, :scope > .prow, :scope > .item, :scope > .litem');
     if(kids.length){ Array.prototype.forEach.call(kids, function(k){ attach(k, cl); }); }
     else { attach(c, cl); }
   });
@@ -559,13 +540,11 @@
 (function(){
   function mapUrl(q){ return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q); }
   function pin(q){ var a=document.createElement('a'); a.className='mappin'; a.href=mapUrl(q); a.target='_blank'; a.rel='noopener'; a.title='구글맵에서 보기'; a.textContent='📍'; a.addEventListener('click',function(e){e.stopPropagation();}); return a; }
-  document.querySelectorAll('[data-map] tr').forEach(function(tr){
-    var td=tr.querySelector('td'); if(!td || td.querySelector('a.mappin')) return;
-    var b=td.querySelector('b'); var name=(b?b.textContent:td.textContent).trim();
-    var m=td.querySelector('.muted'); var extra='';
-    if(m && /[぀-ヿ㐀-鿿]/.test(m.textContent)) extra=' '+m.textContent.trim();
-    if(!name) return;
-    (b||td).insertAdjacentElement('afterend', pin(name+extra+' 東京'));
+  document.querySelectorAll('[data-map] .litem').forEach(function(it){
+    if(it.querySelector('a.mappin')) return;
+    var nm=it.querySelector('.lnm'); if(!nm) return;
+    var jp=it.querySelector('.ljp'); var extra=(jp && /[぀-ヿ㐀-鿿]/.test(jp.textContent)) ? ' '+jp.textContent.trim().split(/[·\/]/)[0] : '';
+    nm.insertAdjacentElement('afterend', pin(nm.textContent.trim()+extra+' 東京'));
   });
   document.querySelectorAll('[data-mapq]').forEach(function(el){
     if(el.querySelector('a.mappin')) return;
@@ -579,7 +558,7 @@
   function apply(primary){
     document.querySelectorAll('.sheet > section').forEach(function(sec){
       var h2=sec.querySelector('h2'); var hb=h2?h2.querySelector('.bdg'):null;
-      var rows=sec.querySelectorAll('tbody tr');
+      var rows=sec.querySelectorAll('.litem');
       if(primary===null){ sec.style.display=''; Array.prototype.forEach.call(rows,function(r){r.style.display='';}); return; }
       if(hb){ sec.style.display = hb.textContent.indexOf(primary)>=0 ? '' : 'none'; return; }
       var hasBdgRow=false, anyVis=false;
@@ -591,7 +570,7 @@
     });
     document.querySelectorAll('.bigcat').forEach(function(band){
       var el=band.nextElementSibling, any=false;
-      while(el && !(el.classList && el.classList.contains('bigcat'))){ if(el.tagName==='SECTION' && el.style.display!=='none') any=true; el=el.nextElementSibling; }
+      while(el && !(el.classList && el.classList.contains('bigcat')) && !(el.getAttribute && el.getAttribute('data-solo'))){ if(el.tagName==='SECTION' && el.style.display!=='none') any=true; el=el.nextElementSibling; }
       band.style.display = (primary===null || any) ? '' : 'none';
     });
     if(primary===null){ fbar.style.display='none'; }
