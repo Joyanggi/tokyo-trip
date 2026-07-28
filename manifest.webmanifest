@@ -1,0 +1,12 @@
+{
+  "name": "2026 도쿄 여행 안내문",
+  "short_name": "도쿄여행",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#e7e0cf",
+  "theme_color": "#e7e0cf",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
