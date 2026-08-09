@@ -384,44 +384,61 @@ function regionColor(name){
 
   var EK='tokyoTripExpenses';
   var PEOPLE={ b:'보람', y:'양기' };
-  var DAYS={ '09-05':'9/5', '09-06':'9/6', '09-07':'9/7', '09-08':'9/8', '09-09':'9/9', 'etc':'기타' };
+  var DAYS={ '09-05':'9/5 (토)', '09-06':'9/6 (일)', '09-07':'9/7 (월)', '09-08':'9/8 (화)', '09-09':'9/9 (수)', 'etc':'기타' };
+  var DAY_ORDER=['09-05','09-06','09-07','09-08','09-09','etc']; /* 입력 순서와 무관하게 날짜순으로 묶는다 */
 
   var elD=document.getElementById('exp-d'), elT=document.getElementById('exp-t'), elA=document.getElementById('exp-a'),
-      elP=document.getElementById('exp-p'), elK=document.getElementById('exp-k'), elRate=document.getElementById('exp-rate'),
+      elP=document.getElementById('exp-p'), elK=document.getElementById('exp-k'),
       elList=document.getElementById('exp-list'), elEmpty=document.getElementById('exp-empty'),
       elTotal=document.getElementById('exp-sum-total'), elBy=document.getElementById('exp-sum-by'), elSettle=document.getElementById('exp-sum-settle');
 
-  var data={ rate:null, items:[] };
+  var data={ items:[] };
   try{
     var raw=JSON.parse(localStorage.getItem(EK)||'null');
-    if(raw && raw.items instanceof Array){ data.items=raw.items; data.rate=(typeof raw.rate==='number')?raw.rate:null; }
+    if(raw && raw.items instanceof Array) data.items=raw.items;
   }catch(e){}
   function save(){ try{ localStorage.setItem(EK, JSON.stringify(data)); }catch(e){} }
 
   function num(v){ var n=parseInt(String(v).replace(/[^\d]/g,''),10); return isFinite(n)?n:0; }
   function yen(n){ return '¥'+n.toLocaleString('ko-KR'); }
-  /* 환율이 없으면 원화 표기를 아예 만들지 않는다 */
-  function won(n){ return data.rate ? ' <span class="muted">(약 '+Math.round(n*data.rate/100).toLocaleString('ko-KR')+'원)</span>' : ''; }
   function esc(s){ return String(s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
 
   /* 정산 계산 — 각 항목이 만드는 채권은 (금액 − 결제자가 부담해야 할 몫).
      부담이 공동이면 절반, 결제자 본인이면 전액이라 0, 상대방이면 전액이 채권이 된다. */
   function calc(){
-    var total=0, paid={b:0,y:0}, net=0; /* net > 0 이면 보람이 받을 돈 */
+    var total=0,
+        paid={b:0,y:0},  /* 카드에서 실제로 나간 돈 */
+        own={b:0,y:0},   /* 정산까지 끝났을 때 각자 실제로 쓴 돈 */
+        net=0;           /* net > 0 이면 보람이 받을 돈 */
     data.items.forEach(function(it){
-      total+=it.a; paid[it.p]=(paid[it.p]||0)+it.a;
-      if(it.s) return; /* 정산 완료 항목은 잔액에서 제외 (총 지출에는 남는다) */
-      var own = (it.k==='g') ? it.a/2 : (it.k===it.p ? it.a : 0);
-      var credit = it.a - own;
+      total+=it.a;
+      paid[it.p]+=it.a;
+      if(it.k==='g'){ own.b+=it.a/2; own.y+=it.a/2; } else { own[it.k]+=it.a; }
+      if(it.s) return; /* 정산 완료 항목은 잔액에서 제외 (총 지출·실부담엔 남는다) */
+      var mine = (it.k==='g') ? it.a/2 : (it.k===it.p ? it.a : 0);
+      var credit = it.a - mine;
       net += (it.p==='b') ? credit : -credit;
     });
-    return { total:total, paid:paid, net:Math.round(net) };
+    own.b=Math.round(own.b); own.y=Math.round(own.y);
+    return { total:total, paid:paid, own:own, net:Math.round(net) };
   }
 
   function render(){
     var c=calc();
-    elTotal.innerHTML='<span>총 지출 <span class="muted">'+data.items.length+'건</span></span><span><b>'+yen(c.total)+'</b>'+won(c.total)+'</span>';
-    elBy.innerHTML='<span>보람 결제 <b>'+yen(c.paid.b)+'</b></span><span>양기 결제 <b>'+yen(c.paid.y)+'</b></span>';
+    elTotal.innerHTML='<span>총 지출 <span class="muted">'+data.items.length+'건</span></span><span><b>'+yen(c.total)+'</b></span>';
+    /* 「결제」는 카드에서 나간 돈, 「실부담」은 정산까지 끝났을 때 실제로 쓴 돈.
+       양기가 반반짜리를 결제하면 결제엔 전액이 잡히지만 실부담은 절반만 잡힌다. */
+    elBy.innerHTML=['b','y'].map(function(k){
+      var diff=c.paid[k]-c.own[k];
+      var note = diff>0 ? '<span class="df plus">+'+yen(diff)+' 받을 것</span>'
+               : diff<0 ? '<span class="df minus">'+yen(-diff)+' 줄 것</span>' : '';
+      return '<div class="expperson">' +
+        '<div class="who">'+PEOPLE[k]+'</div>' +
+        '<div class="ln"><span>결제</span><b>'+yen(c.paid[k])+'</b></div>' +
+        '<div class="ln"><span>실부담</span><b class="hi">'+yen(c.own[k])+'</b></div>' +
+        note +
+      '</div>';
+    }).join('');
 
     if(!data.items.length){
       elSettle.style.display='none';
@@ -433,22 +450,32 @@ function regionColor(name){
       elSettle.style.display='';
       var from=(c.net>0)?'양기':'보람', to=(c.net>0)?'보람':'양기', amt=Math.abs(c.net);
       elSettle.className='expsettle';
-      elSettle.innerHTML='💸 <b>'+from+' → '+to+'</b> <b class="amt">'+yen(amt)+'</b>'+won(amt)+' <span class="muted">미정산</span>';
+      elSettle.innerHTML='💸 <b>'+from+' → '+to+'</b> <b class="amt">'+yen(amt)+'</b> <span class="muted">미정산</span>';
     }
 
     elEmpty.style.display=data.items.length?'none':'block';
     elList.style.display=data.items.length?'':'none';
-    elList.innerHTML=data.items.map(function(it){
-      var burden=(it.k==='g')?'공동':(PEOPLE[it.k]+' 부담');
+
+    /* 날짜별로 묶어서 그린다. 날짜 머리글이 날짜를 보여주므로 각 행의 메타에선 뺀다. */
+    function rowHtml(it){
+      var burden=(it.k==='g')?'공동 부담':(PEOPLE[it.k]+' 부담');
       return '<div class="prow exprow'+(it.s?' expdone':'')+'" data-id="'+it.id+'">' +
         '<input type="checkbox" class="expck"'+(it.s?' checked':'')+' title="정산 완료">' +
         '<div class="pb">' +
           '<div class="prtop"><span class="pnm">'+esc(it.t)+'</span><span class="ppr">'+yen(it.a)+'</span></div>' +
-          '<div class="pmeta">'+DAYS[it.d]+' · '+PEOPLE[it.p]+' 결제 · '+burden+
+          '<div class="pmeta">'+PEOPLE[it.p]+' 결제 · '+burden+
             (it.s?' · <b style="color:var(--accent2);">정산완료</b>':'')+'</div>' +
         '</div>' +
         '<button type="button" class="expdel" title="삭제">🗑</button>' +
       '</div>';
+    }
+    var groups={};
+    data.items.forEach(function(it){ (groups[it.d]=groups[it.d]||[]).push(it); });
+    elList.innerHTML=DAY_ORDER.map(function(d){
+      var g=groups[d]; if(!g || !g.length) return '';
+      var sum=0; g.forEach(function(x){ sum+=x.a; });
+      return '<div class="expday"><span>'+DAYS[d]+'</span><span>'+g.length+'건 · '+yen(sum)+'</span></div>' +
+             g.map(rowHtml).join('');
     }).join('');
   }
 
@@ -483,25 +510,20 @@ function regionColor(name){
     }
   });
 
-  /* 환율 */
-  if(data.rate) elRate.value=data.rate;
-  elRate.addEventListener('input', function(){
-    var v=num(elRate.value);
-    data.rate = v>0 ? v : null;
-    save(); render();
-  });
-
   /* 내보내기 / 가져오기 — 사람이 읽고 손으로 고칠 수 있는 줄 단위 텍스트 */
+  /* 내보내기 날짜는 요일 없이 짧게 — 가져오기는 요일이 붙은 옛 형식도 받아들인다 */
+  function dayShort(s){ return String(s).split('(')[0].trim(); }
   function serialize(){
     return data.items.map(function(it){
-      return [DAYS[it.d], it.t, it.a, PEOPLE[it.p], (it.k==='g'?'공동':PEOPLE[it.k]), (it.s?'정산완료':'')].join('|');
+      return [dayShort(DAYS[it.d]), it.t, it.a, PEOPLE[it.p], (it.k==='g'?'공동':PEOPLE[it.k]), (it.s?'정산완료':'')].join('|');
     }).join('\n');
   }
   function parseLine(line){
     var f=line.split('|'); if(f.length<5) return null;
-    var d='etc'; for(var k in DAYS){ if(DAYS[k]===f[0].trim()) d=k; }
+    var d='etc', f0=dayShort(f[0]); for(var k in DAYS){ if(dayShort(DAYS[k])===f0) d=k; }
     var p=null; for(var pk in PEOPLE){ if(PEOPLE[pk]===f[3].trim()) p=pk; }
-    var kk=f[4].trim(); var k2=(kk==='공동')?'g':null;
+    var kk=f[4].trim();
+    var k2=(kk==='공동')?'g':null;
     if(!k2){ for(var bk in PEOPLE){ if(PEOPLE[bk]===kk) k2=bk; } }
     var a=num(f[2]);
     if(!p || !k2 || a<=0 || !f[1].trim()) return null;
