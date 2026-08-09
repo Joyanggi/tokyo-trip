@@ -1,8 +1,15 @@
 /* 도쿄 여행 안내문 — 오프라인 캐시 (네트워크 우선, 실패 시 캐시) */
-var CACHE = 'tokyo-trip-v1';
+var CACHE = 'tokyo-trip-v4';
 
 self.addEventListener('install', function (e) {
-  e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(['./', './index.html']); }));
+  e.waitUntil(caches.open(CACHE).then(function (c) {
+    return c.addAll([
+      './', './index.html',
+      './assets/style.css', './assets/app.js',
+      './pages/plan.html', './pages/buy.html', './pages/eat.html',
+      './pages/go.html', './pages/trip.html', './pages/local.html'
+    ]);
+  }));
   self.skipWaiting();
 });
 
