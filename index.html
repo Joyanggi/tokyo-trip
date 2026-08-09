@@ -146,6 +146,16 @@
   .tl .d{ flex:1; min-width:0; font-size:13px; line-height:1.55;}
   .tl .ev.move .t{ color:#8a8272;} .tl .ev.move .d{ color:#6f685a; font-size:12.5px;}
   .dcard .tip, .dcard .warn{ margin:2px 13px 12px;}
+  /* 일정 카드 접기/펼치기 */
+  .dcard summary.dhead{ cursor:pointer; list-style:none; -webkit-tap-highlight-color:transparent;}
+  .dcard summary.dhead::-webkit-details-marker{ display:none;}
+  .dcard summary.dhead::after{ content:'⌄'; font-size:16px; line-height:1; margin-left:9px; opacity:.85; flex:0 0 auto;}
+  .dcard[open] summary.dhead::after{ content:'⌃';}
+  .dcard:not([open]) summary.dhead{ opacity:.94;}
+  .plbar{ display:flex; gap:7px; margin:12px 0 2px; flex-wrap:wrap;}
+  .plbar button{ font-family:inherit; font-size:12px; font-weight:700; color:var(--accent2); background:var(--soft); border:1px solid var(--line); border-radius:16px; padding:6px 13px; cursor:pointer;}
+  .plbar button:hover{ background:var(--tag);}
+  .plbar button.on{ background:var(--accent2); color:#fff; border-color:var(--accent2);}
 
   /* ================= 모바일 최적화 ================= */
   @media(max-width:640px){
@@ -222,16 +232,21 @@
   <section data-solo="1" id="sec-plan">
     <h2 style="background:#4a6fa5;"><span class="no" style="color:#4a6fa5;">🗓️</span> 일자별 상세 일정 v5 (시간대별)</h2>
     <p class="muted" style="margin-top:-4px;">뼈대는 <b>🛍️ 쇼핑 1일(9/6) · 🚃 근교 1일(9/7) · 🎢 디즈니 1일(9/8)</b>. 시각은 <b>기준선</b>이지 규칙이 아니에요 — 밀리면 뒤를 잘라내면 됩니다. <span class="muted">(식사·카페는 아직 미정 — 나중에 채울 예정)</span></p>
+    <div class="plbar">
+      <button type="button" id="pl-open">＋ 전체 펼치기</button>
+      <button type="button" id="pl-close">－ 전체 접기</button>
+      <button type="button" id="pl-today">📍 오늘만 보기</button>
+    </div>
 
     <!-- 9/5 -->
-    <div class="dcard">
-      <div class="dhead" style="background:#6b7f99;">9/5 (토) · 도착 + 신주쿠 반나절 <span class="meta">면세 워밍업 · 여권 지참</span></div>
+    <details class="dcard" data-d="09-05" open>
+      <summary class="dhead" style="background:#6b7f99;">9/5 (토) · 도착 + 신주쿠 반나절 <span class="meta">면세 워밍업 · 여권 지참</span></summary>
       <div class="tl">
         <div class="ev"><span class="t">12:15</span><span class="d"><b>나리타 T3 도착</b> — 입국심사·수하물 <span class="muted">(Visit Japan Web 사전등록 시 크게 단축)</span></span></div>
         <div class="ev move"><span class="t">13:30</span><span class="d">T3→T2 이동 후 <b>N'EX 또는 스카이라이너</b> 탑승 (신주쿠까지 약 80~90분)</span></div>
         <div class="ev"><span class="t">15:00</span><span class="d">신주쿠 도착 → 오에도선 <b>니시신주쿠고초메역</b> → <b>APA 호텔 체크인</b>·짐 풀기</span></div>
         <div class="ev"><span class="t">16:00</span><span class="d"><b>키노쿠니야 신주쿠본점</b> — smart 8·9월호(베이프 토트백 부록) 확보</span></div>
-        <div class="ev"><span class="t">16:45</span><span class="d"><b>포터 스탠드 신주쿠</b>(루미네에스트 B1) — 카드케이스 2종</span></div>
+        <div class="ev"><span class="t">16:45</span><span class="d"><b>2nd STREET 신주쿠점</b>(신주쿠산초메역 도보 1분) — <b>포터 중고</b> 첫 탐색 <span class="muted">/ 시세 감 잡을 겸 포터 스탠드(루미네에스트 B1)에서 신품 실물도 한 번</span></span></div>
         <div class="ev"><span class="t">17:15</span><span class="d"><b>ABC마트 그랜드 스테이지 신주쿠</b> — 반스 V5131 타타미 재고 문의</span></div>
         <div class="ev"><span class="t">17:50</span><span class="d"><b>몽벨 신주쿠 남구점</b>(220평) — 9종 품번 리스트 정주행</span></div>
         <div class="ev"><span class="t">19:00</span><span class="d"><b>빅카메라 신주쿠</b> — 면세+할인쿠폰</span></div>
@@ -240,11 +255,11 @@
         <div class="ev move"><span class="t">21:45</span><span class="d">숙소 복귀</span></div>
       </div>
       <div class="tip">💡 <b>회수 플랜</b> — 몽벨 품절이면 <b>9/9 오카치마치점</b>(우에노 옆·도내 최대급 4층)에서 재도전. 포터는 <b>9/6 오모테산도점</b>이 남아 있고, smart 잡지가 없으면 다른 대형서점·세븐일레븐·아마존재팬 순으로. 도청은 무료·상시라 <b>비 오면 미련 없이 스킵</b>(9/7 저녁에 재시도).</div>
-    </div>
+    </details>
 
     <!-- 9/6 -->
-    <div class="dcard">
-      <div class="dhead" style="background:linear-gradient(90deg,#c0392b,#e0503d);">9/6 (일) · 🛍️ 쇼핑 DAY <span class="meta">시부야 → 하라주쿠 · 관광 없이 쇼핑만</span></div>
+    <details class="dcard" data-d="09-06" open>
+      <summary class="dhead" style="background:linear-gradient(90deg,#c0392b,#e0503d);">9/6 (일) · 🛍️ 쇼핑 DAY <span class="meta">시부야 → 하라주쿠 · 관광 없이 쇼핑만</span></summary>
       <div class="tl">
         <div class="ev move"><span class="t">09:30</span><span class="d">숙소 출발 (오에도선 → 신주쿠 → JR 시부야, 약 25분)</span></div>
         <div class="ev"><span class="t">10:00</span><span class="d"><b>스탠다드 프로덕츠</b> 시부야 마크시티 — 10시 오픈·역 직결이라 첫 타자</span></div>
@@ -252,26 +267,27 @@
         <div class="ev"><span class="t">11:00</span><span class="d"><b>아트모스 시부야</b> — <b>젤카야노 14</b> 실물·사이즈 재고 확인</span></div>
         <div class="ev"><span class="t">11:40</span><span class="d"><b>베이프 스토어 시부야</b> <span class="muted">(19시 마감이라 오전에 배치)</span></span></div>
         <div class="ev"><span class="t">12:10</span><span class="d"><b>AAPE 스토어 시부야</b> (진난 1-16-3, 베이프에서 도보권)</span></div>
-        <div class="ev"><span class="t">12:50</span><span class="d"><b>래그태그 시부야</b> — 중고 디자이너 위탁, 보물찾기</span></div>
+        <div class="ev"><span class="t">12:50</span><span class="d"><b>래그태그 시부야</b> — 중고 디자이너 위탁 · <b>포터 중고 1순위</b>(상태 등급 표기 깐깐)</span></div>
         <div class="ev"><span class="t">13:30</span><span class="d"><b>시부야 로프트</b> — 문구·팬시·기념품</span></div>
         <div class="ev"><span class="t">14:15</span><span class="d"><b>시부야 파르코 6F</b> — 닌텐도 도쿄·포켓몬센터·점프샵</span></div>
         <div class="ev"><span class="t">15:15</span><span class="d"><b>메가 돈키호테 시부야</b> — 24시간이라 시간 밀리면 맨 뒤로 미뤄도 OK</span></div>
         <div class="ev move"><span class="t">15:50</span><span class="d">짐 정리 — <b>시부야역 코인락커</b>에 맡기고 북상 (또는 호텔 경유)</span></div>
         <div class="ev move"><span class="t">16:10</span><span class="d"><b>캣스트리트</b> 도보 북상 (15분)</span></div>
-        <div class="ev"><span class="t">16:30</span><span class="d"><b>포터 오모테산도</b> — 신주쿠에서 못 샀으면 여기서 회수</span></div>
-        <div class="ev"><span class="t">17:00</span><span class="d"><b>스투시 하라주쿠</b> — 스탁 도쿄 티 <span class="muted">(19시 마감)</span></span></div>
-        <div class="ev"><span class="t">17:40</span><span class="d"><b>아식스 하라주쿠 플래그십</b> — 젤카야노 14 최종 회수처 <span class="muted">(주말 20시 마감)</span></span></div>
+        <div class="ev"><span class="t">16:30</span><span class="d"><b>2nd STREET 하라주쿠점</b>(진구마에 4-26-4) — <b>포터 중고</b> 본진, 스투시와 도보 1분</span></div>
+        <div class="ev"><span class="t">17:00</span><span class="d"><b style="color:var(--accent);">⭐ 스투시 하라주쿠</b> — 스탁 도쿄 티 <b>(필수)</b> <span class="muted">· 19시 마감이라 이 시간 사수</span></span></div>
+        <div class="ev"><span class="t">17:40</span><span class="d"><b style="color:var(--accent);">⭐ 아식스 하라주쿠 플래그십</b> — 젤카야노 14 <b>(필수·최종 구매처)</b> <span class="muted">· 주말 20시 마감</span></span></div>
         <div class="ev"><span class="t">18:30</span><span class="d"><b>유니클로 하라주쿠</b> — UT 그래픽 티</span></div>
-        <div class="ev move"><span class="t">19:30</span><span class="d">상점 마감 · 시부야 코인락커 회수</span></div>
-        <div class="ev"><span class="t">20:00</span><span class="d"><span class="muted">(선택)</span> <b>롯폰기 모리타워 전망대</b> — 시부야서 전철 10분·막입장 21:00</span></div>
+        <div class="ev"><span class="t">19:15</span><span class="d"><b style="color:var(--accent);">🍣 쿠라스시 글로벌 기함점 하라주쿠</b>(진구마에 4-31-10, <b>도보 2분</b>) — 빗쿠라퐁 5접시 뽑기 <span class="muted">· 23시까지라 시간 압박 없음</span></span></div>
+        <div class="ev move"><span class="t">20:20</span><span class="d">시부야 코인락커 회수 <span class="muted">(하라주쿠→시부야 1정거장)</span></span></div>
+        <div class="ev"><span class="t">20:45</span><span class="d"><span class="muted">(선택)</span> <b>롯폰기 모리타워 전망대</b> — <b style="color:var(--accent);">⚠️ 막입장 21:00이라 빠듯</b>. 무리면 9/7 저녁으로 미루기</span></div>
       </div>
-      <div class="tip">💡 <b>순서를 이렇게 짠 이유</b> — ① <b>마감이 빠른 곳부터</b>: 베이프·스투시 19시 &lt; 아식스 20시 &lt; 파르코·로프트 21시 &lt; 돈키 24시간. ② <b>젤카야노는 아트모스(오전) → 아식스 플래그십(오후)</b> 2단 회수 구조라 한 곳에서 품절이어도 같은 날 만회돼요. ③ 스탠다드 프로덕츠를 놓치면 <b>신주쿠점(9/7 저녁)</b>이 남아 있어요.</div>
+      <div class="tip">💡 <b>순서를 이렇게 짠 이유</b> — ① <b style="color:var(--accent);">⭐필수(스투시·아식스)를 마감 직전에 몰지 않기</b>: 스투시 19시·아식스 20시 마감이라 17:00/17:40에 도착하면 여유 1~2시간 확보. 앞이 밀리면 <b>로프트·돈키를 버리고</b> 이 둘을 지키세요. ② <b>젤카야노는 아트모스(오전) → 아식스(오후)</b> 2단 구조라 오전 품절도 같은 날 만회돼요. ③ <b>포터 중고는 3곳 순회</b> — 래그태그(12:50) → 2nd STREET 하라주쿠(16:30), 전날 신주쿠점까지 합쳐 총 3번의 기회. ④ 스탠다드 프로덕츠를 놓치면 <b>신주쿠점(9/7 저녁)</b>이 남아요.</div>
       <div class="warn">⚠️ <b>쇼핑 DAY 실전</b> — 여권 원본 필수(면세 한 매장 ¥5,500↑·사본 불가) · 면세품은 <b>봉인 개봉 금지</b> · 인기 사이즈는 오전에 소진 · 일요일 파르코 팝업은 정리권제라 오픈런 · 짐 무거워지면 코인락커나 호텔 경유.</div>
-    </div>
+    </details>
 
     <!-- 9/7 -->
-    <div class="dcard">
-      <div class="dhead" style="background:linear-gradient(90deg,#2b5a86,#4a86c5);">9/7 (월) · 🚃 근교 DAY <span class="meta">가마쿠라 + 에노시마</span></div>
+    <details class="dcard" data-d="09-07" open>
+      <summary class="dhead" style="background:linear-gradient(90deg,#2b5a86,#4a86c5);">9/7 (월) · 🚃 근교 DAY <span class="meta">가마쿠라 + 에노시마</span></summary>
       <div class="tl">
         <div class="ev move"><span class="t">07:30</span><span class="d">숙소 출발 → 신주쿠역</span></div>
         <div class="ev move"><span class="t">08:00</span><span class="d"><b>JR 쇼난신주쿠라인</b> 직통 가마쿠라행(약 55분) <span class="muted">또는 오다큐 '에노시마·가마쿠라 프리패스'(왕복+에노덴 무제한)</span></span></div>
@@ -285,15 +301,15 @@
         <div class="ev"><span class="t">15:20</span><span class="d"><b>이와야 동굴</b> — <b style="color:var(--accent);">⚠️ 16시 마감이라 씨캔들보다 먼저</b></span></div>
         <div class="ev"><span class="t">16:20</span><span class="d"><b>씨캔들 전망등대</b> — 일몰 약 18:00, 해질녘이 하이라이트</span></div>
         <div class="ev move"><span class="t">17:40</span><span class="d">가타세에노시마역 → 신주쿠 (약 70분)</span></div>
-        <div class="ev"><span class="t">19:00</span><span class="d"><b>신주쿠 보충 쇼핑</b> — 못 산 것 회수(빅카메라 ~22시·GU ~21시·스탠다드 프로덕츠)</span></div>
+        <div class="ev"><span class="t">19:00</span><span class="d"><b>신주쿠 보충 쇼핑</b> — 못 산 것 회수(빅카메라 ~22시·GU ~21시·스탠다드 프로덕츠) <span class="muted">/ 전날 롯폰기를 못 갔으면 여기서 대체(막입장 21:00)</span></span></div>
         <div class="ev move"><span class="t">21:00</span><span class="d">숙소 복귀</span></div>
       </div>
       <div class="tip">💡 <b>대안 루트</b> — 흐리거나 비면 씨캔들 전망 가치가 떨어지니 <b>일찍 복귀해 신주쿠 쇼핑에 시간 몰아주기</b>. 반대로 여유가 남으면 귀갓길에 <b>JR 후지사와 → 가와사키(도카이도선 30분) → 북오프 슈퍼바자르</b>(22시까지, 역 도보 3분) 경유가 가능해요 — 근교와 중고 쇼핑을 하루에 묶는 방법.</div>
-    </div>
+    </details>
 
     <!-- 9/8 -->
-    <div class="dcard">
-      <div class="dhead" style="background:linear-gradient(90deg,#7a5cc0,#9b7fd4);">9/8 (화) · 🎢 디즈니 DAY <span class="meta">✅ 티켓 예약 완료</span></div>
+    <details class="dcard" data-d="09-08" open>
+      <summary class="dhead" style="background:linear-gradient(90deg,#7a5cc0,#9b7fd4);">9/8 (화) · 🎢 디즈니 DAY <span class="meta">✅ 예약 ***REMOVED*** · ¥18,800</span></summary>
       <div class="tl">
         <div class="ev move"><span class="t">07:30</span><span class="d">숙소 출발</span></div>
         <div class="ev move"><span class="t">07:45</span><span class="d">신주쿠 → 도쿄역(주오선 15분) → <b style="color:var(--accent);">⚠️ 게이요선 홈까지 도보 15분</b> → 마이하마</span></div>
@@ -309,11 +325,11 @@
         <div class="ev move"><span class="t">22:30</span><span class="d">숙소 복귀 · 짐 정리(다음 날 체크아웃)</span></div>
       </div>
       <div class="tip">💡 <b>사전 준비</b> — 티켓 QR은 <b>미리 캡처 저장</b>(현지 데이터 불안정 대비)하고 두 사람 각자 폰의 MyDisney 계정에 연동해두면 입장이 빨라요. 짐은 파크 내 코인락커. 비 예보면 우산보다 <b>우비</b>(파크에서 판매). 태풍이면 <b>전날까지 날짜 변경 무료</b>.</div>
-    </div>
+    </details>
 
     <!-- 9/9 -->
-    <div class="dcard">
-      <div class="dhead" style="background:linear-gradient(90deg,#256b56,#3f9179);">9/9 (수) · 아사쿠사·갓파바시 반나절 → 출국 <span class="meta">NRT 18:30 출발</span></div>
+    <details class="dcard" data-d="09-09" open>
+      <summary class="dhead" style="background:linear-gradient(90deg,#256b56,#3f9179);">9/9 (수) · 아사쿠사·갓파바시 반나절 → 출국 <span class="meta">NRT 18:30 출발</span></summary>
       <div class="tl">
         <div class="ev"><span class="t">08:00</span><span class="d">짐 정리 · 면세품 봉인 상태 확인</span></div>
         <div class="ev move"><span class="t">09:00</span><span class="d"><b>체크아웃</b> — 짐 들고 이동 <span class="muted">(신주쿠로 되돌아오지 않는 게 핵심)</span></span></div>
@@ -331,7 +347,7 @@
         <div class="ev"><span class="t">18:30</span><span class="d"><b>나리타 T3 출발</b> → 21:20 인천 도착</span></div>
       </div>
       <div class="tip">💡 <b>이 날의 설계</b> — 우에노가 <b>나리타 접근성 최고</b>(스카이라이너 41분, 신주쿠 N'EX보다 빠름)라서 마지막 날에 관광을 넣고도 시간이 남아요. 갓파바시·아사쿠사·몽벨 오카치마치가 전부 도보~2정거장권이라 <b>짐만 우에노에 묶어두면</b> 동선이 깔끔합니다. 갓파바시가 기대 이하면 바로 아사쿠사·아메요코에 시간을 몰아주세요.</div>
-    </div>
+    </details>
 
     <div class="warn">🌀 <b>플랜 B (태풍·비)</b> — 9/7 가마쿠라를 <b>요코하마 실내 코스</b>로 교체하거나 9/6 쇼핑 DAY와 통째로 스왑. 디즈니 티켓은 <b>유효기간 내 날짜 변경 무료</b>라 예보가 뜨면 미리 옮기세요. 모리타워 <b>스카이덱(옥상)은 우천 시 폐쇄</b>되지만 실내 전망대는 정상 운영, 도청 전망대도 무료라 부담 없어요.</div>
     <p class="muted" style="font-size:12px;">📌 <b>미배정(옵션)</b> — 가조엔 백단계단·나카메구로(쇼핑 DAY와 겹쳐 이번엔 어려움) · 이케부쿠로 포켓몬센터(→파르코 6F로 대체) · 시부야 스카이(→모리타워로 대체) · 가와사키 북오프(9/7 귀갓길 경유 가능) · 중고 아이폰(신주쿠 잔파라·소프맵, 9/5 또는 9/7 저녁) · 요요기 공원 · 시모키타자와·가구라자카·키요스미(다음 기회).<br>🍽️ <b>식사·카페는 아직 미배정</b> — 나중에 요청 주시면 시간대에 맞춰 끼워 넣을게요.</p>
@@ -361,18 +377,20 @@
 
   <section>
     <h2><span class="no">👛</span> 포터 (PORTER) 카드케이스 <span class="bdg nt">전국·Sac's Bar</span></h2>
-    <p class="muted" style="margin-top:-4px;">일본 브랜드(요시다 카반). 현지 정가가 Kream 리셀보다 훨씬 저렴.</p>
-    <div class="tip">📍 <b>도쿄 직영·취급점</b> — <b data-mapq="PORTER STAND 新宿 ルミネエスト">포터 스탠드 신주쿠</b>(루미네에스트 B1, <b>숙소 근처·가장 편함</b>) · <b data-mapq="ポーター 表参道">포터 오모테산도</b>(오모테산도역 A1 도보 2분, <b>하라주쿠 쇼핑 동선에 포함</b>) · 이세탄 신주쿠 본관 2F · Sac's Bar 등 취급점.</div>
+    <p class="muted" style="margin-top:-4px;">일본 브랜드(요시다 카반). <b style="color:var(--accent2);">🎯 새제품보다 중고 위주로 탐색</b> — 아래 가격은 신품 정가(기준선)예요.</p>
+    <div class="tip">♻️ <b>중고 사냥터 (우선순위)</b> — <b data-mapq="RAGTAG 渋谷店">래그태그 시부야</b>(디자이너 위탁·상태 등급 표기 깐깐) · <b data-mapq="セカンドストリート 原宿店">2nd STREET 하라주쿠점</b>(진구마에 4-26-4, <b>스투시 바로 옆</b>) · <b data-mapq="セカンドストリート 新宿店">2nd STREET 신주쿠점</b>(신주쿠산초메역 도보 1분, <b>키노쿠니야 근처</b>). 포터는 캔버스라 <b>모서리 마모·지퍼 상태</b>만 보면 실패 확률 낮아요.</div>
+    <div class="tip">📍 <b>신품 정가 확인용</b>(선택) — <b data-mapq="PORTER STAND 新宿 ルミネエスト">포터 스탠드 신주쿠</b>(루미네에스트 B1) · <b data-mapq="ポーター 表参道">포터 오모테산도</b>. 중고 시세가 합리적인지 판단하려면 <b>신품 실물을 먼저 한 번</b> 보는 게 좋아요.</div>
     <div class="plist" data-cl="porter">
       <div class="prow"><img loading="lazy" decoding="async" src="https://m.media-amazon.com/images/I/61GMVfrM79L._AC_UY900_.jpg" alt="Porter CALM Card Case"><div class="pb"><div class="prtop"><span class="pnm">Porter CALM Card Case</span><span class="ppr">¥15,400</span></div><div class="pmeta">카드케이스/명함지갑·프리미엄 레더 · <span class="pcode">041-03127</span> · 블랙</div><div class="pdesc">천연 슈링크 레더. Kream 리셀 245,000원(발매가 188,000원).</div></div></div>
       <div class="prow"><img loading="lazy" decoding="async" src="https://shopping.c.yimg.jp/lib/selection/707-08227-70.jpg" alt="Porter FREE STYLE Card Case"><div class="pb"><div class="prtop"><span class="pnm">Porter FREE STYLE Card Case</span><span class="ppr">¥9,900</span></div><div class="pmeta">카드케이스/명함지갑·캔버스 · <span class="pcode">707-08227</span> · 블랙</div><div class="pdesc">포터 스테디셀러. 스냅 개폐, 카드 다수 수납. W115×H75×D20mm.</div></div></div>
     </div>
     <div class="totbar"><span>포터 2종 합계 (일본 정가 기준)</span><span><b>¥25,300</b> <span class="muted">(면세 적용 시 더 저렴)</span></span></div>
-    <div class="warn">⚠️ <b>포터</b> — 현지 정가가 압도적 저렴(Free Style 일본 ¥9,900 vs Kream 약 544,000원). 매장에서 <b>품번·색상(블랙) 확인</b>. Sac's Bar 등 대형 매장 여권 지참 면세.</div>
+    <div class="warn">⚠️ <b>포터 중고 팁</b> — 신품 정가도 이미 한국 리셀보다 압도적으로 싸니(Free Style ¥9,900 vs Kream 약 544,000원), <b>중고가 신품의 60% 이상이면 신품이 낫습니다</b>. 중고 매장에선 품번(<span class="pcode">707-08227</span>/<span class="pcode">041-03127</span>)보다 <b>실물 상태</b>가 기준 — 캔버스 모서리·지퍼·내부 오염 확인. 중고는 면세 대상이지만 매장별로 다르니 확인.</div>
   </section>
 
   <section>
     <h2><span class="no">👕</span> 스투시 스탁 도쿄 티셔츠 <span class="bdg sb">하라주쿠·시부야</span></h2>
+    <p class="muted" style="margin-top:-4px;"><b style="color:var(--accent);">⭐ 필수 방문</b> — 9/6(일) 17:00 하라주쿠 챕터점 확정.</p>
     <div class="special" data-cl="stussy">
       <img loading="lazy" decoding="async" src="https://images.stockx.com/images/stussy-stock-tokyo-tee-black-3.jpg" alt="Stussy Stock Tokyo Tee Black">
       <div class="info">
@@ -395,6 +413,7 @@
 
   <section>
     <h2><span class="no">👟</span> 아식스 젤카야노 14 <span class="bdg sb">하라주쿠·시부야</span></h2>
+    <p class="muted" style="margin-top:-4px;"><b style="color:var(--accent);">⭐ 필수 방문</b> — 9/6(일) 11:00 아트모스(재고 확인) → 17:40 아식스 하라주쿠 플래그십(최종 구매) 2단 구성.</p>
     <div class="special" data-cl="kayano">
       <img loading="lazy" decoding="async" src="https://images.asics.com/is/image/asics/1201A019_101_SR_RT_GLB" alt="ASICS GEL-KAYANO 14">
       <div class="info">
@@ -434,6 +453,7 @@
       <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">아식스 스토어 도쿄</span> <span class="bdg gz">긴자·신바시</span></div><span class="ljp">アシックスストア東京</span><div class="ld">도쿄권 대형점. <b>ASICS RUNNING LAB</b> — 발 계측·주법 분석 후 러닝화 추천(러닝화 살 거면 여기). 신바시역 도보 3분·긴자역 도보 5분, 유니클로 긴자와 묶기 좋음. 평일 11~21시·주말 9~19시. <b style="color:var(--accent);">⚠️ 여권 면세</b>.</div></div></div>
       <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">요도바시 멀티미디어 이케부쿠로</span> <span class="bdg">이케부쿠로</span></div><span class="ljp">ヨドバシカメラ マルチメディア池袋</span><div class="ld">2026.6 개점 초대형 가전+잡화(구 세이부 자리). 여권 면세. <b style="color:var(--accent);">⚠️ 최근 오물 사건 주의</b>(아래 참고).</div></div></div>
       <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">키노쿠니야 서점 신주쿠본점</span> <span class="bdg sj">신주쿠</span></div><span class="ljp">紀伊國屋書店 新宿本店</span><div class="ld">일본 대표 대형서점. <b>🎯 목표: smart 8·9월 합병호(¥1,890)</b> — <b>베이프(A BATHING APE) HYBRID CAMO 대용량 토트백 부록</b>(37×45×14cm). <b style="color:var(--accent);">⚠️ 6/25 발매라 9월엔 품절·차기호 교체 가능성</b> — 없으면 다른 대형서점·세븐일레븐·아마존재팬 재고 확인.</div></div></div>
+      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">2nd STREET (세컨드 스트리트)</span> <span class="bdg sb">하라주쿠·신주쿠</span></div><span class="ljp">セカンドストリート</span><div class="ld">전국 900점 규모 <b>중고 리유스샵</b> — 의류·가방·잡화. <b style="color:var(--accent2);">🎯 포터 중고 탐색용</b>. <b>하라주쿠점</b>(진구마에 4-26-4·스투시 옆) · <b>신주쿠점</b>(신주쿠산초메역 도보 1분·키노쿠니야 근처).</div></div></div>
       <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">북오프 슈퍼바자르 가와사키</span> <span class="bdg">가와사키</span></div><span class="ljp">ブックオフスーパーバザー 川崎</span><div class="ld">초대형 <b>중고 매장</b> — 책·게임·피규어·의류·시계·명품까지. 보물찾기 재미. 신주쿠서 ~30~40분.</div></div></div>
     </div>
     <div class="warn">
@@ -533,10 +553,12 @@
       <img loading="lazy" decoding="async" src="https://www.kurasushi.co.jp/upload/topic/2006_bikkurapon_lp.jpg" alt="쿠라스시 빗쿠라퐁">
       <div class="info">
         <div class="cat muted">회전초밥 체인 · 도쿄 다수 지점(시부야·이케부쿠로·아사쿠사 등)</div>
-        <h3 data-mapq="くら寿司 渋谷">쿠라스시 <span class="jp" style="color:#8a8272;font-size:14px;">くら寿司 / Kura Sushi</span></h3>
+        <h3 data-mapq="くら寿司 グローバル旗艦店 原宿">쿠라스시 <span class="jp" style="color:#8a8272;font-size:14px;">くら寿司 / Kura Sushi</span></h3>
+        <p class="kv"><b style="color:var(--accent);">⭐ 9/6(일) 19:15 · 글로벌 기함점 하라주쿠 확정</b> — 진구마에 4-31-10 YM스퀘어 4F</p>
         <p class="kv"><b>빈 접시 5장</b>을 반납구에 넣으면 <b>'빗쿠라퐁'(ビッくらポン)</b> 게임! 당첨되면 캡슐 굿즈 🎁</p>
         <div class="tip">💡 접시당 약 ¥115~. 항균 캡슐 레인, 터치패널 다국어 주문. 저렴+뽑기 재미.</div>
-        <div class="warn">⚠️ 인기 지점은 대기 김 → <b>앱/EPARK 사전 발권</b> 추천. 빗쿠라퐁은 당첨식(5접시마다 1회 추첨).</div>
+        <div class="tip">📍 <b>지점 선택</b> — ① <b>글로벌 기함점 하라주쿠</b>(추천·9/6 확정): 외국인 응대 특화 다국어 매장, 스투시·아식스·2nd STREET과 <b>같은 진구마에 4초메</b>라 쇼핑 종착지에서 도보 2분, 23시까지. ② <b>니시신주쿠점</b>(니시신주쿠 7-1-7): <b>숙소 도보권</b>, 주말 10:20~24:00 — 9/5·9/7 저녁 대안. ③ <b>아사쿠사점</b>(ROX 4F): 9/9 점심 대안.</div>
+        <div class="warn">⚠️ 인기 지점은 대기 김 → <b>앱/EPARK 사전 발권</b> 추천(도착 30분 전 원격 발권 가능). 빗쿠라퐁은 5접시마다 1회 추첨식이라 꽝도 있어요. 입장 마감은 <b>폐점 30분 전</b>.</div>
       </div>
     </div>
   </section>
@@ -571,7 +593,7 @@
       <div class="info">
         <div class="cat muted">테마파크 · 지바현 우라야스 (숙소에서 전철 약 1시간)</div>
         <h3 style="margin:2px 0 6px; font-size:18px;" data-mapq="東京ディズニーランド" data-cl="disney">도쿄 디즈니랜드 (Tokyo Disneyland)</h3>
-        <div class="tip">🎟️ <b>예약 완료 (9/8 화)</b> — 입장권은 <b>MyDisney 계정·공식 앱에 QR</b>로 있어요. <b>미리 캡처 저장</b>(현지 데이터 불안정 대비)하고, 동행자 티켓도 각자 폰에 연동해두면 입장이 빨라요.</div>
+        <div class="tip">🎟️ <b>예약 완료</b> — 예약번호 <b class="pcode">***REMOVED***</b> · 1-Day Passport 어른 2매 <b>¥18,800</b> · <b>9/8(화)</b> 날짜지정. 상세는 아래 표 참고.</div>
         <div class="warn">
           ⚠️ <b>당일 체크리스트</b>
           <ul style="margin:6px 0 0; padding-left:18px;">
@@ -583,7 +605,10 @@
         </div>
         <div class="resbox">
           <table>
-            <tr><td>날짜</td><td><b>9/8(화)</b> · 티켓 <b style="color:var(--accent2);">예약 완료</b> (MyDisney 계정·공식 앱에 QR 보관)</td></tr>
+            <tr><td>예약번호</td><td><b class="pcode" style="font-size:14px;">***REMOVED***</b> <span class="muted">(2026.8.9 16:25 접수)</span></td></tr>
+            <tr><td>티켓</td><td><b>1-Day Passport</b> · 도쿄 디즈니랜드 · <b>2026년 9월 8일(화)</b> 날짜지정</td></tr>
+            <tr><td>인원·금액</td><td>어른 <b>¥9,400 × 2</b> = <b style="color:var(--accent2);">¥18,800</b> <span class="muted">(세금포함)</span></td></tr>
+            <tr><td>입장</td><td>MyDisney 계정·공식 앱의 <b>QR 코드</b>로 입장 — <b style="color:var(--accent);">미리 캡처 저장</b>, 2인 각자 폰에 연동</td></tr>
             <tr><td>가는 길</td><td>니시신주쿠 → JR 신주쿠 → 도쿄역 → 게이요선 <b>마이하마역</b> (약 1시간). 개장 30분 전 도착 권장.</td></tr>
             <tr><td>운영시간</td><td>방문 전 <a href="https://www.tokyodisneyresort.jp/kr/tdl/calendar.html" target="_blank" rel="noopener">공식 운영 캘린더</a>에서 개장·폐장·휴장 어트랙션 확인</td></tr>
           </table>
@@ -896,6 +921,35 @@
       el.scrollIntoView({behavior:'smooth'});
     });
   });
+  /* 일정 카드 접기/펼치기 */
+  var cards=[].slice.call(document.querySelectorAll('.dcard[data-d]'));
+  var PK='tokyoTripPlanOpen';
+  function setAll(open){ cards.forEach(function(c){ c.open=open; }); }
+  function todayKey(){ var n=new Date(); return ('0'+(n.getMonth()+1)).slice(-2)+'-'+('0'+n.getDate()).slice(-2); }
+  function showToday(){
+    var k=todayKey(), hit=false;
+    cards.forEach(function(c){ var m=c.getAttribute('data-d')===k; c.open=m; if(m)hit=true; });
+    if(!hit){ setAll(true); return false; }
+    var el=document.querySelector('.dcard[data-d="'+k+'"]');
+    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    return true;
+  }
+  var bOpen=document.getElementById('pl-open'), bClose=document.getElementById('pl-close'), bToday=document.getElementById('pl-today');
+  if(bOpen){
+    bOpen.addEventListener('click', function(){ setAll(true); save(); });
+    bClose.addEventListener('click', function(){ setAll(false); save(); });
+    bToday.addEventListener('click', function(){ if(!showToday()) alert('여행 기간(9/5~9/9)이 아니라 전체를 펼쳤어요.'); save(); });
+  }
+  function save(){ try{ localStorage.setItem(PK, JSON.stringify(cards.map(function(c){return c.open?1:0;}))); }catch(e){} }
+  cards.forEach(function(c){ c.addEventListener('toggle', save); });
+  /* 첫 방문: 여행 기간이면 오늘만, 아니면 저장된 상태 복원 */
+  (function(){
+    var saved=null;
+    try{ saved=JSON.parse(localStorage.getItem(PK)||'null'); }catch(e){}
+    if(saved && saved.length===cards.length){ cards.forEach(function(c,i){ c.open=!!saved[i]; }); }
+    else if(cards.some(function(c){ return c.getAttribute('data-d')===todayKey(); })){ showToday(); }
+  })();
+
   /* 오프라인 캐시 — GitHub Pages(https)에서만 동작 */
   if('serviceWorker' in navigator && location.protocol==='https:'){ try{ navigator.serviceWorker.register('sw.js'); }catch(e){} }
 })();
