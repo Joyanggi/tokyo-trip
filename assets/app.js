@@ -508,7 +508,12 @@ SB.init();
   function render(){
     var c=calc();
     var L=live();
-    elTotal.innerHTML='<span>총 지출 <span class="muted">'+L.length+'건</span></span><span><b>'+yen(c.total)+'</b></span>';
+    /* 새로고침 버튼은 로그인했을 때만 — 안 했으면 받아올 곳이 없다 */
+    elTotal.innerHTML='<span>총 지출 <span class="muted">'+L.length+'건</span></span>' +
+      '<span class="tr"><b>'+yen(c.total)+'</b>' +
+      (SB.loggedIn() ? '<button type="button" id="exp-refresh" title="새로고침">⟳</button>' : '') +
+      '</span>';
+    paintRefresh();
     /* 「결제」는 카드에서 나간 돈, 「실부담」은 정산까지 끝났을 때 실제로 쓴 돈.
        양기가 반반짜리를 결제하면 결제엔 전액이 잡히지만 실부담은 절반만 잡힌다. */
     elBy.innerHTML=['b','y'].map(function(k){
@@ -666,7 +671,15 @@ SB.init();
     if(s<86400) return Math.floor(s/3600)+'시간 전';
     return Math.floor(s/86400)+'일 전';
   }
+  /* 총 지출 바의 ⟳ 버튼 — 동기화 중엔 돌아가는 표시로 바꾸고 눌리지 않게 */
+  function paintRefresh(){
+    var b=document.getElementById('exp-refresh');
+    if(!b) return;
+    b.disabled=syncing;
+    b.textContent=syncing?'⏳':'⟳';
+  }
   function paintSync(){
+    paintRefresh();
     if(!elSync) return;
     if(!SB.loggedIn()){ elSync.style.display='none'; return; }
     elSync.style.display='';
@@ -716,6 +729,10 @@ SB.init();
   }
 
   if(elSync) elSync.addEventListener('click', function(){ if(!syncing) sync(); });
+  /* 버튼이 render()마다 새로 그려지므로 위임으로 받는다 */
+  elTotal.addEventListener('click', function(e){
+    if(e.target.id==='exp-refresh' && !syncing) sync();
+  });
   window.addEventListener('online', function(){ lastErr=null; queueSync(); });
   window.addEventListener('offline', function(){ lastErr='오프라인'; paintSync(); });
   /* 탭을 다시 보면 상대가 올린 내용을 받아온다 — Realtime 없이도 충분하다 */
