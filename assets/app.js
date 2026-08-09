@@ -229,12 +229,6 @@ function regionColor(name){
       if(anyVis) hasVisibleMatch=true;
     });
 
-    document.querySelectorAll('.bigcat').forEach(function(band){
-      var el=band.nextElementSibling, any=false;
-      while(el && !(el.classList && el.classList.contains('bigcat')) && !(el.getAttribute && el.getAttribute('data-solo'))){ if(el.tagName==='SECTION' && el.style.display!=='none') any=true; el=el.nextElementSibling; }
-      band.style.display = (cur===null || any) ? '' : 'none';
-    });
-
     /* 일정 타임라인 — 지역 존 단위로 필터, 매칭 존이 없는 날짜 카드는 접는다 */
     window.__rgFiltering=true; /* 아래에서 건드리는 .open 변화는 '전체펼치기' 저장 로직이 무시하도록 */
     document.querySelectorAll('.dcard').forEach(function(card){
@@ -375,6 +369,88 @@ function regionColor(name){
   if('serviceWorker' in navigator && location.protocol==='https:'){ try{ navigator.serviceWorker.register(BASE+'sw.js'); }catch(e){} }
 })();
 
+/* ================= Supabase 접속 (SDK 없이 fetch만) =================
+   SDK를 CDN에서 불러오면 오프라인에서 스크립트를 못 받아 앱이 통째로 깨진다.
+   필요한 건 auth 토큰 발급/갱신과 REST 두 가지뿐이라 직접 부른다.
+   publishable key는 공개돼도 안전 — 테이블에 RLS가 걸려 있어 로그인 없이는
+   읽기도 쓰기도 거부된다(42501). 로그인 정보는 저장소에 없고 각자 기기에만 있다. */
+var SB={
+  url:'https://jiwtfwkbfraolwxbnzzv.supabase.co',
+  key:'sb_publishable_vu6Al-Urwr_eymf6K77ouQ_PhJfKIaV',
+  SK:'tokyoTripSbSession',
+  session:null,
+  init:function(){ try{ this.session=JSON.parse(localStorage.getItem(this.SK)||'null'); }catch(e){} return this.session; },
+  setSession:function(s){
+    this.session=s;
+    try{ s ? localStorage.setItem(this.SK, JSON.stringify(s)) : localStorage.removeItem(this.SK); }catch(e){}
+  },
+  email:function(){ return this.session && this.session.email; },
+  loggedIn:function(){ return !!(this.session && this.session.refresh_token); },
+  /* Supabase가 돌려주는 영문 메시지를 그대로 보여주면 불친절해서 자주 나오는 건 바꿔 준다 */
+  MSG:{
+    'Invalid login credentials':'이메일 또는 비밀번호가 맞지 않아요',
+    'Email not confirmed':'이메일 확인이 안 된 계정이에요 (대시보드에서 Auto Confirm 체크)',
+    'Failed to fetch':'네트워크에 연결할 수 없어요'
+  },
+  _json:function(r){
+    var self=this;
+    return r.text().then(function(txt){
+      var j=null; try{ j=txt?JSON.parse(txt):null; }catch(e){}
+      if(!r.ok){
+        var m=(j&&(j.error_description||j.msg||j.message||j.error))||('HTTP '+r.status);
+        var err=new Error(self.MSG[m]||m); err.status=r.status; throw err;
+      }
+      return j;
+    });
+  },
+  signIn:function(email, pw){
+    var self=this;
+    return fetch(this.url+'/auth/v1/token?grant_type=password',{
+      method:'POST', headers:{'apikey':this.key,'Content-Type':'application/json'},
+      body:JSON.stringify({ email:email, password:pw })
+    }).then(this._json).then(function(j){
+      self.setSession({ access_token:j.access_token, refresh_token:j.refresh_token,
+                        exp:Date.now()+((j.expires_in||3600)*1000), email:email });
+      return j;
+    });
+  },
+  refresh:function(){
+    var self=this;
+    if(!this.loggedIn()) return Promise.reject(new Error('로그인이 필요해요'));
+    return fetch(this.url+'/auth/v1/token?grant_type=refresh_token',{
+      method:'POST', headers:{'apikey':this.key,'Content-Type':'application/json'},
+      body:JSON.stringify({ refresh_token:this.session.refresh_token })
+    }).then(this._json).then(function(j){
+      self.setSession({ access_token:j.access_token, refresh_token:j.refresh_token,
+                        exp:Date.now()+((j.expires_in||3600)*1000), email:self.session.email });
+      return j;
+    }).catch(function(e){ self.setSession(null); throw e; });
+  },
+  signOut:function(){ this.setSession(null); },
+  /* REST 호출 — 만료가 임박했거나 401이면 한 번 갱신하고 재시도 */
+  rest:function(path, opts, _retried){
+    var self=this;
+    if(!this.loggedIn()) return Promise.reject(new Error('로그인이 필요해요'));
+    var go=function(){
+      opts=opts||{};
+      var h={ 'apikey':self.key, 'Content-Type':'application/json',
+              'Authorization':'Bearer '+self.session.access_token };
+      for(var k in (opts.headers||{})) h[k]=opts.headers[k];
+      return fetch(self.url+'/rest/v1/'+path, { method:opts.method||'GET', headers:h, body:opts.body })
+        .then(self._json)
+        .catch(function(e){
+          if(e.status===401 && !_retried) return self.refresh().then(function(){ return self.rest(path, opts, true); });
+          throw e;
+        });
+    };
+    if(this.session.exp && Date.now() > this.session.exp-60000 && !_retried){
+      return this.refresh().then(go, function(e){ throw e; });
+    }
+    return go();
+  }
+};
+SB.init();
+
 /* ================= 지출·정산 (pages/money.html 전용) =================
    기존 체크 시스템(data-cl → attach → updateCounts)은 정적 항목 전용이라 쓰지 않는다.
    attach()는 로드 시 한 번만 도는 querySelectorAll 결과에만 붙고 IIFE에 갇혀 있으며,
@@ -399,6 +475,12 @@ function regionColor(name){
   }catch(e){}
   function save(){ try{ localStorage.setItem(EK, JSON.stringify(data)); }catch(e){} }
 
+  /* 삭제는 tombstone(deleted=1)으로 남긴다 — 안 그러면 다른 기기에서 되살아난다.
+     화면·계산은 전부 live()만 본다. */
+  function live(){ return data.items.filter(function(x){ return !x.deleted; }); }
+  /* 로컬에서 바뀐 항목은 dirty로 표시했다가 동기화 때 밀어 올린다 */
+  function touch(it){ it.dirty=1; it.updated_at=Date.now(); return it; }
+
   function num(v){ var n=parseInt(String(v).replace(/[^\d]/g,''),10); return isFinite(n)?n:0; }
   function yen(n){ return '¥'+n.toLocaleString('ko-KR'); }
   function esc(s){ return String(s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
@@ -410,7 +492,7 @@ function regionColor(name){
         paid={b:0,y:0},  /* 카드에서 실제로 나간 돈 */
         own={b:0,y:0},   /* 정산까지 끝났을 때 각자 실제로 쓴 돈 */
         net=0;           /* net > 0 이면 보람이 받을 돈 */
-    data.items.forEach(function(it){
+    live().forEach(function(it){
       total+=it.a;
       paid[it.p]+=it.a;
       if(it.k==='g'){ own.b+=it.a/2; own.y+=it.a/2; } else { own[it.k]+=it.a; }
@@ -425,13 +507,17 @@ function regionColor(name){
 
   function render(){
     var c=calc();
-    elTotal.innerHTML='<span>총 지출 <span class="muted">'+data.items.length+'건</span></span><span><b>'+yen(c.total)+'</b></span>';
+    var L=live();
+    elTotal.innerHTML='<span>총 지출 <span class="muted">'+L.length+'건</span></span><span><b>'+yen(c.total)+'</b></span>';
     /* 「결제」는 카드에서 나간 돈, 「실부담」은 정산까지 끝났을 때 실제로 쓴 돈.
        양기가 반반짜리를 결제하면 결제엔 전액이 잡히지만 실부담은 절반만 잡힌다. */
     elBy.innerHTML=['b','y'].map(function(k){
-      var diff=c.paid[k]-c.own[k];
-      var note = diff>0 ? '<span class="df plus">+'+yen(diff)+' 받을 것</span>'
-               : diff<0 ? '<span class="df minus">'+yen(-diff)+' 줄 것</span>' : '';
+      /* 줄 것/받을 것은 아래 「미정산」 줄과 같은 기준 — 정산 완료 항목은 빠진다.
+         c.net은 보람이 받을 돈이라 양기 쪽은 부호를 뒤집는다. */
+      var diff = (k==='b') ? c.net : -c.net;
+      var other = PEOPLE[k==='b' ? 'y' : 'b'];
+      var note = diff>0 ? '<span class="df plus">'+other+'에게서 '+yen(diff)+' 받을 것</span>'
+               : diff<0 ? '<span class="df minus">'+other+'에게 '+yen(-diff)+' 줄 것</span>' : '';
       return '<div class="expperson">' +
         '<div class="who">'+PEOPLE[k]+'</div>' +
         '<div class="ln"><span>결제</span><b>'+yen(c.paid[k])+'</b></div>' +
@@ -440,7 +526,7 @@ function regionColor(name){
       '</div>';
     }).join('');
 
-    if(!data.items.length){
+    if(!L.length){
       elSettle.style.display='none';
     } else if(c.net===0){
       elSettle.style.display='';
@@ -453,8 +539,8 @@ function regionColor(name){
       elSettle.innerHTML='💸 <b>'+from+' → '+to+'</b> <b class="amt">'+yen(amt)+'</b> <span class="muted">미정산</span>';
     }
 
-    elEmpty.style.display=data.items.length?'none':'block';
-    elList.style.display=data.items.length?'':'none';
+    elEmpty.style.display=L.length?'none':'block';
+    elList.style.display=L.length?'':'none';
 
     /* 날짜별로 묶어서 그린다. 날짜 머리글이 날짜를 보여주므로 각 행의 메타에선 뺀다. */
     function rowHtml(it){
@@ -470,7 +556,7 @@ function regionColor(name){
       '</div>';
     }
     var groups={};
-    data.items.forEach(function(it){ (groups[it.d]=groups[it.d]||[]).push(it); });
+    L.forEach(function(it){ (groups[it.d]=groups[it.d]||[]).push(it); });
     elList.innerHTML=DAY_ORDER.map(function(d){
       var g=groups[d]; if(!g || !g.length) return '';
       var sum=0; g.forEach(function(x){ sum+=x.a; });
@@ -483,8 +569,8 @@ function regionColor(name){
     var t=elT.value.trim(), a=num(elA.value);
     if(!t){ alert('항목 이름을 적어주세요.'); elT.focus(); return; }
     if(a<=0){ alert('금액을 숫자로 적어주세요.'); elA.focus(); return; }
-    data.items.push({ id:'e'+Date.now()+Math.floor(Math.random()*1000), d:elD.value, t:t, a:a, p:elP.value, k:elK.value, s:0 });
-    save(); render();
+    data.items.push(touch({ id:'e'+Date.now()+Math.floor(Math.random()*1000), d:elD.value, t:t, a:a, p:elP.value, k:elK.value, s:0, deleted:0 }));
+    save(); render(); queueSync();
     elT.value=''; elA.value=''; elT.focus(); /* 날짜·결제자·부담은 연속 입력을 위해 유지 */
   }
 
@@ -500,59 +586,144 @@ function regionColor(name){
 
     if(e.target.classList.contains('expck')){
       e.stopPropagation(); /* 라이트박스가 document 레벨에서 클릭을 받는다 */
-      it.s=e.target.checked?1:0; save(); render();
+      it.s=e.target.checked?1:0; touch(it); save(); render(); queueSync();
     } else if(e.target.classList.contains('expdel')){
       e.stopPropagation();
       if(confirm('"'+it.t+'" '+yen(it.a)+' 기록을 지울까요?\n되돌릴 수 없어요.')){
-        data.items=data.items.filter(function(x){ return x.id!==id; });
-        save(); render();
+        /* 물리 삭제 대신 tombstone — 안 그러면 다른 기기 동기화 때 되살아난다 */
+        it.deleted=1; touch(it);
+        save(); render(); queueSync();
       }
     }
   });
 
-  /* 내보내기 / 가져오기 — 사람이 읽고 손으로 고칠 수 있는 줄 단위 텍스트 */
-  /* 내보내기 날짜는 요일 없이 짧게 — 가져오기는 요일이 붙은 옛 형식도 받아들인다 */
-  function dayShort(s){ return String(s).split('(')[0].trim(); }
-  function serialize(){
-    return data.items.map(function(it){
-      return [dayShort(DAYS[it.d]), it.t, it.a, PEOPLE[it.p], (it.k==='g'?'공동':PEOPLE[it.k]), (it.s?'정산완료':'')].join('|');
-    }).join('\n');
+  /* ================= 동기화 =================
+     localStorage가 주 저장소고 Supabase는 그 위에 얹은 계층이다. 오프라인에서도
+     입력이 되고, 온라인이 되면 dirty 항목을 밀어 올린 뒤 전체를 내려받아 합친다.
+     규모가 작아(한 여행에 수십~수백 건) 전체 동기화로 충분하다. */
+  var elAuth=document.getElementById('exp-auth'), elSync=document.getElementById('exp-sync');
+  var syncing=false, pending=false, lastErr=null;
+
+  function toRow(it){
+    return { id:it.id, d:it.d, t:it.t, a:it.a, p:it.p, k:it.k, s:!!it.s, deleted:!!it.deleted };
   }
-  function parseLine(line){
-    var f=line.split('|'); if(f.length<5) return null;
-    var d='etc', f0=dayShort(f[0]); for(var k in DAYS){ if(dayShort(DAYS[k])===f0) d=k; }
-    var p=null; for(var pk in PEOPLE){ if(PEOPLE[pk]===f[3].trim()) p=pk; }
-    var kk=f[4].trim();
-    var k2=(kk==='공동')?'g':null;
-    if(!k2){ for(var bk in PEOPLE){ if(PEOPLE[bk]===kk) k2=bk; } }
-    var a=num(f[2]);
-    if(!p || !k2 || a<=0 || !f[1].trim()) return null;
-    return { id:'e'+Date.now()+Math.floor(Math.random()*100000), d:d, t:f[1].trim(), a:a, p:p, k:k2, s:(f[5]||'').trim()?1:0 };
+  function fromRow(r){
+    return { id:r.id, d:r.d, t:r.t, a:r.a, p:r.p, k:r.k, s:r.s?1:0, deleted:r.deleted?1:0,
+             updated_at:Date.parse(r.updated_at)||0 };
   }
 
-  document.getElementById('exp-export').addEventListener('click', function(){
-    if(!data.items.length){ alert('내보낼 기록이 없어요.'); return; }
-    var txt=serialize();
-    function done(ok){ alert(ok ? ('📋 '+data.items.length+'건을 클립보드에 복사했어요.\n메모장이나 카톡에 붙여넣어 두세요.') : ('복사에 실패했어요. 아래 내용을 직접 복사하세요.\n\n'+txt)); }
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(txt).then(function(){ done(true); }, function(){ done(false); });
-    } else { done(false); }
-  });
+  function sync(){
+    if(!SB.loggedIn() || syncing) return Promise.resolve();
+    if(!navigator.onLine){ lastErr='오프라인'; paintSync(); return Promise.resolve(); }
+    syncing=true; lastErr=null; paintSync();
 
-  document.getElementById('exp-import').addEventListener('click', function(){
-    var txt=prompt('내보낸 기록을 붙여넣어 주세요.\n형식: 날짜|항목|금액|결제자|부담|정산완료');
-    if(txt===null) return;
-    var lines=txt.split('\n').map(function(s){return s.trim();}).filter(Boolean);
-    var parsed=lines.map(parseLine).filter(Boolean);
-    if(!parsed.length){ alert('읽을 수 있는 기록이 없어요. 형식을 확인해 주세요.'); return; }
-    var skipped=lines.length-parsed.length;
-    var msg='지금 '+data.items.length+'건이 있습니다.\n'+parsed.length+'건으로 교체할까요?';
-    if(skipped) msg+='\n\n('+skipped+'줄은 형식이 맞지 않아 건너뜁니다)';
-    if(!confirm(msg)) return;
-    data.items=parsed; save(); render();
-  });
+    var dirty=data.items.filter(function(x){ return x.dirty; });
+    var push = dirty.length
+      ? SB.rest('expenses', { method:'POST',
+          headers:{ 'Prefer':'resolution=merge-duplicates,return=minimal' },
+          body:JSON.stringify(dirty.map(toRow)) })
+      : Promise.resolve();
 
+    return push.then(function(){
+      dirty.forEach(function(x){ delete x.dirty; });
+      return SB.rest('expenses?select=*');
+    }).then(function(rows){
+      /* 병합 — 로컬이 아직 dirty면 로컬 우선(밀어 올리는 중), 아니면 서버 우선 */
+      var byId={};
+      data.items.forEach(function(x){ byId[x.id]=x; });
+      (rows||[]).forEach(function(r){
+        var remote=fromRow(r), local=byId[r.id];
+        if(!local){ data.items.push(remote); byId[r.id]=remote; }
+        else if(!local.dirty){
+          local.d=remote.d; local.t=remote.t; local.a=remote.a; local.p=remote.p;
+          local.k=remote.k; local.s=remote.s; local.deleted=remote.deleted;
+          local.updated_at=remote.updated_at;
+        }
+      });
+      data.lastSync=Date.now();
+      save(); render();
+    }).catch(function(e){
+      lastErr=e.message||'동기화 실패';
+    }).then(function(){
+      syncing=false; paintSync();
+      if(pending){ pending=false; return sync(); }
+    });
+  }
+  /* 입력 직후 연달아 부르지 않도록 살짝 묶어서 보낸다 */
+  var syncTimer=null;
+  function queueSync(){
+    if(!SB.loggedIn()) return;
+    if(syncing){ pending=true; return; }
+    clearTimeout(syncTimer);
+    syncTimer=setTimeout(sync, 600);
+  }
+
+  function ago(ts){
+    if(!ts) return '';
+    var s=Math.round((Date.now()-ts)/1000);
+    if(s<60) return '방금';
+    if(s<3600) return Math.floor(s/60)+'분 전';
+    if(s<86400) return Math.floor(s/3600)+'시간 전';
+    return Math.floor(s/86400)+'일 전';
+  }
+  function paintSync(){
+    if(!elSync) return;
+    if(!SB.loggedIn()){ elSync.style.display='none'; return; }
+    elSync.style.display='';
+    var un=data.items.filter(function(x){ return x.dirty; }).length;
+    if(syncing){ elSync.className='expsync busy'; elSync.textContent='☁️ 동기화 중…'; }
+    else if(lastErr){ elSync.className='expsync err'; elSync.textContent='⚠️ '+lastErr+(un?(' · 대기 '+un+'건'):'')+' — 눌러서 재시도'; }
+    else { elSync.className='expsync ok'; elSync.textContent='☁️ '+SB.email()+' · 동기화됨 '+ago(data.lastSync); }
+  }
+
+  function paintAuth(){
+    if(!elAuth) return;
+    if(SB.loggedIn()){
+      elAuth.innerHTML='<button type="button" id="exp-signout" class="expauthlink">로그아웃</button>';
+      document.getElementById('exp-signout').addEventListener('click', function(){
+        if(!confirm('로그아웃할까요?\n이 기기의 기록은 그대로 남고, 동기화만 멈춥니다.')) return;
+        SB.signOut(); paintAuth(); paintSync();
+      });
+    } else {
+      elAuth.innerHTML=
+        '<div class="expauth">' +
+          '<div class="hd">☁️ <b>기록 공유</b> — 로그인하면 두 사람 폰의 기록이 합쳐져요</div>' +
+          '<div class="rw">' +
+            '<input type="email" id="exp-email" placeholder="이메일" autocomplete="username">' +
+            '<input type="password" id="exp-pw" placeholder="비밀번호" autocomplete="current-password">' +
+            '<button type="button" id="exp-signin">로그인</button>' +
+          '</div>' +
+          '<div class="msg" id="exp-authmsg"></div>' +
+        '</div>';
+      var msg=document.getElementById('exp-authmsg');
+      var go=function(){
+        var em=document.getElementById('exp-email').value.trim();
+        var pw=document.getElementById('exp-pw').value;
+        if(!em || !pw){ msg.textContent='이메일과 비밀번호를 모두 넣어주세요.'; return; }
+        msg.textContent='로그인 중…';
+        SB.signIn(em, pw).then(function(){
+          paintAuth();
+          /* 로그인 시점의 로컬 기록은 전부 올려보낸다 */
+          data.items.forEach(function(x){ if(!x.updated_at) x.updated_at=Date.now(); x.dirty=1; });
+          save(); return sync();
+        }).catch(function(e){
+          msg.textContent='⚠️ '+(e.message||'로그인 실패');
+        });
+      };
+      document.getElementById('exp-signin').addEventListener('click', go);
+      document.getElementById('exp-pw').addEventListener('keydown', function(e){ if(e.key==='Enter') go(); });
+    }
+  }
+
+  if(elSync) elSync.addEventListener('click', function(){ if(!syncing) sync(); });
+  window.addEventListener('online', function(){ lastErr=null; queueSync(); });
+  window.addEventListener('offline', function(){ lastErr='오프라인'; paintSync(); });
+  /* 탭을 다시 보면 상대가 올린 내용을 받아온다 — Realtime 없이도 충분하다 */
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) queueSync(); });
+
+  paintAuth(); paintSync();
   render();
+  if(SB.loggedIn()) sync();
 })();
 
 /* ================= 지역 필터 복원 =================

@@ -22,9 +22,12 @@
     <p class="sub">— 얼마 썼는지 · 보람 ↔ 양기 정산 —</p>
   </header>
 
-  <section data-solo="1" id="sec-money">
-    <h2 style="background:#8a6d3b;"><span class="no" style="color:#8a6d3b;">💴</span> 지출 기록</h2>
-    <p class="muted" style="margin-top:-4px;"><b>부담</b>이 <b>공동</b>이면 반반으로 나눠 정산하고, <b>보람</b>/<b>양기</b>면 그 사람이 전액 부담해요. 내 돈으로 내 것을 사도 <b>총 지출·실부담엔 그대로 기록</b>돼요 — 서로 주고받을 돈만 안 생기는 거예요.</p>
+  <section id="sec-money">
+    <p class="muted" style="margin-top:14px;"><b>부담</b>이 <b>공동</b>이면 반반으로 나눠 정산하고, <b>보람</b>/<b>양기</b>면 그 사람이 전액 부담해요. 내 돈으로 내 것을 사도 <b>총 지출·실부담엔 그대로 기록</b>돼요 — 서로 주고받을 돈만 안 생기는 거예요.</p>
+
+    <!-- ── 계정·동기화 ── -->
+    <div id="exp-auth"></div>
+    <div id="exp-sync"></div>
 
     <!-- ── 입력 폼 ── -->
     <div class="expform">
@@ -64,12 +67,7 @@
     <div class="plist" id="exp-list"></div>
     <div class="expempty" id="exp-empty">아직 기록이 없어요. 위에서 첫 지출을 추가해 보세요 💴</div>
 
-    <!-- ── 백업 ── -->
-    <div class="plbar" style="margin-top:14px;">
-      <button type="button" id="exp-export">📋 내보내기</button>
-      <button type="button" id="exp-import">📥 가져오기</button>
-    </div>
-    <div class="warn" style="border-left-color:#8a6d3b;">💾 <b style="color:#8a6d3b;">기록은 이 브라우저에만 저장돼요</b> — 사파리 방문기록을 지우거나 폰을 바꾸면 사라집니다. 가끔 <b>📋 내보내기</b>로 복사해 메모장·카톡에 붙여두면 안전하고, 둘이 기록을 주고받을 때도 씁니다.</div>
+    <div class="warn" style="border-left-color:#8a6d3b;">💾 <b style="color:#8a6d3b;">로그인하면 두 폰의 기록이 합쳐지고 서버에도 남아요</b> — 폰을 바꾸거나 사파리 데이터를 지워도 다시 로그인하면 돌아옵니다. 로그인 없이 써도 되지만, 그때는 이 폰에만 저장됩니다.</div>
   </section>
 
 </div>
