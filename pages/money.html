@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💴 지출·정산 · 2026 도쿄</title>
+<meta name="theme-color" content="#e7e0cf">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="도쿄여행">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%97%BC%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="../icon-180.png">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-tab="money">
+<div class="sheet">
+  <div class="topbar"></div>
+  <header>
+    <div class="stamp">가 정 통 신 문</div>
+    <h1>💴 지출·정산</h1>
+    <p class="sub">— 얼마 썼는지 · 보람 ↔ 양기 정산 —</p>
+  </header>
+
+  <section data-solo="1" id="sec-money">
+    <h2 style="background:#8a6d3b;"><span class="no" style="color:#8a6d3b;">💴</span> 지출 기록</h2>
+    <p class="muted" style="margin-top:-4px;"><b>부담</b>이 <b>공동</b>이면 반반으로 나눠 정산하고, <b>보람</b>/<b>양기</b>면 그 사람이 전액 부담해요. 내 돈으로 내 것을 샀으면 정산에 안 잡힙니다.</p>
+
+    <!-- ── 입력 폼 ── -->
+    <div class="expform">
+      <div class="exprow1">
+        <select id="exp-d" aria-label="날짜">
+          <option value="09-05">9/5(토)</option>
+          <option value="09-06">9/6(일)</option>
+          <option value="09-07">9/7(월)</option>
+          <option value="09-08">9/8(화)</option>
+          <option value="09-09">9/9(수)</option>
+          <option value="etc">기타</option>
+        </select>
+        <input type="text" id="exp-t" placeholder="항목 (예: 디즈니 티켓)" maxlength="40" aria-label="항목">
+      </div>
+      <div class="exprow2">
+        <div class="expyen"><span>¥</span><input type="text" id="exp-a" inputmode="numeric" placeholder="금액" aria-label="금액"></div>
+        <select id="exp-p" aria-label="결제자">
+          <option value="b">보람이 결제</option>
+          <option value="y">양기가 결제</option>
+        </select>
+        <select id="exp-k" aria-label="부담">
+          <option value="g">공동 부담</option>
+          <option value="b">보람 부담</option>
+          <option value="y">양기 부담</option>
+        </select>
+        <button type="button" id="exp-add">＋ 추가</button>
+      </div>
+    </div>
+
+    <!-- ── 환율 ── -->
+    <div class="exprate">
+      <label for="exp-rate">환율 <b>100¥</b> =</label>
+      <input type="text" id="exp-rate" inputmode="numeric" placeholder="950">
+      <span>원</span>
+      <span class="muted" style="margin-left:auto;">비워두면 원화 환산을 숨겨요</span>
+    </div>
+
+    <!-- ── 요약 ── -->
+    <div class="totbar" id="exp-sum-total"><span>총 지출</span><span><b>¥0</b></span></div>
+    <div class="expsplit" id="exp-sum-by"></div>
+    <div class="expsettle" id="exp-sum-settle"></div>
+
+    <!-- ── 목록 ── -->
+    <div class="plist" id="exp-list"></div>
+    <div class="expempty" id="exp-empty">아직 기록이 없어요. 위에서 첫 지출을 추가해 보세요 💴</div>
+
+    <!-- ── 백업 ── -->
+    <div class="plbar" style="margin-top:14px;">
+      <button type="button" id="exp-export">📋 내보내기</button>
+      <button type="button" id="exp-import">📥 가져오기</button>
+    </div>
+    <div class="warn" style="border-left-color:#8a6d3b;">💾 <b style="color:#8a6d3b;">기록은 이 브라우저에만 저장돼요</b> — 사파리 방문기록을 지우거나 폰을 바꾸면 사라집니다. 가끔 <b>📋 내보내기</b>로 복사해 메모장·카톡에 붙여두면 안전하고, 둘이 기록을 주고받을 때도 씁니다.</div>
+  </section>
+
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>

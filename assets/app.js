@@ -60,7 +60,8 @@ function regionColor(name){
     ['eat','🍜','먹고','pages/eat.html'],
     ['go','🗺️','가고','pages/go.html'],
     ['trip','🚃','근교','pages/trip.html'],
-    ['local','🤖','로컬','pages/local.html']
+    ['local','🤖','로컬','pages/local.html'],
+    ['money','💴','지출','pages/money.html']
   ];
   var curTab = document.body.getAttribute('data-tab') || 'home';
   if(!document.getElementById('nav')){
@@ -372,6 +373,164 @@ function regionColor(name){
   /* 오프라인 캐시 — GitHub Pages(https)에서만 동작 */
   var BASE = /\/pages\//.test(location.pathname) ? '../' : './';
   if('serviceWorker' in navigator && location.protocol==='https:'){ try{ navigator.serviceWorker.register(BASE+'sw.js'); }catch(e){} }
+})();
+
+/* ================= 지출·정산 (pages/money.html 전용) =================
+   기존 체크 시스템(data-cl → attach → updateCounts)은 정적 항목 전용이라 쓰지 않는다.
+   attach()는 로드 시 한 번만 도는 querySelectorAll 결과에만 붙고 IIFE에 갇혀 있으며,
+   저장 형식이 {키:1} 불리언 맵이라 금액을 담을 수 없다. 별도 키·별도 IIFE로 만든다. */
+(function(){
+  var form=document.getElementById('exp-add'); if(!form) return; /* 다른 탭에선 아무것도 안 함 */
+
+  var EK='tokyoTripExpenses';
+  var PEOPLE={ b:'보람', y:'양기' };
+  var DAYS={ '09-05':'9/5', '09-06':'9/6', '09-07':'9/7', '09-08':'9/8', '09-09':'9/9', 'etc':'기타' };
+
+  var elD=document.getElementById('exp-d'), elT=document.getElementById('exp-t'), elA=document.getElementById('exp-a'),
+      elP=document.getElementById('exp-p'), elK=document.getElementById('exp-k'), elRate=document.getElementById('exp-rate'),
+      elList=document.getElementById('exp-list'), elEmpty=document.getElementById('exp-empty'),
+      elTotal=document.getElementById('exp-sum-total'), elBy=document.getElementById('exp-sum-by'), elSettle=document.getElementById('exp-sum-settle');
+
+  var data={ rate:null, items:[] };
+  try{
+    var raw=JSON.parse(localStorage.getItem(EK)||'null');
+    if(raw && raw.items instanceof Array){ data.items=raw.items; data.rate=(typeof raw.rate==='number')?raw.rate:null; }
+  }catch(e){}
+  function save(){ try{ localStorage.setItem(EK, JSON.stringify(data)); }catch(e){} }
+
+  function num(v){ var n=parseInt(String(v).replace(/[^\d]/g,''),10); return isFinite(n)?n:0; }
+  function yen(n){ return '¥'+n.toLocaleString('ko-KR'); }
+  /* 환율이 없으면 원화 표기를 아예 만들지 않는다 */
+  function won(n){ return data.rate ? ' <span class="muted">(약 '+Math.round(n*data.rate/100).toLocaleString('ko-KR')+'원)</span>' : ''; }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  /* 정산 계산 — 각 항목이 만드는 채권은 (금액 − 결제자가 부담해야 할 몫).
+     부담이 공동이면 절반, 결제자 본인이면 전액이라 0, 상대방이면 전액이 채권이 된다. */
+  function calc(){
+    var total=0, paid={b:0,y:0}, net=0; /* net > 0 이면 보람이 받을 돈 */
+    data.items.forEach(function(it){
+      total+=it.a; paid[it.p]=(paid[it.p]||0)+it.a;
+      if(it.s) return; /* 정산 완료 항목은 잔액에서 제외 (총 지출에는 남는다) */
+      var own = (it.k==='g') ? it.a/2 : (it.k===it.p ? it.a : 0);
+      var credit = it.a - own;
+      net += (it.p==='b') ? credit : -credit;
+    });
+    return { total:total, paid:paid, net:Math.round(net) };
+  }
+
+  function render(){
+    var c=calc();
+    elTotal.innerHTML='<span>총 지출 <span class="muted">'+data.items.length+'건</span></span><span><b>'+yen(c.total)+'</b>'+won(c.total)+'</span>';
+    elBy.innerHTML='<span>보람 결제 <b>'+yen(c.paid.b)+'</b></span><span>양기 결제 <b>'+yen(c.paid.y)+'</b></span>';
+
+    if(!data.items.length){
+      elSettle.style.display='none';
+    } else if(c.net===0){
+      elSettle.style.display='';
+      elSettle.className='expsettle done';
+      elSettle.innerHTML='✅ 정산할 게 없어요';
+    } else {
+      elSettle.style.display='';
+      var from=(c.net>0)?'양기':'보람', to=(c.net>0)?'보람':'양기', amt=Math.abs(c.net);
+      elSettle.className='expsettle';
+      elSettle.innerHTML='💸 <b>'+from+' → '+to+'</b> <b class="amt">'+yen(amt)+'</b>'+won(amt)+' <span class="muted">미정산</span>';
+    }
+
+    elEmpty.style.display=data.items.length?'none':'block';
+    elList.style.display=data.items.length?'':'none';
+    elList.innerHTML=data.items.map(function(it){
+      var burden=(it.k==='g')?'공동':(PEOPLE[it.k]+' 부담');
+      return '<div class="prow exprow'+(it.s?' expdone':'')+'" data-id="'+it.id+'">' +
+        '<input type="checkbox" class="expck"'+(it.s?' checked':'')+' title="정산 완료">' +
+        '<div class="pb">' +
+          '<div class="prtop"><span class="pnm">'+esc(it.t)+'</span><span class="ppr">'+yen(it.a)+'</span></div>' +
+          '<div class="pmeta">'+DAYS[it.d]+' · '+PEOPLE[it.p]+' 결제 · '+burden+
+            (it.s?' · <b style="color:var(--accent2);">정산완료</b>':'')+'</div>' +
+        '</div>' +
+        '<button type="button" class="expdel" title="삭제">🗑</button>' +
+      '</div>';
+    }).join('');
+  }
+
+  function add(){
+    var t=elT.value.trim(), a=num(elA.value);
+    if(!t){ alert('항목 이름을 적어주세요.'); elT.focus(); return; }
+    if(a<=0){ alert('금액을 숫자로 적어주세요.'); elA.focus(); return; }
+    data.items.push({ id:'e'+Date.now()+Math.floor(Math.random()*1000), d:elD.value, t:t, a:a, p:elP.value, k:elK.value, s:0 });
+    save(); render();
+    elT.value=''; elA.value=''; elT.focus(); /* 날짜·결제자·부담은 연속 입력을 위해 유지 */
+  }
+
+  form.addEventListener('click', add);
+  elA.addEventListener('keydown', function(e){ if(e.key==='Enter') add(); });
+  elT.addEventListener('keydown', function(e){ if(e.key==='Enter') elA.focus(); });
+
+  /* 목록 상호작용 — 행이 동적이라 위임으로 처리 */
+  elList.addEventListener('click', function(e){
+    var row=e.target.closest('.exprow'); if(!row) return;
+    var id=row.getAttribute('data-id');
+    var it=data.items.filter(function(x){ return x.id===id; })[0]; if(!it) return;
+
+    if(e.target.classList.contains('expck')){
+      e.stopPropagation(); /* 라이트박스가 document 레벨에서 클릭을 받는다 */
+      it.s=e.target.checked?1:0; save(); render();
+    } else if(e.target.classList.contains('expdel')){
+      e.stopPropagation();
+      if(confirm('"'+it.t+'" '+yen(it.a)+' 기록을 지울까요?\n되돌릴 수 없어요.')){
+        data.items=data.items.filter(function(x){ return x.id!==id; });
+        save(); render();
+      }
+    }
+  });
+
+  /* 환율 */
+  if(data.rate) elRate.value=data.rate;
+  elRate.addEventListener('input', function(){
+    var v=num(elRate.value);
+    data.rate = v>0 ? v : null;
+    save(); render();
+  });
+
+  /* 내보내기 / 가져오기 — 사람이 읽고 손으로 고칠 수 있는 줄 단위 텍스트 */
+  function serialize(){
+    return data.items.map(function(it){
+      return [DAYS[it.d], it.t, it.a, PEOPLE[it.p], (it.k==='g'?'공동':PEOPLE[it.k]), (it.s?'정산완료':'')].join('|');
+    }).join('\n');
+  }
+  function parseLine(line){
+    var f=line.split('|'); if(f.length<5) return null;
+    var d='etc'; for(var k in DAYS){ if(DAYS[k]===f[0].trim()) d=k; }
+    var p=null; for(var pk in PEOPLE){ if(PEOPLE[pk]===f[3].trim()) p=pk; }
+    var kk=f[4].trim(); var k2=(kk==='공동')?'g':null;
+    if(!k2){ for(var bk in PEOPLE){ if(PEOPLE[bk]===kk) k2=bk; } }
+    var a=num(f[2]);
+    if(!p || !k2 || a<=0 || !f[1].trim()) return null;
+    return { id:'e'+Date.now()+Math.floor(Math.random()*100000), d:d, t:f[1].trim(), a:a, p:p, k:k2, s:(f[5]||'').trim()?1:0 };
+  }
+
+  document.getElementById('exp-export').addEventListener('click', function(){
+    if(!data.items.length){ alert('내보낼 기록이 없어요.'); return; }
+    var txt=serialize();
+    function done(ok){ alert(ok ? ('📋 '+data.items.length+'건을 클립보드에 복사했어요.\n메모장이나 카톡에 붙여넣어 두세요.') : ('복사에 실패했어요. 아래 내용을 직접 복사하세요.\n\n'+txt)); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(function(){ done(true); }, function(){ done(false); });
+    } else { done(false); }
+  });
+
+  document.getElementById('exp-import').addEventListener('click', function(){
+    var txt=prompt('내보낸 기록을 붙여넣어 주세요.\n형식: 날짜|항목|금액|결제자|부담|정산완료');
+    if(txt===null) return;
+    var lines=txt.split('\n').map(function(s){return s.trim();}).filter(Boolean);
+    var parsed=lines.map(parseLine).filter(Boolean);
+    if(!parsed.length){ alert('읽을 수 있는 기록이 없어요. 형식을 확인해 주세요.'); return; }
+    var skipped=lines.length-parsed.length;
+    var msg='지금 '+data.items.length+'건이 있습니다.\n'+parsed.length+'건으로 교체할까요?';
+    if(skipped) msg+='\n\n('+skipped+'줄은 형식이 맞지 않아 건너뜁니다)';
+    if(!confirm(msg)) return;
+    data.items=parsed; save(); render();
+  });
+
+  render();
 })();
 
 /* ================= 지역 필터 복원 =================
