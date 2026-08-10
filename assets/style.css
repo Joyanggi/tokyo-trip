@@ -284,3 +284,82 @@
   .mrow > span:nth-child(3){ flex:1 1 100%; padding-left:70px; }
   .foldsec{ margin:18px 5px 0; }
 }
+
+/* ============================================================
+   🗺️ 오버뷰 지도 — 안내문에 첨부된 인쇄 지도 톤
+   ============================================================ */
+.vtabs{ display:flex; gap:6px; margin:14px 0 8px;}
+.vtabs .vtab{ font-family:inherit; font-size:13px; font-weight:800; letter-spacing:-.3px; color:#8a8272;
+  background:var(--soft); border:1px solid var(--line); border-radius:14px 14px 0 0; border-bottom-color:transparent;
+  padding:9px 16px; cursor:pointer; -webkit-tap-highlight-color:transparent;}
+.vtabs .vtab.on{ color:var(--paper); background:var(--ink); border-color:var(--ink);}
+
+/* 날짜 칩 스트립 */
+.dchips{ display:flex; gap:6px; overflow-x:auto; -webkit-overflow-scrolling:touch;
+  padding:2px 2px 8px; margin:0 -2px; scrollbar-width:none;}
+.dchips::-webkit-scrollbar{ display:none;}
+.dchip{ flex:0 0 auto; font-family:inherit; cursor:pointer; text-align:center; line-height:1.15;
+  min-width:60px; padding:7px 9px 6px; border:1px solid var(--line); border-radius:9px;
+  background:var(--paper); color:var(--ink); -webkit-tap-highlight-color:transparent;
+  border-top:3px solid var(--cc,#8a8272);}
+.dchip i{ display:block; font-style:normal; font-size:10px; font-weight:700; color:#9a927f;}
+.dchip b{ display:block; font-size:15px; font-weight:800; letter-spacing:-.5px; margin:1px 0;}
+.dchip u{ display:block; text-decoration:none; font-size:9.5px; color:#9a927f; font-weight:700;
+  max-width:74px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.dchip.on{ background:var(--ink); border-color:var(--ink); color:var(--paper);}
+.dchip.on i, .dchip.on u{ color:rgba(255,253,247,.72);}
+
+/* 지도 패널 */
+.mapwrap{ margin:4px 0 10px;}
+.mhead{ display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:800; color:var(--ink); padding:2px 2px 7px;}
+.mhead .mtit b{ font-weight:800;}
+.mhead .mprog{ flex:1; height:7px; min-width:40px; background:var(--tag); border:1px solid var(--line); border-radius:5px; overflow:hidden;}
+.mhead .mprog i{ display:block; height:100%; width:0; background:repeating-linear-gradient(45deg,var(--gold) 0 5px,#dcb96a 5px 10px); transition:width .35s;}
+.mhead .mcnt{ font-size:11px; font-weight:800; color:#8a8272; white-space:nowrap;}
+
+.mapbox{ position:relative; border:2px solid var(--ink); border-radius:4px; padding:5px; background:var(--paper);
+  box-shadow:0 3px 12px rgba(0,0,0,.14);}
+.mapbox::after{ content:''; position:absolute; inset:5px; border:1px solid var(--line); pointer-events:none; z-index:600;}
+#tmap{ height:min(56vh,420px); border-radius:2px; background:var(--soft);}
+/* 타일을 종이색으로 — 안내문 톤 유지 */
+#tmap .leaflet-tile-pane{ filter:sepia(.34) saturate(.72) contrast(1.03) brightness(1.03);}
+#tmap .leaflet-control-attribution{ background:rgba(255,253,247,.82); font-size:9px; color:#8a8272;}
+#tmap .leaflet-bar a{ background:var(--paper); color:var(--ink); border-bottom-color:var(--line);}
+.mapoff{ display:none; flex-direction:column; gap:6px; position:absolute; inset:5px; z-index:700; align-items:center; justify-content:center;
+  text-align:center; padding:20px; font-size:12.5px; color:#8a8272; background:var(--soft);}
+.mapoff.show{ display:flex;}
+
+/* 핀 — 도장 느낌 */
+.mpin{ display:flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%;
+  border:2px solid var(--paper); box-shadow:0 1px 5px rgba(0,0,0,.42);
+  font-size:12px; font-weight:800; color:#fff; font-family:inherit; transition:transform .18s;}
+.mpin-wrap.on .mpin, .mpin-wrap:hover .mpin{ transform:scale(1.32); box-shadow:0 2px 9px rgba(0,0,0,.5);}
+.mchar{ font-size:23px; line-height:1; filter:drop-shadow(0 2px 3px rgba(0,0,0,.45));}
+.mtip.leaflet-tooltip{ background:var(--paper); color:var(--ink); border:1.5px solid var(--ink); border-radius:5px;
+  font-family:inherit; font-size:11.5px; font-weight:700; padding:3px 7px; box-shadow:0 2px 7px rgba(0,0,0,.22);}
+.mtip.leaflet-tooltip-top::before{ border-top-color:var(--ink);}
+
+/* 현재 지점 · 컨트롤 */
+.mnow{ margin:9px 0 8px; padding:9px 12px; border:1.5px solid var(--ink); border-radius:6px; background:var(--soft);
+  font-size:13.5px; line-height:1.5;}
+.mnow b{ color:var(--accent); font-weight:800; margin-right:4px;}
+.mnow .mvia{ display:block; font-size:11.5px; color:#8a8272; font-weight:700; margin-top:3px;}
+.mctl{ display:flex; gap:7px;}
+.mctl button{ flex:1; font-family:inherit; font-size:13px; font-weight:800; padding:11px 4px; cursor:pointer;
+  border:1.5px solid var(--ink); border-radius:7px; background:var(--paper); color:var(--ink);
+  -webkit-tap-highlight-color:transparent;}
+.mctl .mgo{ background:var(--accent); border-color:var(--accent); color:#fff;}
+.mctl .mall{ flex:0 0 46px; font-size:15px; padding:11px 0;}
+.mctl button:disabled{ opacity:.35; cursor:default;}
+.mfoot{ font-size:11px; color:#9a927f; margin:8px 2px 0; line-height:1.55;}
+
+/* 일정 행 액션 버튼 */
+.evact{ display:flex; gap:4px; margin:5px 0 1px; align-items:center;}
+.evact a, .evact button{ font-family:inherit; font-size:10.5px; font-weight:700; line-height:1.35;
+  text-decoration:none; cursor:pointer; white-space:nowrap; padding:3px 7px; border-radius:11px;
+  border:1px solid var(--line); background:var(--soft); color:#6f685a; -webkit-tap-highlight-color:transparent;}
+.evact a:first-child{ background:var(--accent); border-color:var(--accent); color:#fff;}
+.evact .onmap{ padding:3px 6px; margin-left:auto;}
+.mvb{ display:inline-block; font-size:10.5px; font-weight:800; color:#6f685a; background:var(--tag);
+  border:1px solid var(--line); border-radius:10px; padding:1px 7px; margin-right:6px; white-space:nowrap;}
+.ev.nowhit{ outline:2px solid var(--accent); outline-offset:1px; background:rgba(217,79,61,.09) !important;}
