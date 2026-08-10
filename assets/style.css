@@ -62,12 +62,9 @@ body{
   position:relative; max-width:860px; margin:0 auto; background:var(--paper);
   border:2px solid var(--toner); padding:0 0 0; box-shadow:0 6px 22px rgba(0,0,0,.17);
 }
-/* 갱지 결 — 인쇄물이라는 신호를 아주 약하게만 */
-.sheet::before{
-  content:''; position:absolute; inset:0; z-index:0; pointer-events:none; opacity:.055;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-.sheet > *{ position:relative; z-index:1; }
+/* 갱지 결(SVG 노이즈 오버레이)은 뺐다 — 일정 탭은 문서 높이가 7900px라
+   전면 레이어가 iOS에서 합성 비용을 폭발시켜 스크롤이 버벅였다.
+   opacity .055로 얻는 질감보다 스크롤이 훨씬 중요하다. */
 .topbar{ height:5px; background:var(--toner); }
 
 /* ── 문서 머리 : 문서번호 · 시행일자 ── */
@@ -102,7 +99,7 @@ header .sub{ margin:0; font-size:12.5px; color:var(--faint); letter-spacing:.02e
 .gwanin{
   position:absolute; top:16px; right:18px; width:74px; height:74px; display:grid;
   place-items:center; border:2.5px solid var(--seal); border-radius:50%; color:var(--seal);
-  transform:rotate(-9deg); mix-blend-mode:multiply; pointer-events:none;
+  transform:rotate(-9deg); pointer-events:none;
   font-size:15px; font-weight:800; letter-spacing:.1em; line-height:1.15; text-align:center;
 }
 .gwanin::before{ content:''; position:absolute; inset:4px; border:1px solid var(--seal); border-radius:50%; }
@@ -524,7 +521,7 @@ body[data-tab="money"] #fbar-wrap, body[data-tab="money"] #fempty{ display:none 
   position:relative; flex:0 0 auto; width:72px; height:72px; display:grid; place-items:center; text-align:center;
   border:2.5px solid var(--seal); border-radius:50%; color:var(--seal);
   font-size:16px; font-weight:800; letter-spacing:.1em; line-height:1.15;
-  transform:rotate(-7deg); mix-blend-mode:multiply;
+  transform:rotate(-7deg);
   opacity:.16; filter:grayscale(1); transition:opacity .2s, filter .2s;
 }
 .rseal::before{ content:''; position:absolute; inset:4px; border:1px solid var(--seal); border-radius:50%; }
