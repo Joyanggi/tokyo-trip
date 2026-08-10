@@ -408,3 +408,10 @@
 
 /* 아이콘 단독 버튼이 정사각형을 유지하도록 */
 .evact .onmap, .mctl .mall{ flex-shrink:0;}
+
+/* 확정된 식사 옆에 붙는 대안 줄 */
+.ev .alt{ display:block; margin:4px 0 1px; padding:4px 9px; font-size:11.5px; line-height:1.5;
+  color:#6f685a; background:var(--soft); border-left:2px solid var(--line); border-radius:0 6px 6px 0;}
+.ev .alt::before{ content:'↳ 대안 '; font-weight:800; color:#8a8272;}
+.ev .fix{ display:inline-block; font-size:10px; font-weight:800; color:#fff; background:var(--accent2);
+  border-radius:9px; padding:1px 7px; margin-left:5px; vertical-align:middle; white-space:nowrap;}
