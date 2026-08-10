@@ -69,7 +69,7 @@
   .prow .pmeta{ font-size:12px; color:#7a7263; margin:2px 0;}
   .prow .pmeta .pcode{ background:var(--tag); padding:1px 6px; border-radius:4px; font-family:ui-monospace,Menlo,monospace;}
   .prow .pdesc{ font-size:11.5px; color:#6f685a;}
-  .prow .psold{ display:inline-block; background:var(--accent); color:#fff; font-size:9px; font-weight:700; padding:1px 5px; border-radius:3px; margin-left:5px; vertical-align:middle;}
+  .prow .psold{ display:inline-block; background:var(--accent); color:#fff; font-size:10.5px; font-weight:700; padding:1px 5px; border-radius:3px; margin-left:5px; vertical-align:middle;}
   /* 컴팩트 리스트 카드(장소·맛집 등, 이미지 없음) */
   .lcard{ margin-top:8px; border:1px solid var(--line); border-radius:10px; overflow:hidden; background:#fff;}
   .litem{ display:flex; gap:9px; align-items:flex-start; padding:10px 13px; border-bottom:1px solid var(--soft); border-left:3px solid transparent;}
@@ -81,34 +81,36 @@
   .litem .lsub{ font-size:11.5px; color:#8a8272; margin-left:auto; white-space:nowrap;}
   .litem .ljp{ color:#8a8272; font-size:11.5px; display:block; margin:1px 0;}
   .litem .ld{ font-size:12.5px; color:#5c5648; margin-top:2px;}
-  .litem .lt a.mappin{ margin-left:auto; width:24px; height:24px; font-size:12.5px;}
+  .litem .lt a.mappin{ margin:0 0 0 auto; width:34px; height:34px; font-size:15px;}
   .litem .lt .bdg{ margin-left:5px;}
   .cvs li img, .noodlegrid .n img, .special img, .mcd img, .place img, .prow>img{ cursor:zoom-in;}
   #lb{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.88); z-index:99999; align-items:center; justify-content:center; padding:16px; cursor:zoom-out;}
   #lb.open{ display:flex;}
   #lb img{ max-width:96%; max-height:96%; border-radius:10px; box-shadow:0 12px 48px rgba(0,0,0,.6); cursor:zoom-out;}
   #lb .hint{ position:fixed; top:14px; right:20px; color:#fff; font-size:13px; opacity:.75;}
-  input.ckbox, input.expck{ width:17px; height:17px; flex:0 0 auto; margin-right:3px; accent-color:#2e6e5a; cursor:pointer; vertical-align:middle;}
+  input.ckbox, input.expck{ width:24px; height:24px; flex:0 0 auto; margin-right:5px; accent-color:#2e6e5a; cursor:pointer; vertical-align:middle;}
   .n.ckd, .prow.ckd, .special.ckd, .mcd .item.ckd, .litem.ckd{ opacity:.45;}
   .n.ckd > span, .prow.ckd .pnm, .litem.ckd .lnm{ text-decoration:line-through;}
-  a.mappin{ display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; margin-left:5px; border-radius:5px; background:var(--soft); border:1px solid var(--line); text-decoration:none; font-size:11px; vertical-align:middle; line-height:1; transition:background .15s;}
+  /* 문장 안에 섞이는 핀은 24px — 더 키우면 줄 높이를 밀어 문단이 들쭉날쭉해진다.
+     자기 칸을 갖는 목록 행(.litem/.prow)의 핀만 32px로 크게 쓴다. */
+  a.mappin{ display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; margin:-4px 3px -4px 5px; border-radius:7px; background:var(--soft); border:1px solid var(--line); text-decoration:none; font-size:12.5px; vertical-align:middle; line-height:1; flex:0 0 auto; transition:background .15s; -webkit-tap-highlight-color:transparent;}
   a.mappin:hover{ background:var(--accent2); }
 
   /* ================= 지역 필터 바 (상시 표시 · 진입점+상태+칩 서랍을 한 자리로) ================= */
   #fbar-wrap{ position:sticky; top:6px; z-index:9000; margin:12px 30px 0; border-radius:10px; overflow:hidden; box-shadow:0 4px 14px rgba(0,0,0,.16);}
   #fbar{ display:flex; align-items:center; gap:8px; background:var(--tag); color:var(--ink); padding:9px 14px; font-size:13.5px; transition:background .15s,color .15s;}
   #fbar.active{ background:var(--accent2); color:#fff;}
-  #fbar-toggle{ display:flex; align-items:center; gap:6px; background:none; border:none; color:inherit; font-family:inherit; font-size:13.5px; font-weight:700; cursor:pointer; padding:2px;}
+  #fbar-toggle{ display:flex; align-items:center; gap:6px; min-height:40px; background:none; border:none; color:inherit; font-family:inherit; font-size:13.5px; font-weight:700; cursor:pointer; padding:2px 4px; -webkit-tap-highlight-color:transparent;}
   #fbar-toggle .car{ font-size:10px; opacity:.8; transition:transform .15s;}
   #fbar-wrap.chips-open #fbar-toggle .car{ transform:rotate(180deg);}
-  #fbar .x{ display:none; cursor:pointer; font-weight:700; background:rgba(0,0,0,.08); padding:4px 10px; border-radius:8px; white-space:nowrap;}
-  #fbar.active .x{ display:inline-block; background:rgba(255,255,255,.22);}
-  #fbar #nv-hide{ margin-left:auto; display:flex; align-items:center; gap:4px; background:none; border:none; color:inherit; font-family:inherit; font-size:12.5px; font-weight:700; cursor:pointer; padding:4px 8px; border-radius:8px; white-space:nowrap;}
+  #fbar .x{ display:none; align-items:center; min-height:38px; cursor:pointer; font-weight:700; background:rgba(0,0,0,.08); padding:4px 13px; border-radius:8px; white-space:nowrap;}
+  #fbar.active .x{ display:inline-flex; background:rgba(255,255,255,.22);}
+  #fbar #nv-hide{ margin-left:auto; display:flex; align-items:center; gap:4px; min-height:38px; background:none; border:none; color:inherit; font-family:inherit; font-size:12.5px; font-weight:700; cursor:pointer; padding:4px 11px; border-radius:8px; white-space:nowrap; -webkit-tap-highlight-color:transparent;}
   #fbar #nv-hide.on{ background:rgba(0,0,0,.12);}
   #fbar.active #nv-hide.on{ background:rgba(255,255,255,.22);}
   #chips{ display:none; flex-wrap:wrap; gap:7px; background:var(--paper); padding:10px 14px; border-top:1px solid var(--line);}
   #chips.open{ display:flex;}
-  #chips .chip{ flex:0 0 auto; background:#fff; color:#2b2b2b; border:1px solid var(--line); border-radius:16px; padding:6px 13px; font-size:12.5px; font-weight:700; font-family:inherit; cursor:pointer;}
+  #chips .chip{ flex:0 0 auto; min-height:38px; background:#fff; color:#2b2b2b; border:1px solid var(--line); border-radius:19px; padding:6px 15px; font-size:12.5px; font-weight:700; font-family:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent;}
   #chips .chip.on{ background:var(--accent); color:#fff; border-color:var(--accent);}
   #fempty{ display:none; background:rgba(0,0,0,.16); border-radius:7px; padding:8px 14px; margin:8px 30px 0; font-size:13px; color:#5c5544;}
   /* 개요(홈) 탭엔 필터 대상 콘텐츠가 없음 — 지역 필터 바 자체를 노출하지 않음 */
@@ -117,10 +119,16 @@
 
   /* ================= 하단 내비게이션 (탭 이동 전용) ================= */
   html{ scroll-behavior:smooth; }
-  body{ padding-bottom:76px; }
-  #nav{ position:fixed; left:0; right:0; bottom:0; z-index:9500; background:rgba(43,43,43,.97); display:flex; justify-content:space-around; align-items:stretch; padding:5px 3px calc(5px + env(safe-area-inset-bottom)); box-shadow:0 -3px 14px rgba(0,0,0,.3);}
-  #nav a{ flex:1; min-width:0; background:none; border:none; color:#f4eddd; text-align:center; text-decoration:none; font-family:inherit; font-size:10px; line-height:1.3; padding:3px 0 2px; cursor:pointer; border-radius:8px; white-space:nowrap;}
-  #nav .ico{ display:block; font-size:17px; line-height:1.2;}
+  body{ padding-bottom:calc(80px + env(safe-area-inset-bottom)); }
+  /* 좌우 패딩이 없으면 아이폰 디스플레이 모서리 곡률에 첫/마지막 탭(개요·지출)이 잘린다.
+     아래 패딩은 홈 인디케이터와 겹치지 않도록 safe-area 위에 10px 더 준다. */
+  #nav{ position:fixed; left:0; right:0; bottom:0; z-index:9500; background:rgba(43,43,43,.97); display:flex; align-items:stretch; gap:1px;
+    padding:5px max(14px,env(safe-area-inset-left)) calc(10px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-right));
+    box-shadow:0 -3px 14px rgba(0,0,0,.3);}
+  #nav a{ flex:1; min-width:0; min-height:54px; background:none; border:none; color:#f4eddd; text-decoration:none; font-family:inherit;
+    font-size:10.5px; line-height:1.25; letter-spacing:-.3px; padding:5px 1px; cursor:pointer; border-radius:9px; white-space:nowrap;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; -webkit-tap-highlight-color:transparent;}
+  #nav .ico{ display:block; font-size:20px; line-height:1.15;}
   #nav a.on{ background:rgba(255,255,255,.18);}
   /* 섹션별 체크 진행률 */
   h2 .cnt{ margin-left:auto; background:rgba(255,255,255,.92); color:var(--accent2); font-size:11px; font-weight:800; padding:1px 9px; border-radius:10px; flex:0 0 auto;}
@@ -128,10 +136,14 @@
   /* 체크 항목 숨기기 모드 */
   body.hideck .n.ckd, body.hideck .prow.ckd, body.hideck .special.ckd, body.hideck .mcd .item.ckd, body.hideck .litem.ckd{ display:none;}
   /* 탭해서 전화 걸기 */
-  a.tel{ color:inherit; text-decoration:none; border-bottom:1px dashed currentColor;}
+  /* 긴급 연락처는 현지에서 급할 때 누른다 — 인라인 밑줄이 아니라 손가락이 닿는 칩으로 */
+  a.tel{ display:inline-flex; align-items:center; min-height:36px; padding:2px 11px; margin:1px 2px 1px 0; border-radius:8px;
+    background:var(--soft); border:1px solid var(--line); color:inherit; font-weight:700; text-decoration:none; white-space:nowrap;
+    -webkit-tap-highlight-color:transparent;}
+  a.tel:active{ background:var(--tag);}
   /* 일자별 타임라인 */
   .dcard{ border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-top:14px; background:#fff;}
-  .dhead{ color:#fff; font-weight:800; font-size:15px; padding:10px 14px; display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
+  .dhead{ color:#fff; font-weight:800; font-size:15px; min-height:52px; padding:12px 14px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
   .dhead .meta{ font-size:11.5px; font-weight:500; opacity:.92; margin-left:auto;}
   .tl{ padding:2px 13px 6px;}
   .tl .ev{ display:flex; gap:10px; padding:7px 0; border-bottom:1px solid var(--soft); align-items:flex-start;}
@@ -152,11 +164,13 @@
   /* 일정 카드 접기/펼치기 */
   .dcard summary.dhead{ cursor:pointer; list-style:none; -webkit-tap-highlight-color:transparent;}
   .dcard summary.dhead::-webkit-details-marker{ display:none;}
-  .dcard summary.dhead::after{ content:'⌄'; font-size:16px; line-height:1; margin-left:9px; opacity:.85; flex:0 0 auto;}
+  .dcard summary.dhead{ position:relative; padding-right:36px;}
+  .dcard summary.dhead::after{ content:'⌄'; position:absolute; right:13px; top:50%; transform:translateY(-50%); font-size:17px; line-height:1; opacity:.85;}
   .dcard[open] summary.dhead::after{ content:'⌃';}
+  .dhead .meta{ flex:0 0 auto;}
   .dcard:not([open]) summary.dhead{ opacity:.94;}
   .plbar{ display:flex; gap:7px; margin:12px 0 2px; flex-wrap:wrap;}
-  .plbar button{ font-family:inherit; font-size:12px; font-weight:700; color:var(--accent2); background:var(--soft); border:1px solid var(--line); border-radius:16px; padding:6px 13px; cursor:pointer;}
+  .plbar button{ font-family:inherit; font-size:12.5px; font-weight:700; min-height:40px; color:var(--accent2); background:var(--soft); border:1px solid var(--line); border-radius:20px; padding:6px 15px; cursor:pointer; -webkit-tap-highlight-color:transparent;}
   .plbar button:hover{ background:var(--tag);}
   .plbar button.on{ background:var(--accent2); color:#fff; border-color:var(--accent2);}
 
@@ -165,15 +179,15 @@
      본문(Apple SD Gothic Neo)과 폰트가 어긋나지 않는다. */
   .expform{ background:var(--soft); border:1px solid var(--line); border-radius:10px; padding:11px 13px; margin-top:10px; display:flex; flex-direction:column; gap:8px;}
   .exprow1, .exprow2{ display:flex; gap:7px; align-items:center; flex-wrap:wrap;}
-  .expform input[type="text"], .expform select{ font-family:inherit; font-size:13.5px; color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:8px; padding:8px 10px; min-width:0;}
+  .expform input[type="text"], .expform select{ font-family:inherit; font-size:13.5px; min-height:44px; color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:8px; padding:8px 11px; min-width:0;}
   .expform input[type="text"]:focus, .expform select:focus{ outline:none; border-color:var(--accent2); box-shadow:0 0 0 2px rgba(46,110,90,.16);}
   .exprow1 select{ flex:0 0 auto;}
   .exprow1 input[type="text"]{ flex:1 1 140px;}
-  .expyen{ flex:1 1 110px; display:flex; align-items:center; gap:5px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:0 4px 0 10px;}
+  .expyen{ flex:1 1 110px; min-height:44px; display:flex; align-items:center; gap:5px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:0 4px 0 11px;}
   .expyen > span{ font-weight:800; color:var(--accent); font-size:14px; flex:0 0 auto;}
   .expyen input{ border:none !important; box-shadow:none !important; flex:1; width:100%; padding-left:2px !important;}
   .exprow2 select{ flex:1 1 auto;}
-  .expform button{ font-family:inherit; font-size:13px; font-weight:800; color:#fff; background:var(--accent2); border:none; border-radius:8px; padding:9px 15px; cursor:pointer; flex:0 0 auto;}
+  .expform button{ font-family:inherit; font-size:13.5px; font-weight:800; min-height:44px; color:#fff; background:var(--accent2); border:none; border-radius:8px; padding:9px 17px; cursor:pointer; flex:0 0 auto;}
   .expform button:hover{ filter:brightness(1.08);}
   /* 요약 — 「결제」(카드에서 나간 돈)와 「실부담」(정산 후 실제 쓴 돈)을 나란히 */
   .expsplit{ display:flex; gap:8px; margin-top:8px;}
@@ -209,19 +223,21 @@
   .expauth{ background:#eef6f2; border:1px solid var(--accent2); border-radius:10px; padding:10px 12px; margin-top:12px;}
   .expauth .hd{ font-size:12.5px; color:#3c6b5b; margin-bottom:7px;}
   .expauth .rw{ display:flex; gap:6px; flex-wrap:wrap;}
-  .expauth input{ font-family:inherit; font-size:13px; flex:1 1 120px; min-width:0; background:#fff; border:1px solid var(--line); border-radius:8px; padding:8px 10px; color:var(--ink);}
+  .expauth input{ font-family:inherit; font-size:13px; min-height:44px; flex:1 1 120px; min-width:0; background:#fff; border:1px solid var(--line); border-radius:8px; padding:8px 12px; color:var(--ink);}
   .expauth input:focus{ outline:none; border-color:var(--accent2); box-shadow:0 0 0 2px rgba(46,110,90,.16);}
-  .expauth button{ font-family:inherit; font-size:13px; font-weight:800; flex:0 0 auto; color:#fff; background:var(--accent2); border:none; border-radius:8px; padding:8px 16px; cursor:pointer;}
+  .expauth button{ font-family:inherit; font-size:13px; font-weight:800; min-height:44px; flex:0 0 auto; color:#fff; background:var(--accent2); border:none; border-radius:8px; padding:8px 18px; cursor:pointer;}
   .expauth .msg{ font-size:11.5px; color:var(--accent); margin-top:6px; min-height:1px;}
-  .expauthlink{ font-family:inherit; font-size:11.5px; color:#8a8272; background:none; border:none; text-decoration:underline; cursor:pointer; padding:4px 0; margin-top:10px;}
-  .expsync{ font-size:11.5px; padding:7px 11px; border-radius:8px; margin-top:8px; cursor:pointer;}
+  .expauthlink{ font-family:inherit; font-size:12px; min-height:36px; color:#8a8272; background:none; border:none; text-decoration:underline; cursor:pointer; padding:6px 2px; margin-top:8px;}
+  .expsync{ font-size:12px; min-height:38px; display:flex; align-items:center; padding:7px 13px; border-radius:8px; margin-top:8px; cursor:pointer;}
   .expsync.ok{ background:#eef6f2; color:#3c6b5b;}
   .expsync.busy{ background:var(--tag); color:#7a7263;}
   .expsync.err{ background:#fdeeea; color:var(--accent); font-weight:700;}
 
   /* ================= 모바일 최적화 ================= */
   @media(max-width:640px){
-    body{ padding:8px 5px; }
+    /* padding 단축 속성이 위의 padding-bottom(내비 높이)을 덮어쓰지 않도록 4값으로 명시.
+       이게 없으면 모바일에서 마지막 내용이 하단 내비에 가린다. */
+    body{ padding:8px 5px calc(80px + env(safe-area-inset-bottom)); }
     .sheet{ border-radius:4px; }
     header{ padding:22px 16px 14px; }
     header h1{ font-size:22px; }
@@ -258,7 +274,7 @@
 .foldsec{ border:1px solid var(--line); border-radius:12px; background:#fff; margin:22px 14px 0; overflow:hidden;}
 .foldsec > summary.foldhead{ cursor:pointer; list-style:none; padding:0;}
 .foldsec > summary.foldhead::-webkit-details-marker{ display:none;}
-.foldsec > summary.foldhead h2{ margin:0; border-radius:0;}
+.foldsec > summary.foldhead h2{ margin:0; border-radius:0; min-height:48px;}
 .foldsec > summary.foldhead h2::after{ content:'⌄'; margin-left:auto; font-size:17px; line-height:1;}
 .foldsec[open] > summary.foldhead h2::after{ content:'⌃';}
 .foldsec > *:not(summary){ padding-left:14px; padding-right:14px;}
@@ -271,17 +287,19 @@
 .mrow{ display:flex; gap:8px; padding:8px 12px; border-bottom:1px solid var(--soft); align-items:flex-start; font-size:12.5px; line-height:1.5;}
 .mrow:last-child{ border-bottom:none;}
 .mrow:nth-child(even){ background:rgba(244,237,221,.5);}
-.mrow.mh{ font-weight:800; color:#8a8272; font-size:11px; background:var(--tag);}
+.mrow.mh{ font-weight:800; color:#8a8272; font-size:11.5px; background:var(--tag);}
 .mrow > span:nth-child(1){ flex:0 0 62px;}
 .mrow > span:nth-child(2){ flex:0 0 38%; min-width:0; font-weight:600;}
 .mrow > span:nth-child(3){ flex:1; min-width:0; color:#6f685a; font-size:11.5px;}
-.mc{ display:inline-block; font-size:10px; font-weight:800; padding:2px 6px; border-radius:9px; color:#fff; white-space:nowrap;}
+.mc{ display:inline-block; font-size:10.5px; font-weight:800; padding:2px 6px; border-radius:9px; color:#fff; white-space:nowrap;}
 .mc.eat{ background:#c0392b;} .mc.cafe{ background:#2e6e5a;} .mc.des{ background:#c98a1e;}
 .mrow.mh .mc{ background:none; color:inherit; padding:0;}
 @media(max-width:640px){
   .mrow{ flex-wrap:wrap; }
   .mrow > span:nth-child(2){ flex:1 1 auto; }
   .mrow > span:nth-child(3){ flex:1 1 100%; padding-left:70px; }
+  /* 헤더 줄만은 접히면 '메모'가 둘째 줄로 떨어져 지저분해진다 — 한 줄로 유지 */
+  .mrow.mh > span:nth-child(3){ flex:0 0 auto; padding-left:0; }
   .foldsec{ margin:18px 5px 0; }
 }
 
@@ -289,23 +307,24 @@
    🗺️ 오버뷰 지도 — 안내문에 첨부된 인쇄 지도 톤
    ============================================================ */
 .vtabs{ display:flex; gap:6px; margin:14px 0 8px;}
-.vtabs .vtab{ font-family:inherit; font-size:13px; font-weight:800; letter-spacing:-.3px; color:#8a8272;
+.vtabs .vtab{ display:inline-flex; align-items:center; gap:4px; min-height:44px;
+  font-family:inherit; font-size:13.5px; font-weight:800; letter-spacing:-.3px; color:#8a8272;
   background:var(--soft); border:1px solid var(--line); border-radius:14px 14px 0 0; border-bottom-color:transparent;
-  padding:9px 16px; cursor:pointer; -webkit-tap-highlight-color:transparent;}
+  padding:9px 18px; cursor:pointer; -webkit-tap-highlight-color:transparent;}
 .vtabs .vtab.on{ color:var(--paper); background:var(--ink); border-color:var(--ink);}
 
 /* 날짜 칩 스트립 */
 .dchips{ display:flex; gap:6px; overflow-x:auto; -webkit-overflow-scrolling:touch;
   padding:2px 2px 8px; margin:0 -2px; scrollbar-width:none;}
 .dchips::-webkit-scrollbar{ display:none;}
-.dchip{ flex:0 0 auto; font-family:inherit; cursor:pointer; text-align:center; line-height:1.15;
-  min-width:60px; padding:7px 9px 6px; border:1px solid var(--line); border-radius:9px;
+.dchip{ flex:0 0 auto; font-family:inherit; cursor:pointer; text-align:center; line-height:1.2;
+  min-width:64px; min-height:58px; padding:8px 10px; border:1px solid var(--line); border-radius:10px;
   background:var(--paper); color:var(--ink); -webkit-tap-highlight-color:transparent;
   border-top:3px solid var(--cc,#8a8272);}
 .dchip i{ display:block; font-style:normal; font-size:10px; font-weight:700; color:#9a927f;}
 .dchip b{ display:block; font-size:15px; font-weight:800; letter-spacing:-.5px; margin:1px 0;}
-.dchip u{ display:block; text-decoration:none; font-size:9.5px; color:#9a927f; font-weight:700;
-  max-width:74px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.dchip u{ display:block; text-decoration:none; font-size:10.5px; color:#9a927f; font-weight:700;
+  max-width:92px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 .dchip.on{ background:var(--ink); border-color:var(--ink); color:var(--paper);}
 .dchip.on i, .dchip.on u{ color:rgba(255,253,247,.72);}
 
@@ -345,21 +364,47 @@
 .mnow b{ color:var(--accent); font-weight:800; margin-right:4px;}
 .mnow .mvia{ display:block; font-size:11.5px; color:#8a8272; font-weight:700; margin-top:3px;}
 .mctl{ display:flex; gap:7px;}
-.mctl button{ flex:1; font-family:inherit; font-size:13px; font-weight:800; padding:11px 4px; cursor:pointer;
-  border:1.5px solid var(--ink); border-radius:7px; background:var(--paper); color:var(--ink);
+.mctl button{ flex:1; min-height:48px; font-family:inherit; font-size:13.5px; font-weight:800; padding:11px 4px; cursor:pointer;
+  border:1.5px solid var(--ink); border-radius:8px; background:var(--paper); color:var(--ink);
   -webkit-tap-highlight-color:transparent;}
 .mctl .mgo{ background:var(--accent); border-color:var(--accent); color:#fff;}
-.mctl .mall{ flex:0 0 46px; font-size:15px; padding:11px 0;}
+.mctl .mall{ flex:0 0 52px; font-size:17px; padding:11px 0;}
 .mctl button:disabled{ opacity:.35; cursor:default;}
 .mfoot{ font-size:11px; color:#9a927f; margin:8px 2px 0; line-height:1.55;}
 
 /* 일정 행 액션 버튼 */
-.evact{ display:flex; gap:4px; margin:5px 0 1px; align-items:center;}
-.evact a, .evact button{ font-family:inherit; font-size:10.5px; font-weight:700; line-height:1.35;
-  text-decoration:none; cursor:pointer; white-space:nowrap; padding:3px 7px; border-radius:11px;
+.evact{ display:flex; gap:5px; margin:7px 0 2px; align-items:center;}
+.evact a, .evact button{ display:inline-flex; align-items:center; justify-content:center; min-height:32px;
+  font-family:inherit; font-size:11px; font-weight:700; line-height:1.2;
+  text-decoration:none; cursor:pointer; white-space:nowrap; padding:4px 10px; border-radius:16px;
   border:1px solid var(--line); background:var(--soft); color:#6f685a; -webkit-tap-highlight-color:transparent;}
 .evact a:first-child{ background:var(--accent); border-color:var(--accent); color:#fff;}
-.evact .onmap{ padding:3px 6px; margin-left:auto;}
+.evact .onmap{ padding:4px 8px; margin-left:auto; font-size:13px;}
 .mvb{ display:inline-block; font-size:10.5px; font-weight:800; color:#6f685a; background:var(--tag);
   border:1px solid var(--line); border-radius:10px; padding:1px 7px; margin-right:6px; white-space:nowrap;}
 .ev.nowhit{ outline:2px solid var(--accent); outline-offset:1px; background:rgba(217,79,61,.09) !important;}
+
+/* ================= 터치·가독성 보정 ================= */
+/* 긴급 연락처는 급할 때 한 손으로 누른다 — 문장 속 인라인 칩이면 뒤 설명이
+   어정쩡하게 줄바꿈되고 타깃도 작다. 이 섹션에서만 전폭 버튼으로 세운다. */
+#sec-sos a.tel{ display:flex; width:100%; justify-content:center; min-height:46px;
+  margin:7px 0 3px; padding:2px 12px; font-size:16.5px; font-weight:800; letter-spacing:.2px;
+  background:var(--accent2); border-color:var(--accent2); color:#fff;}
+#sec-sos a.tel:active{ background:#255c4b;}
+#sec-sos table.ov td{ line-height:1.6;}
+#sec-sos .muted{ display:block; margin-top:2px;}
+
+/* 체크박스 히트 영역 — 보이는 상자는 24px 그대로, 누를 수 있는 범위만 넓힌다 */
+/* inline-flex 여야 한다 — flex 면 블록 레벨이라 .place 처럼 부모가 플렉스가 아닌 곳에서
+   한 줄을 통째로 차지하고 체크박스가 가운데로 떠버린다 */
+.ckwrap{ display:inline-flex; align-items:flex-start; justify-content:center; flex:0 0 auto;
+  vertical-align:top; min-width:34px; min-height:44px; margin:-9px 0 -9px -8px; padding:9px 5px;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;}
+.mcd .item .ckwrap, .noodlegrid .n .ckwrap{ align-items:center;}
+
+/* 문장 속 링크: 인라인 요소의 세로 패딩은 줄 높이를 바꾸지 않으면서 탭 영역만 넓혀준다 */
+.sheet a:not(.mappin):not(.tel):not(.evact a){ padding:7px 2px; margin:0 -2px;}
+.evact a{ padding:4px 10px; margin:0;}
+
+/* 아이콘 단독 버튼이 정사각형을 유지하도록 */
+.evact .onmap, .mctl .mall{ flex-shrink:0;}

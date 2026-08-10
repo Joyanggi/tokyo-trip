@@ -129,7 +129,12 @@ function regionColor(name){
     if(saved[k]){ cb.checked=true; item.classList.add('ckd'); }
     cb.addEventListener('click', function(e){ e.stopPropagation(); });
     cb.addEventListener('change', function(){ if(cb.checked){saved[k]=1;} else {delete saved[k];} save(); item.classList.toggle('ckd', cb.checked); updateCounts(); });
-    item.insertBefore(cb, item.firstChild);
+    /* 체크박스 자체는 24px이라 손가락엔 작다. 보이는 크기는 그대로 두고
+       label 로 감싸 히트 영역만 넓힌다(음수 마진으로 레이아웃은 거의 그대로). */
+    var wrap = document.createElement('label');
+    wrap.className = 'ckwrap';
+    wrap.appendChild(cb);
+    item.insertBefore(wrap, item.firstChild);
   }
   document.querySelectorAll('[data-cl]').forEach(function(c){
     var cl=c.getAttribute('data-cl');
