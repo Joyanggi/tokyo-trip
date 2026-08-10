@@ -10,7 +10,7 @@
   if (!R || !R.length) return;
 
   var BASE = '../';
-  var V = '?v=12';
+  var V = '?v=13';
   var TZ = 9;                    /* 일본 표준시 */
   var TRIP_Y = 2026;
 
@@ -221,13 +221,24 @@
       var dc = dcards[d]; if (!dc) return;
       dc.open = true;
       dc.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      markChips(d);
+      markChips(d, true);
     }
   });
-  function markChips(d) {
+  /* doScroll 은 사용자가 직접 날짜를 고른 경우에만 true.
+     스크롤 동기화에서까지 칩을 움직이면 안 된다 — scrollIntoView 는 페이지까지 같이
+     스크롤해버려서, 타임라인을 내리는 순간 칩 스트립을 보이려고 화면을 도로 위로
+     끌어올린다(= 일정이 스크롤되지 않는 것처럼 보임). 그래서 스트립만 가로로 민다. */
+  var chipD = null;
+  function markChips(d, doScroll) {
+    if (d === chipD) return;
+    chipD = d;
     chips.querySelectorAll('.dchip').forEach(function (c) { c.classList.toggle('on', c.getAttribute('data-d') === d); });
+    if (!doScroll) return;
     var on = chips.querySelector('.dchip.on');
-    if (on) on.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    if (!on) return;
+    var want = on.offsetLeft - (chips.clientWidth - on.offsetWidth) / 2;
+    var max = chips.scrollWidth - chips.clientWidth;
+    chips.scrollTo({ left: Math.max(0, Math.min(want, max)), behavior: 'smooth' });
   }
 
   /* ---------- Leaflet 지연 로드 ---------- */
@@ -305,7 +316,7 @@
 
   /* ---------- 하루 그리기 ---------- */
   function selectDay(d, i) {
-    curD = d; markChips(d);
+    curD = d; markChips(d, true);
     var day = dayByD(d);
     curI = Math.max(0, Math.min(i || 0, day.pts.length - 1));
     panel.querySelector('.mdate').textContent = day.label + ' · ' + day.sub;
@@ -446,7 +457,7 @@
       var i = td ? nowIndex(day) : 0;
       if (view === 'map') { selectDay(d, i); return; }
       Object.keys(dcards).forEach(function (k) { dcards[k].open = (k === d); });
-      markChips(d);
+      markChips(d, true);
       var m = evIndex[d] && evIndex[d][day.pts[i].t];
       var target = (m && m.el) || dcards[d];
       document.querySelectorAll('.ev.nowhit').forEach(function (x) { x.classList.remove('nowhit'); });
@@ -471,5 +482,5 @@
     });
   }, { passive: true });
 
-  markChips(todayD() || R[0].d);
+  markChips(todayD() || R[0].d, true);
 })();
