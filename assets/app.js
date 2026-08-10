@@ -19,70 +19,19 @@ function regionsOf(el){
   }
   return cached ? cached.split('|') : [];
 }
-/* 지역 색은 이 문서에서 장식이 아닌 유일한 색 — 필터 정체성을 담는다.
-   나머지 색을 흑백으로 눌렀으므로 채도를 낮춰 '찍힌 잉크'처럼 보이게 한다. */
 function regionColor(name){
-  if(!name || name==='전국') return '#8a877c'; /* 전국 체인은 중립 회색 */
+  if(!name || name==='전국') return '#8a8272'; /* 전국 체인은 중립 회색 */
   var h=0;
   for(var i=0;i<name.length;i++){ h=(h*31 + name.charCodeAt(i))|0; }
   h=((h%360)+360)%360;
-  return 'hsl('+h+',34%,36%)';
+  return 'hsl('+h+',48%,42%)';
 }
 
-/* ================= 여행 일자 ================= */
-var TRIP = {
-  y:2026, m:8, d:5,                       /* 2026-09-05 (월은 0-based) */
-  start:Date.UTC(2026,8,5), end:Date.UTC(2026,8,9),
-  /* 출발 전이면 D-n, 여행 중이면 n일차, 끝났으면 종료 */
-  dday:function(){
-    var n=new Date(), t=Date.UTC(n.getFullYear(), n.getMonth(), n.getDate());
-    var left=Math.round((this.start-t)/86400000);
-    if(left>0) return 'D-'+left;
-    if(t>this.end) return '여행 종료';
-    return '여행 '+(Math.round((t-this.start)/86400000)+1)+'일차';
-  }
-};
-
-/* ================= 공용 크롬 주입 =================
-   문서 머리(문서번호·수신·발신)·관인·지역 필터바·하단 nav·라이트박스·
-   절취선 확인 회신서를 전부 여기서 넣는다 — 8개 페이지가 구조적으로 같아진다. */
+/* ================= 공용 크롬 주입 (하단 nav·지역 필터바·라이트박스·footer) ================= */
 (function(){
   var BASE = /\/pages\//.test(location.pathname) ? '../' : './';
   var sheet = document.querySelector('.sheet');
   var header = sheet && sheet.querySelector('header');
-
-  var TABS = [
-    ['home','🏠','개요','index.html'],
-    ['plan','🗓️','일정','pages/plan.html'],
-    ['buy','🛍️','사고','pages/buy.html'],
-    ['eat','🍜','먹고','pages/eat.html'],
-    ['go','🗺️','가고','pages/go.html'],
-    ['trip','🚃','근교','pages/trip.html'],
-    ['local','🤖','로컬','pages/local.html'],
-    ['money','💴','지출','pages/money.html']
-  ];
-  var curTab = document.body.getAttribute('data-tab') || 'home';
-  var tabIdx = 0;
-  TABS.forEach(function(t,i){ if(t[0]===curTab) tabIdx=i; });
-  var DOCNO = '제2026-'+(11+tabIdx)+'호';
-
-  /* ── 문서 머리 · 수신/발신 · 관인 ── */
-  if(header && !document.querySelector('.dochead')){
-    header.insertAdjacentHTML('beforebegin',
-      '<div class="dochead">' +
-        '<span class="docno">'+DOCNO+'</span>' +
-        '<span class="docdate">시행 2026. 9. 5.</span>' +
-      '</div>'
-    );
-    header.insertAdjacentHTML('beforeend',
-      '<dl class="docto">' +
-        '<dt>수신</dt><dd>***REMOVED*** · ***REMOVED*** 귀하</dd>' +
-        '<dt>발신</dt><dd>도쿄 탐방 준비위원회</dd>' +
-        '<dt>기간</dt><dd class="num">2026. 9. 5. ~ 9. 9. (4박 5일)</dd>' +
-      '</dl>' +
-      '<div class="gwanin" aria-hidden="true">도쿄<i>준비위</i></div>'
-    );
-  }
 
   if(header && !document.getElementById('fbar-wrap')){
     header.insertAdjacentHTML('afterend',
@@ -97,52 +46,24 @@ var TRIP = {
       '<div class="empty" id="fempty"></div>'
     );
   }
-  /* ── 절취선 확인 회신서 ──
-     가정통신문의 회신란을 그대로 가져왔다. 이 페이지의 확인 진행률과 남은 날을
-     보여주고, 전부 확인하면 관인이 찍힌다. */
   if(sheet && !sheet.querySelector('footer')){
     sheet.insertAdjacentHTML('beforeend',
-      '<div class="tear"><span>✂</span></div>' +
-      '<div class="reply">' +
-        '<div class="rtit">확 인 회 신 서</div>' +
-        '<div class="rgrid">' +
-          '<table class="rtab"><tbody>' +
-            '<tr><th>문서번호</th><td>'+DOCNO+'</td></tr>' +
-            '<tr id="rp-row"><th>확인 항목</th><td id="rp-val">0 / 0</td></tr>' +
-            '<tr><th>출발까지</th><td id="rp-dday"></td></tr>' +
-            '<tr><th>확인자</th><td class="kr">***REMOVED*** · ***REMOVED***</td></tr>' +
-          '</tbody></table>' +
-          '<div class="rseal" id="rp-seal">확 인</div>' +
-        '</div>' +
-        '<p class="rnote">위 안내문의 내용을 확인하였습니다. 가격·재고·영업시간은 변동될 수 있으니 방문 시 현장 기준으로 재확인하세요.</p>' +
-      '</div>' +
-      '<footer>도쿄 탐방 준비위원회 · 항목이 추가되면 계속 업데이트됩니다</footer>'
+      '<footer>작성: 도쿄 탐방 준비위원회 · 항목이 추가되면 계속 업데이트됩니다 📋<br>' +
+      '가격·재고는 변동될 수 있으니 방문 시 현장 기준으로 재확인하세요.</footer>'
     );
-    document.getElementById('rp-dday').textContent = TRIP.dday();
-
-    /* 체크박스가 없는 페이지(개요·일정·지출)는 확인할 항목 자체가 없으므로
-       그 줄을 빼고 관인을 찍은 상태로 둔다. */
-    var seal=document.getElementById('rp-seal'), row=document.getElementById('rp-row'), val=document.getElementById('rp-val');
-    var wasDone=false;
-    function paintReply(){
-      var boxes=document.querySelectorAll('input.ckbox');
-      if(!boxes.length){ row.style.display='none'; seal.classList.add('on'); wasDone=true; return; }
-      var done=0;
-      Array.prototype.forEach.call(boxes,function(b){ if(b.checked) done++; });
-      val.textContent=done+' / '+boxes.length;
-      var full=(done===boxes.length);
-      /* 이미 찍혀 있으면 다시 애니메이션하지 않는다 — 첫 방문에 쿵 찍히는 건 한 번뿐 */
-      if(full && !wasDone){ seal.classList.remove('on'); void seal.offsetWidth; seal.classList.add('on'); }
-      else if(!full) seal.classList.remove('on');
-      wasDone=full;
-    }
-    /* 체크박스는 나중에 붙으므로 다음 틱에 한 번, 이후엔 변경마다 */
-    setTimeout(paintReply,0);
-    document.addEventListener('change', function(e){
-      if(e.target.classList && e.target.classList.contains('ckbox')) paintReply();
-    });
   }
 
+  var TABS = [
+    ['home','🏠','개요','index.html'],
+    ['plan','🗓️','일정','pages/plan.html'],
+    ['buy','🛍️','사고','pages/buy.html'],
+    ['eat','🍜','먹고','pages/eat.html'],
+    ['go','🗺️','가고','pages/go.html'],
+    ['trip','🚃','근교','pages/trip.html'],
+    ['local','🤖','로컬','pages/local.html'],
+    ['money','💴','지출','pages/money.html']
+  ];
+  var curTab = document.body.getAttribute('data-tab') || 'home';
   if(!document.getElementById('nav')){
     var navHtml = TABS.map(function(t){
       var cls = (t[0]===curTab) ? ' class="on"' : '';
