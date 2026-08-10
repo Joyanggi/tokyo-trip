@@ -425,3 +425,5 @@
 .ev .alt::before{ content:'↳ 대안 '; font-weight:800; color:#8a8272;}
 .ev .fix{ display:inline-block; font-size:10px; font-weight:800; color:#fff; background:var(--accent2);
   border-radius:9px; padding:1px 7px; margin-left:5px; vertical-align:middle; white-space:nowrap;}
+.mc.mor{ background:#5b6b7a;}
+.altm{ color:#8a8272; font-weight:800; white-space:nowrap;}
