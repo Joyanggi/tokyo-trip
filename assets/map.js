@@ -266,8 +266,10 @@
 
   /* 그날의 '본 무대'를 골라 첫 화면을 맞춘다.
      나리타·마이하마처럼 멀리 떨어진 지점이 하나라도 끼면 전체에 맞출 때 간토 전역이
-     나와서 정작 동선이 안 보인다. 그래서 지점들을 8km 단일연결로 묶고
-     가장 많은 지점이 모인 덩어리에만 맞춘다. (🔍 버튼으로 전체 보기 가능) */
+     나와서 정작 동선이 안 보인다.
+     대상은 '실제로 걸어다니는 지점'만 — 숙소·공항처럼 타고 지나가는 곳까지 넣으면
+     (예: 9/9 숙소는 시부야에서 3.6km) 화면이 넓어져 상점 핀이 뭉친다.
+     그 지점들을 8km 단일연결로 묶고 가장 큰 덩어리에 맞춘다. (🔍로 전체 보기) */
   var LINK = 8000;
   function hav(a, b) {
     var R6 = 6371000, p1 = a[0] * Math.PI / 180, p2 = b[0] * Math.PI / 180;
@@ -276,14 +278,19 @@
     return 2 * R6 * Math.asin(Math.sqrt(h));
   }
   function mainCluster(day, legPts) {
-    var n = day.pts.length, par = [];
+    var n = day.pts.length, par = [], cand = [], isc = {};
+    day.legs.forEach(function (leg, i) {
+      if (leg.mv !== 'walk') return;
+      [i, i + 1].forEach(function (k) { if (!isc[k]) { isc[k] = 1; cand.push(k); } });
+    });
+    if (cand.length < 2) { cand = []; for (var j = 0; j < n; j++) cand.push(j); }
     for (var i = 0; i < n; i++) par.push(i);
     function find(x) { while (par[x] !== x) { par[x] = par[par[x]]; x = par[x]; } return x; }
-    for (var a = 0; a < n; a++) for (var b = a + 1; b < n; b++) {
-      if (hav(day.pts[a].ll, day.pts[b].ll) <= LINK) par[find(a)] = find(b);
+    for (var a = 0; a < cand.length; a++) for (var b = a + 1; b < cand.length; b++) {
+      if (hav(day.pts[cand[a]].ll, day.pts[cand[b]].ll) <= LINK) par[find(cand[a])] = find(cand[b]);
     }
     var groups = {};
-    for (var k = 0; k < n; k++) { var r = find(k); (groups[r] = groups[r] || []).push(k); }
+    cand.forEach(function (k) { var r = find(k); (groups[r] = groups[r] || []).push(k); });
     var best = null;
     Object.keys(groups).forEach(function (g) { if (!best || groups[g].length > best.length) best = groups[g]; });
     if (!best || best.length < 2) return null;
