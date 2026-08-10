@@ -10,7 +10,7 @@
   if (!R || !R.length) return;
 
   var BASE = '../';
-  var V = '?v=14';
+  var V = '?v=15';
   var TZ = 9;                    /* 일본 표준시 */
   var TRIP_Y = 2026;
 
@@ -116,10 +116,13 @@
       var prev = i > 0 ? day.pts[i - 1] : null;
       var leg = i > 0 ? day.legs[i - 1] : null;
       var mode = leg && leg.mv === 'walk' ? 'walking' : 'transit';
+      /* 좌표로 넘기면 구글맵이 이름 없는 핀으로 떠서, 그 지점이 맞는지 확인할 수가 없다.
+         가게 이름(일본어)으로 넘겨야 상호·영업시간·리뷰가 함께 뜬다. */
+      var dq = encodeURIComponent(p.q || (p.ll[0] + ',' + p.ll[1]));
+      var oq = prev ? encodeURIComponent(prev.q || (prev.ll[0] + ',' + prev.ll[1])) : '';
       var dir = 'https://www.google.com/maps/dir/?api=1' +
-        (prev ? '&origin=' + prev.ll[0] + ',' + prev.ll[1] : '') +
-        '&destination=' + p.ll[0] + ',' + p.ll[1] + '&travelmode=' + mode;
-      var q = 'https://www.google.com/maps/search/?api=1&query=' + p.ll[0] + ',' + p.ll[1];
+        (prev ? '&origin=' + oq : '') + '&destination=' + dq + '&travelmode=' + mode;
+      var q = 'https://www.google.com/maps/search/?api=1&query=' + dq;
       var act = el('div', 'evact',
         '<a href="' + dir + '" target="_blank" rel="noopener">🧭 길찾기</a>' +
         '<a href="' + q + '" target="_blank" rel="noopener">📍 지도</a>' +

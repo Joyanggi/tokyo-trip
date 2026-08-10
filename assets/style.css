@@ -7,7 +7,13 @@
   .stamp{ display:inline-block; border:2px solid var(--accent); color:var(--accent); font-weight:800; font-size:12px; letter-spacing:2px; padding:4px 10px; border-radius:4px; transform:rotate(-4deg); margin-bottom:10px; }
   header h1{ margin:6px 0 4px; font-size:30px; letter-spacing:-1px;}
   header .sub{ color:#7a7263; font-size:14px; margin:0;}
-  .banner{ background:var(--soft); border:1px dashed var(--line); border-radius:8px; margin:20px 30px; padding:12px 18px; font-size:13.5px; color:#5c5544; }
+  .banner{ background:var(--soft); border:1px dashed var(--line); border-radius:10px; margin:20px 30px; font-size:13.5px; color:#5c5544;}
+  .banner > summary{ cursor:pointer; list-style:none; display:flex; align-items:center; min-height:48px;
+    padding:8px 16px; font-weight:800; font-size:14px; color:var(--accent2); -webkit-tap-highlight-color:transparent;}
+  .banner > summary::-webkit-details-marker{ display:none;}
+  .banner > summary::after{ content:'⌄'; margin-left:auto; font-size:17px; line-height:1; opacity:.8;}
+  .banner[open] > summary::after{ content:'⌃';}
+  .banner .bbody{ padding:0 16px 13px; border-top:1px dashed var(--line); padding-top:11px;}
   section{ padding:6px 30px;}
   h2{ font-size:19px; margin:24px 0 12px; padding:8px 14px; background:var(--accent2); color:#fff; border-radius:6px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
   h2 .no{ background:#fff; color:var(--accent2); border-radius:50%; width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; flex:0 0 auto;}
@@ -142,7 +148,7 @@
     -webkit-tap-highlight-color:transparent;}
   a.tel:active{ background:var(--tag);}
   /* 일자별 타임라인 */
-  .dcard{ border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-top:14px; background:#fff;}
+  .dcard{ border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-top:14px; background:#fff;}
   .dhead{ color:#fff; font-weight:800; font-size:15px; min-height:52px; padding:12px 14px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
   .dhead .meta{ font-size:11.5px; font-weight:500; opacity:.92; margin-left:auto;}
   .tl{ padding:2px 13px 6px;}
@@ -242,7 +248,9 @@
     header{ padding:22px 16px 14px; }
     header h1{ font-size:22px; }
     header .sub{ font-size:12.5px; }
-    .banner{ margin:14px 14px; padding:11px 14px; font-size:12.5px; }
+    .banner{ margin:14px 14px; font-size:12.5px; }
+    .banner .bbody{ padding:11px 14px 12px; }
+    .banner > summary{ padding:6px 14px; }
     section{ padding:4px 14px; }
     h2{ font-size:15.5px; padding:8px 12px; }
     h2 .no{ width:22px; height:22px; font-size:12px; }
@@ -271,17 +279,19 @@
   }
 
 /* ================= 접기형 섹션 (편의점 등) ================= */
-.foldsec{ border:1px solid var(--line); border-radius:12px; background:#fff; margin:22px 14px 0; overflow:hidden;}
+/* 일반 section 은 padding:6px 30px(모바일 4px 14px) 이므로 같은 값으로 맞춘다.
+   안 맞추면 편의점 카드만 좌우로 튀어나와 보인다. */
+.foldsec{ border:1px solid var(--line); border-radius:10px; background:#fff; margin:24px 30px 0; overflow:hidden;}
 .foldsec > summary.foldhead{ cursor:pointer; list-style:none; padding:0;}
 .foldsec > summary.foldhead::-webkit-details-marker{ display:none;}
-.foldsec > summary.foldhead h2{ margin:0; border-radius:0; min-height:48px;}
+.foldsec > summary.foldhead h2{ margin:0; border-radius:0; min-height:52px;}
 .foldsec > summary.foldhead h2::after{ content:'⌄'; margin-left:auto; font-size:17px; line-height:1;}
 .foldsec[open] > summary.foldhead h2::after{ content:'⌃';}
-.foldsec > *:not(summary){ padding-left:14px; padding-right:14px;}
-.foldsec > .noodlegrid, .foldsec > .cvs-head{ margin-left:14px; margin-right:14px;}
+.foldsec > *:not(summary){ padding-left:13px; padding-right:13px;}
+.foldsec > .noodlegrid, .foldsec > .cvs-head{ margin-left:13px; margin-right:13px;}
 
 /* ================= 식사 후보 표 ================= */
-.mday{ border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-top:14px; background:#fff;}
+.mday{ border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-top:14px; background:#fff;}
 .mdh{ color:#fff; font-weight:800; font-size:14.5px; padding:9px 13px;}
 .mtb{ padding:2px 0;}
 .mrow{ display:flex; gap:8px; padding:8px 12px; border-bottom:1px solid var(--soft); align-items:flex-start; font-size:12.5px; line-height:1.5;}
@@ -300,7 +310,7 @@
   .mrow > span:nth-child(3){ flex:1 1 100%; padding-left:70px; }
   /* 헤더 줄만은 접히면 '메모'가 둘째 줄로 떨어져 지저분해진다 — 한 줄로 유지 */
   .mrow.mh > span:nth-child(3){ flex:0 0 auto; padding-left:0; }
-  .foldsec{ margin:18px 5px 0; }
+  .foldsec{ margin:24px 14px 0; }
 }
 
 /* ============================================================
