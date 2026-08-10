@@ -253,3 +253,34 @@
     .expform button{ flex:1 1 100%;}
     .expsplit{ flex-direction:column; gap:6px;}
   }
+
+/* ================= 접기형 섹션 (편의점 등) ================= */
+.foldsec{ border:1px solid var(--line); border-radius:12px; background:#fff; margin:22px 14px 0; overflow:hidden;}
+.foldsec > summary.foldhead{ cursor:pointer; list-style:none; padding:0;}
+.foldsec > summary.foldhead::-webkit-details-marker{ display:none;}
+.foldsec > summary.foldhead h2{ margin:0; border-radius:0;}
+.foldsec > summary.foldhead h2::after{ content:'⌄'; margin-left:auto; font-size:17px; line-height:1;}
+.foldsec[open] > summary.foldhead h2::after{ content:'⌃';}
+.foldsec > *:not(summary){ padding-left:14px; padding-right:14px;}
+.foldsec > .noodlegrid, .foldsec > .cvs-head{ margin-left:14px; margin-right:14px;}
+
+/* ================= 식사 후보 표 ================= */
+.mday{ border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-top:14px; background:#fff;}
+.mdh{ color:#fff; font-weight:800; font-size:14.5px; padding:9px 13px;}
+.mtb{ padding:2px 0;}
+.mrow{ display:flex; gap:8px; padding:8px 12px; border-bottom:1px solid var(--soft); align-items:flex-start; font-size:12.5px; line-height:1.5;}
+.mrow:last-child{ border-bottom:none;}
+.mrow:nth-child(even){ background:rgba(244,237,221,.5);}
+.mrow.mh{ font-weight:800; color:#8a8272; font-size:11px; background:var(--tag);}
+.mrow > span:nth-child(1){ flex:0 0 62px;}
+.mrow > span:nth-child(2){ flex:0 0 38%; min-width:0; font-weight:600;}
+.mrow > span:nth-child(3){ flex:1; min-width:0; color:#6f685a; font-size:11.5px;}
+.mc{ display:inline-block; font-size:10px; font-weight:800; padding:2px 6px; border-radius:9px; color:#fff; white-space:nowrap;}
+.mc.eat{ background:#c0392b;} .mc.cafe{ background:#2e6e5a;} .mc.des{ background:#c98a1e;}
+.mrow.mh .mc{ background:none; color:inherit; padding:0;}
+@media(max-width:640px){
+  .mrow{ flex-wrap:wrap; }
+  .mrow > span:nth-child(2){ flex:1 1 auto; }
+  .mrow > span:nth-child(3){ flex:1 1 100%; padding-left:70px; }
+  .foldsec{ margin:18px 5px 0; }
+}
