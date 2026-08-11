@@ -10,7 +10,7 @@
   if (!R || !R.length) return;
 
   var BASE = '../';
-  var V = '?v=17';
+  var V = '?v=18';
   var TZ = 9;                    /* 일본 표준시 */
   var TRIP_Y = 2026;
 
