@@ -1,8 +1,964 @@
+/* ================= 날짜별 확정 식사 · 대안 펼침 표 =================
+   아래 식사 후보 표의 상태 문구를 읽어 자동 생성한다.
+   원본 표에서 📌/↔ 배치만 바꾸면 이 요약도 함께 갱신된다. */
+(function(){
+  var host=document.getElementById('meal-plan-list');
+  var source=document.getElementById('sec-meal');
+
+  var rows=source ? Array.prototype.slice.call(source.querySelectorAll('.mrow:not(.mh)')) : [];
+  var slotOrder={ '아침':0, '점심':1, '저녁':2, '카페':3, '디저트':4 };
+  function statusOf(row){
+    var el=row.querySelector('.status');
+    return el ? el.textContent.replace(/\s+/g,' ').trim() : '';
+  }
+  function datesOf(text){ return text.match(/9\/\d+/g) || []; }
+  function slotsOf(text){ return text.match(/아침|점심|저녁|카페|디저트/g) || []; }
+  function mapKeyOf(row){
+    var name=row.children[1];
+    return name ? (name.getAttribute('data-mapq') || name.textContent.replace(/\s+/g,' ').trim()) : '';
+  }
+  function cloneCell(row, index, className){
+    var cell=row.children[index].cloneNode(true);
+    if(className) cell.classList.add(className);
+    return cell;
+  }
+
+  /* 확정 매장 상세 — 추천 메뉴는 공식 메뉴와 최근 후기에서 반복 언급된 항목을 우선한다. */
+  var MEAL_DETAIL={
+    '宮武讃岐うどん 成田空港第3ターミナル店':{
+      name:'미야타케 사누키 우동', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWntAv6KaRdpxk9yq2Z3xfRCJcplYDuRThyki64H8R0xZDiNFV0vnR7iZuw0EtvP5EGk_iTW0e1zsqDlCBPPjesTUbf9kf2tu2ZJnMj8fdSUXFuADzC-VS-gWuZEXIjjTujvzwkB=w408-h271-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/361887/640x640_rect_8e46d3b00012669539118fd2396621a9.jpg',
+      order:'차가운 붓카케 우동 + 반숙 달걀튀김', review:'후기에서 면의 탄력과 이리코 육수가 가장 잘 드러나는 조합으로 자주 언급돼요. 첫 끼라면 무거운 고기 토핑보다 이쪽이 편해요.',
+      hours:'매일 05:00–21:00 (L.O.)', reservation:'예약 불가·불필요 · T3 푸드코트', payment:'카드·전자머니·QR 가능', cashOnly:false
+    },
+    '風雲児 新宿本店':{
+      name:'후운지', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmzPRI5wbckwirwtMf8tu6bXvXJS-A4Ya0dTFbS4eIii1nC9dXcCCvQO3lbjGjYG4sCULa1bsq-XPJ85Cec3AzXD0oKzgHU_gN-pqOWrpiUwJ5W6d8KtBwzhGsqAWgLhp0dh4STyFgZoVRp=w408-h306-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/48587/640x640_rect_48587364.jpg',
+      order:'得製つけめん(토쿠세이 츠케멘) · 보통 200g', review:'진한 닭백탕·어패류 국물과 굵은 면이 핵심. 得製은 맛달걀·김·멘마·차슈가 모두 늘어나 처음 한 번 먹기 좋아요.',
+      hours:'매일 11:00–15:00 / 17:00–21:00', reservation:'예약 불가 · 보통 30–40분 대기', payment:'현금·교통계 IC 가능', cashOnly:false
+    },
+    'タカマル鮮魚店 西新宿':{
+      name:'타카마루 센교텐', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWnQgEpq1qdiWIQQf5ZgtftPKtOng_XcYYLdhhE_O4Dwnsa9coNwXmvp-9NmJ5d7avxU_29HwZh4pl7Xs_BBCi-ZY4R0rUDXssJlZF9ASl_zFkhUUe2hIyUnZvQ-XAunt2zUCDm1PqTfWv_R=w408-h306-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/374467/640x640_rect_920044e38ab1f467b2cc85117b63fbaa.jpg',
+      order:'タカマル定食(타카마루 정식)', review:'큰 접시에 두툼한 회가 넉넉하게 나오고 밥·아라지루가 붙는 대표 메뉴예요. 후기에서도 양과 회 두께가 가장 많이 언급돼요.',
+      hours:'매일 11:00–23:00', reservation:'예약 가능 · 저녁은 예약 권장', payment:'카드 가능', cashOnly:false
+    },
+    '但馬屋珈琲店 本店 西新宿':{
+      name:'타지마야 코히텐 본점', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkCci3EnxMeSx-wBkqAOb9LZPchQ1K0bhovdMH56kW7E6W_9QsQNoSdpCBCHRNHiBXalMRDdRac55H144dPjG3cgVvUr7jLgOgQwc6Vvn1YTtw75iAdSxADGP6woZ2rmtWh181gOJNZq7I3=w408-h284-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/149050/640x640_rect_149050985.jpg',
+      order:'오리지널 블렌드 핸드드립 + 오늘의 케이크', review:'후기에서는 진하게 내려 주는 커피와 노포 다방 분위기가 강점으로 꼽혀요. 원두 취향을 말하면 잔과 커피를 골라 주기도 해요.',
+      hours:'10:00–23:00 (L.O. 22:30) · 1/1 휴무', reservation:'예약 불가 · 현장 이용', payment:'💴 현금만', cashOnly:true
+    },
+    '追分だんご本舗 新宿本店':{
+      name:'오이와케 당고 혼포', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWnCy3xPp0UAKPO-qcadL8VVqg2fFdbjqVTszjsIuTdUwWZK5IcYTHDq_7LsI0BL8R7Mp9bOX7aFN5djKGHI1qTrfpriK3-qaZJy733tVLo3DHWeU_7xl_yDtaH96ZyAEO2opT0L3DacFW8T=w408-h306-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/195826/640x640_rect_303096773c2cb951396f56e177baa173.jpg',
+      order:'미타라시 + 요모기 츠부앙 당고', review:'공식 인기 정석 두 가지예요. 당일 아침 만든 쫀득한 당고라 서로 다른 짠단·팥 조합을 한 번에 비교하기 좋아요.',
+      hours:'토·일·공휴 11:30–18:00 (L.O. 17:30)', reservation:'찻집 좌석 예약 불가 · 상품은 전화 예약 가능', payment:'카드·교통계 IC 등 가능', cashOnly:false
+    },
+    'ベルク BERG 新宿 ルミネエスト B1':{
+      name:'BERG 신주쿠', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmSy_LmzRhzO53Ogp_xWuMOT0pYG1rxuelj_XxkA75ybRQqtDZaQVqhKZDI0vxSETOqAnkBrAzSQ6Sp9kPKX6XstXQgpeboWgDzcGr_K_28vrMD3tXjIhSvOaQN6Vt2jxgLxkxs9Fm819Xm=w426-h240-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/208118/640x640_rect_4f5a8bfd74098193f257d811769774e8.jpg',
+      order:'모닝 세트(토스트·달걀·커피)', review:'빠르고 저렴한 역 구내 아침으로 후기가 많은 메뉴예요. 소시지를 더 먹고 싶으면 핫도그를 추가하면 돼요.',
+      hours:'매일 07:00–23:00 (L.O. 22:30)', reservation:'예약 불가 · 서서 먹는 자리도 있음', payment:'카드·교통계 IC·QR 가능', cashOnly:false
+    },
+    '茶屋かど 鎌倉 山ノ内':{
+      name:'차야카도', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWnaLs3_IOQQmjs6QAUQhRsu0dBIthqujvoqkmjsMger_Jc5Hasd0RGlyAzAq7YOz7lJgj6zF13r6SuplAyhNnxiXINssMyWa7K_UYZFZoOG0e_Z1Q63qZkOWjsuo9C17w0m1Io=w426-h240-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/141733/640x640_rect_141733634.jpg',
+      order:'대나무 나가시소멘', review:'4–10월에만 먹는 간판 메뉴예요. 직원이 면을 흘려 주는 옛 방식 자체가 핵심이라 일반 소바보다 나가시소멘을 우선하세요.',
+      hours:'10:00–16:30 · 나가시소멘 4–10월', reservation:'예약 불가 · 오픈런 권장', payment:'💴 현금만', cashOnly:true
+    },
+    'LONCAFE 江ノ島本店':{
+      name:'LONCAFE 에노시마 본점', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWlVD-gMBtVzk2NfCXK-KPJ8WpV5D3YyPQ94_lRXoMOY4hmc73I-3mU6-dmVH81joq1R5twPLVQOlHs1P7Cd7DEbN-qte2NRZ0YH17w9IHPr2zvsvNr6Tb67FbA90Fao-sxKfBBG=w408-h306-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/165719/640x640_rect_6c31989a444de7d31a59377a03194226.jpg',
+      order:'플레인 프렌치토스트 + 바닐라 아이스크림', review:'겉은 캐러멜처럼 바삭하고 속은 부드럽다는 후기가 많은 기본 시그니처예요. 첫 방문은 토핑이 많은 메뉴보다 플레인이 좋아요.',
+      hours:'휴일 10:00–20:00 (L.O. 19:30)', reservation:'예약 불가 · 일몰 전 대기 감안', payment:'캐시리스 가능', cashOnly:false
+    },
+    '海光庵 長谷寺 鎌倉':{
+      name:'카이코안', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWk7ngm1VyFEob00BJ_3eCp7IDJ9_VWL2XU7lcVLsQXAX-8Ul6hIZQQrLGpXS4N1xryT_kdV82LKhJLQFsgBA1HJqb2SkVttw8wWDZ8Iwkw3oK4HEMzHRNgrqY8GMCDOwBi_gPMmkzsNbGvY=w408-h306-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/325033/640x640_rect_bf9fdea6cfb387b0a48c9a5a6a0e8a9b.jpg',
+      order:'抹茶와 와가시(¥800) + 당고(¥200)', review:'여기는 13:55 카페 자리라 가벼운 감미로 충분해요. 유이가하마가 내려다보이는 창가에서 말차 한 잔이 목적입니다. 배가 고프면 간판 메뉴인 お寺のカレー(¥1,250 · 고기·생선 안 쓰는 정진식)나 お寺パスタ로 바꿔도 되는데, 식사는 L.O. 15:00이에요.',
+      hours:'10:00–16:00 · 식사 L.O. 15:00 · 감미는 16:00까지', reservation:'예약 불필요 · 하세데라 입장 후 이용', payment:'현금 only 안내 없음 · 현장 확인', cashOnly:false
+    },
+    'MAISON CACAO 鎌倉小町店':{
+      name:'MAISON CACAO 가마쿠라 코마치점', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWlGz87Dobs-Vtu9puvP6gUfh9oDhHAX3SzyTFow2JGmlWVYrVopCKAgr5vdJg1UbgHG4cLOppzx5HeVzyFl-sKgwMyLq8ZXbGMD0pcTi2L2f6RGA6hstFeHY_EmpFp8KW753MeXKxT-pFI=w408-h290-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/65772/640x640_rect_65772384.jpg',
+      order:'생초콜릿 타르트 + 코마치점 한정 생초콜릿 에클레어', review:'매장에서 갓 만든 질감이 강점인 두 메뉴예요. 후기에서도 진한 카카오와 얇고 바삭한 겉면의 대비가 자주 언급돼요.',
+      hours:'매일 10:00–18:00 · 부정기 휴무', reservation:'예약 불가 · 테이크아웃 중심', payment:'카드·QR 가능', cashOnly:false
+    },
+    'くら寿司 浅草ROX店':{
+      name:'쿠라스시 아사쿠사 ROX점', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWnsRlSKSM_nlSU3l1IFRb7Jgl98HdSAvsBP93Bd7tEOBdlTI_3BjdaEMSUKAY3OS6xzqhnDhZG3yoKXks8sQKvDTxxiVtMVmZH7-cnSeiHKFQ6e9-ybVGApkH0kDXgTsKqQnWny=w408-h272-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/367677/640x640_rect_1d3a46288e46e30669a1b1129d7a6734.jpg',
+      order:'極み熟成まぐろ + 제철 추천 + 5접시 빗쿠라퐁', review:'대표 참치부터 시작하고 당일 화면의 제철 추천을 섞는 게 안전해요. 이 매장은 맛만큼 5접시마다 하는 빗쿠라퐁 체험이 목적이에요.',
+      hours:'월 11:00–23:00 · 입장 마감 22:30', reservation:'필수 아님 · 앱/WEB 시간 예약 권장', payment:'카드·전자머니·QR 가능', cashOnly:false
+    },
+    'イマカツ 六本木本店':{
+      name:'이마카츠 롯폰기 본점', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkQAs_ZsPodRVJaMhX_TPKDGnThpjDalyu0D1ffA6e96FsNWBGoCjHp8IHmjRp1y0-l-8kCvSyIj0Opqy6q7NTj9YvQpgX3_Henm1KOZfaLpAxTzFJ47zgmV4NP5PQpqX_DeU1CPMTBkLU=w408-h306-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/156211/640x640_rect_156211813.jpg',
+      order:'명물 사사미카츠 정식', review:'닭 안심인데도 매우 촉촉하고 부드럽다는 후기가 압도적인 간판 메뉴예요. 일반 돈카츠보다 이 매장만의 사사미카츠를 우선하세요.',
+      hours:'월 11:30–16:00 / 18:00–22:30', reservation:'저녁 예약 가능 · 예약 권장', payment:'카드 가능', cashOnly:false
+    },
+    '雷一茶 浅草本店':{
+      name:'카미나리 잇사 아사쿠사 본점', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmYsHtGqgr5At9pat_xu8IYajOVBjW7kx69tYyqkbp37BjMPzdLjPC-GlQSGTpKummkBiAb3Z-L0hQY_xs9BI4omRbAW9pzHIBlEhMYec_fJSzgBbFT7DwAEZjw5WCiGcbzsMYbMA=w408-h306-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/309152/640x640_rect_09c95443e701744d44ba46b158cb0bcd.jpg',
+      order:'お濃茶ゼリー + お濃茶タルト', review:'좋은 말차는 쓰기만 하지 않다는 매장의 방향을 가장 잘 느낄 조합이에요. 진한 차향과 과하지 않은 단맛을 좋게 본 후기가 많아요.',
+      hours:'매일 10:00–17:00', reservation:'예약 불필요 · 현장 이용', payment:'카드·전자머니·QR 가능', cashOnly:false
+    },
+    '廚 くろぎ 上野パルコヤ':{
+      name:'쿠리야 쿠로기', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWla33henrVVHF3lR-BzGNKM6H4hGSpe_lj_R4_sV-G6_JBivfCxpb0rveJ8lDWgS467j07NiEgPOH5VvsDQpDU70Nucd3g2KAZdpGW5g8DTiXqgkV7fqM5oM9YYb35T8J8Opbiw=w408-h408-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/313260/640x640_rect_794b8d3ef4bc8a613d51d8976af1052c.jpg',
+      order:'미타라시 밀크 카키고리(또는 흑당·키나코 계열)', review:'짭짤한 미타라시와 진한 우유 얼음의 대비가 최근 후기에서 특히 많이 언급돼요. 계절 메뉴가 바뀌면 흑당·키나코 계열을 고르면 안전해요.',
+      hours:'매일 10:00–21:00 (L.O. 20:00)', reservation:'예약 불가 · 현장 발권 후 대기', payment:'카드·전자머니·QR 가능', cashOnly:false
+    },
+    'らぁ麺や 嶋 本町':{
+      name:'라아멘야 시마', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWnjTOZdjAy3oqsxXdIMVRiOIz3HsP9zRPuB0jTyh9fbZZtDZDbVHsrQDLAA3_aC5p0ESSw7YXMAGMksAxSWRozIAQStlcqbDJXdqBzbVWOhTJC6qSXslth0Izg1_Cwx6Gi9Xw1ETw=w408-h306-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/314643/640x640_rect_5767555569730a7b3b5c44145fe73b70.jpg',
+      order:'特上醤油らぁ麺(특상 쇼유 라멘)', review:'맑지만 층이 깊은 쇼유 국물과 완탕·여러 종류 차슈를 한 번에 먹는 대표 구성이라 첫 방문에 가장 적합해요.',
+      hours:'월–금 08:15–14:30 · 예약 시간제', reservation:'완전예약제 · 전날 08:00 TableCheck 오픈', payment:'💴 현금만 · 예약료는 온라인 결제', cashOnly:true
+    },
+    '神泉いちのや 渋谷':{
+      name:'신센 이치노야', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkcRuMYQnUQDJuQ4zeOPDBygPg1bQj_0B8a3eoNg1uMkPRTo7i-8jJiZBZq2B5_18MHL7jQ5heb4IxIrGSLbpqVZapTxjXdsyu-88nPL9rVo1g1Q9aZj8uUDDZr1eJ2qU_kDzrGuFhU99nt=w408-h306-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/93159/640x640_rect_93159137.jpg',
+      order:'弐段(니단) 우나주', review:'밥과 장어를 두 층으로 쌓아 끝까지 장어가 이어지는 이 집다운 메뉴예요. 양이 부담되면 기본 우나주로 낮추면 돼요.',
+      hours:'11:30–15:00 (L.O.13:30) / 17:30–22:00 (L.O.20:30) · 월 휴무', reservation:'예약 강력 권장 · 메뉴도 미리 선택하면 대기 단축', payment:'카드 가능', cashOnly:false
+    },
+    '茶亭 羽當 渋谷':{
+      name:'사테이 하토우', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkdjilXWXtrw27umB11qhnWvDVaEfgpmnJLh-QJ6QIfczACDcghFzt1yqfYvZOrJsViVfXGgU157MQk74r7qGVv9-yfVEsuOzLtHhy91EMCy5lqJhUS6Tim6eHwk_vmrp8YH5pW8g=w426-h240-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/271891/640x640_rect_0a1f3fb788adc1093ca221cc4a850b65.jpg',
+      order:'블렌드 커피 + 시폰 케이크(오렌지·홍차 중 재고 있는 맛)', review:'주문에 맞춰 고른 잔에 내주는 핸드드립과 가볍고 촉촉한 시폰 조합이 후기에 가장 많이 등장해요. 시폰은 이른 시간일수록 선택지가 많아요.',
+      hours:'매일 11:00–23:00', reservation:'예약 불가 · 피크 시간 대기 가능', payment:'💴 현금만', cashOnly:true
+    }
+  };
+
+  /* 먹고 표에 표시한 평점과 리뷰 수를 상세 카드에서도 동일하게 쓴다. */
+  var MEAL_METRICS={
+    '宮武讃岐うどん 成田空港第3ターミナル店':['3.28/324','3.4/334'],
+    '風雲児 新宿本店':['3.77/5,274','4.3/5,637'],
+    'タカマル鮮魚店 西新宿':['3.49/1,549','4.1/2,142'],
+    '但馬屋珈琲店 本店 西新宿':['3.54/806','4.1/1,241'],
+    '追分だんご本舗 新宿本店':['3.76/2,200','4.4/1,551'],
+    'ベルク BERG 新宿 ルミネエスト B1':['3.73/2,935','4.2/2,233'],
+    '茶屋かど 鎌倉 山ノ内':['3.20/86','3.8/253'],
+    'LONCAFE 江ノ島本店':['3.50/830','4.1/975'],
+    '海光庵 長谷寺 鎌倉':['3.44/219','4.1/252'],
+    'MAISON CACAO 鎌倉小町店':['3.68/906','4.3/663'],
+    'くら寿司 浅草ROX店':['3.08/145','4.1/3,991'],
+    'イマカツ 六本木本店':['3.59/1,052','4.3/1,670'],
+    '雷一茶 浅草本店':['3.47/272','4.2/369'],
+    '廚 くろぎ 上野パルコヤ':['3.80/1,638','3.8/810'],
+    'らぁ麺や 嶋 本町':['4.03/2,135','4.3/755'],
+    '神泉いちのや 渋谷':['3.66/771','4.1/432'],
+    '茶亭 羽當 渋谷':['3.76/2,190','4.1/2,108']
+  };
+  Object.keys(MEAL_METRICS).forEach(function(key){
+    if(!MEAL_DETAIL[key]) return;
+    MEAL_DETAIL[key].tabelog=MEAL_METRICS[key][0];
+    MEAL_DETAIL[key].google=MEAL_METRICS[key][1];
+  });
+
+  function buildMealDetail(data, details, headingText){
+    if(!data) return null;
+    var block=document.createElement('section'); block.className='meal-plan-detail';
+    /* 가게 사진 + 음식 사진 2장. 한쪽이 깨지면 그 칸만 접고 남은 한 장이 폭을 다 쓴다. */
+    var photo=document.createElement('div'); photo.className='meal-plan-detail-photo';
+    [['place',data.image,data.name+' 가게 사진','가게'],
+     ['food',data.foodImage,data.name+' 음식 사진','음식']].forEach(function(info){
+      if(!info[1]) return;
+      var shot=document.createElement('figure'); shot.className='meal-plan-shot is-'+info[0];
+      var img=document.createElement('img'); img.alt=info[2]; img.loading='lazy'; img.decoding='async';
+      img.referrerPolicy='no-referrer'; img.setAttribute('data-src',info[1]);
+      img.addEventListener('error',function(){ shot.remove(); if(!photo.childElementCount) photo.hidden=true; });
+      var cap=document.createElement('figcaption'); cap.textContent=info[3];
+      shot.appendChild(img); shot.appendChild(cap); photo.appendChild(shot);
+    });
+    if(photo.childElementCount) block.appendChild(photo); else photo.hidden=true;
+
+    var body=document.createElement('div'); body.className='meal-plan-detail-body';
+    var heading=document.createElement('div'); heading.className='meal-plan-detail-heading'; heading.textContent=headingText || '확정 맛집 상세'; body.appendChild(heading);
+    var ratings=document.createElement('div'); ratings.className='meal-plan-detail-ratings';
+    [['타베',data.tabelog,' tabe'],['구글',data.google,' google']].forEach(function(info){
+      if(!info[1]) return;
+      var parts=info[1].split('/');
+      var rating=document.createElement('span'); rating.className='meal-plan-detail-rating'+info[2];
+      rating.setAttribute('aria-label',info[0]+' 평점 '+parts[0]+', 리뷰 '+parts[1]+'개');
+      var source=document.createElement('span'); source.textContent=info[0];
+      var score=document.createElement('strong'); score.textContent=parts[0];
+      var reviews=document.createElement('small'); reviews.textContent='리뷰 '+parts[1];
+      rating.appendChild(source); rating.appendChild(score); rating.appendChild(reviews); ratings.appendChild(rating);
+    });
+    if(ratings.childElementCount) body.appendChild(ratings);
+    var order=document.createElement('div'); order.className='meal-plan-detail-order';
+    var orderLabel=document.createElement('strong'); orderLabel.textContent='🍽 추천 주문';
+    var orderName=document.createElement('span'); orderName.textContent=data.order;
+    var review=document.createElement('p'); review.textContent=data.review;
+    order.appendChild(orderLabel); order.appendChild(orderName); order.appendChild(review); body.appendChild(order);
+
+    var meta=document.createElement('dl'); meta.className='meal-plan-detail-meta';
+    [
+      ['운영 시간',data.hours,''],
+      ['예약',data.reservation,''],
+      ['결제',data.payment,data.cashOnly ? ' is-cash-only' : '']
+    ].forEach(function(info){
+      var row=document.createElement('div'); row.className='meal-plan-detail-meta-row'+info[2];
+      var dt=document.createElement('dt'); dt.textContent=info[0];
+      var dd=document.createElement('dd'); dd.textContent=info[1];
+      row.appendChild(dt); row.appendChild(dd); meta.appendChild(row);
+    });
+    body.appendChild(meta); block.appendChild(body);
+
+    function loadShots(){
+      photo.querySelectorAll('img[data-src]').forEach(function(el){
+        if(!el.getAttribute('src')) el.setAttribute('src',el.getAttribute('data-src'));
+      });
+    }
+    if(details) details.addEventListener('toggle',function(){ if(details.open) loadShots(); });
+    else loadShots();
+    return block;
+  }
+
+  /* 먹고·일정에서 같은 사진과 추천 정보를 공유한다. */
+  window.TRIP_MEAL_DETAIL=MEAL_DETAIL;
+  window.buildTripMealDetail=buildMealDetail;
+  if(!host || !source) return;
+
+  var fixed=[], seen={};
+  rows.forEach(function(row){
+    var status=statusOf(row);
+    if(status.indexOf('📌')<0) return;
+    var dates=datesOf(status), slots=slotsOf(status);
+    dates.forEach(function(date){
+      slots.forEach(function(slot){
+        var key=date+'|'+slot+'|'+mapKeyOf(row);
+        if(seen[key]) return;
+        seen[key]=1;
+        fixed.push({ date:date, slot:slot, row:row });
+      });
+    });
+  });
+  fixed.sort(function(a,b){
+    var ad=parseInt(a.date.split('/')[1],10), bd=parseInt(b.date.split('/')[1],10);
+    return ad-bd || slotOrder[a.slot]-slotOrder[b.slot];
+  });
+
+  var weekday={ '9/5':'토', '9/6':'일', '9/7':'월', '9/8':'화', '9/9':'수' };
+  var dayRegion={
+    '9/5':'신주쿠',
+    '9/6':'가마쿠라·에노시마',
+    '9/7':'아사쿠사·우에노·롯폰기',
+    '9/8':'도쿄 디즈니랜드',
+    '9/9':'시부야·하라주쿠'
+  };
+  var groupLists={};
+  fixed.forEach(function(item){
+    if(!groupLists[item.date]){
+      var day=document.createElement('section');
+      day.className='meal-plan-day';
+      day.setAttribute('data-date',item.date);
+      var dayTitle=document.createElement('h3');
+      dayTitle.className='meal-plan-day-title';
+      dayTitle.textContent=item.date+(weekday[item.date] ? ' ('+weekday[item.date]+')' : '')+(dayRegion[item.date] ? ' - '+dayRegion[item.date] : '');
+      day.appendChild(dayTitle);
+      var table=document.createElement('div'); table.className='meal-plan-table';
+      var head=document.createElement('div'); head.className='meal-plan-head';
+      ['구분','확정 맛집','타베/리뷰','구글/리뷰','대안'].forEach(function(label){
+        var span=document.createElement('span'); span.textContent=label; head.appendChild(span);
+      });
+      table.appendChild(head);
+      var list=document.createElement('div'); list.className='meal-plan-day-list';
+      table.appendChild(list);
+      day.appendChild(table);
+      host.appendChild(day);
+      groupLists[item.date]=list;
+    }
+    var alternatives=rows.filter(function(row){
+      var status=statusOf(row);
+      return status.indexOf('↔')>=0 &&
+        datesOf(status).indexOf(item.date)>=0 &&
+        slotsOf(status).indexOf(item.slot)>=0;
+    });
+
+    var details=document.createElement('details');
+    details.className='meal-plan-item';
+    details.setAttribute('data-date',item.date);
+    details.setAttribute('data-slot',item.slot);
+
+    var summary=document.createElement('summary');
+    summary.className='meal-plan-row';
+    var slotClass={ '아침':'morning', '점심':'lunch', '저녁':'dinner', '카페':'cafe', '디저트':'dessert' }[item.slot] || '';
+    var slot=document.createElement('span'); slot.className='meal-plan-slot '+slotClass; slot.textContent=item.slot;
+    summary.appendChild(slot);
+    summary.appendChild(cloneCell(item.row,1,'meal-plan-name'));
+    summary.appendChild(cloneCell(item.row,3,'meal-plan-rating'));
+    summary.appendChild(cloneCell(item.row,4,'meal-plan-rating'));
+    var count=document.createElement('span'); count.className='meal-plan-count';
+    count.innerHTML=alternatives.length ? '대안 '+alternatives.length+' <i>⌄</i>' : '대안 없음 <i>⌄</i>';
+    summary.appendChild(count);
+    details.appendChild(summary);
+
+    var panel=document.createElement('div'); panel.className='meal-plan-alts';
+    var detail=buildMealDetail(MEAL_DETAIL[mapKeyOf(item.row)],details);
+    if(detail) panel.appendChild(detail);
+    var title=document.createElement('div'); title.className='meal-plan-alt-title';
+    title.textContent=item.date+' '+item.slot+' 대체 후보'+(alternatives.length ? ' · '+alternatives.length+'곳' : '');
+    panel.appendChild(title);
+    if(!alternatives.length){
+      var empty=document.createElement('p'); empty.className='meal-plan-alt-empty'; empty.textContent='현재 표에 등록된 같은 시간대 대안이 없어요.';
+      panel.appendChild(empty);
+    }else{
+      alternatives.forEach(function(row){
+        var alt=document.createElement('div'); alt.className='meal-plan-alt-row';
+        alt.appendChild(cloneCell(row,1,'meal-plan-alt-name'));
+        alt.appendChild(cloneCell(row,3,'meal-plan-alt-rating'));
+        alt.appendChild(cloneCell(row,4,'meal-plan-alt-rating'));
+        alt.appendChild(cloneCell(row,5,'meal-plan-alt-note'));
+        panel.appendChild(alt);
+      });
+    }
+    details.appendChild(panel);
+    groupLists[item.date].appendChild(details);
+  });
+})();
+
+/* 일정 제목과 설명을 시각적으로 분리한다.
+   제목은 첫 줄에 남기고, 설명은 항상 다음 줄에서 시작한다. */
+(function(){
+  function removeDescriptionDashes(detail){
+    var walker=document.createTreeWalker(detail,NodeFilter.SHOW_TEXT);
+    var node;
+    while((node=walker.nextNode())){
+      var parent=node.parentElement;
+      if(parent && parent.closest('.ev-titleline')) continue;
+      node.nodeValue=node.nodeValue
+        .replace(/\s*—\s*/g,' ')
+        .replace(/(^|\s)-(?=\s|$)/g,'$1');
+    }
+  }
+
+  /* 요일 접두(토 / 화~일 / 평일)와 (L.O. 13:30) 꼬리까지 한 덩어리로 잡아야
+     시간을 들어냈을 때 "토 (L.O. 17:30)" 같은 부스러기가 남지 않는다. */
+  var DAY='(?:평일|주말|공휴일|[월화수목금토일](?:\\s*[~〜–—-]\\s*[월화수목금토일])?)';
+  var LO='(?:\\s*\\(\\s*L\\.O\\.[^)]*\\))?';
+  function hoursRe(core){ return new RegExp('(?:'+DAY+'\\s*)?'+core+LO); }
+  var HOURS_PATTERNS=[
+    hoursRe('\\d{1,2}:\\d{2}\\s*[~〜–—-]\\s*\\d{1,2}:\\d{2}(?:\\s*\\/\\s*\\d{1,2}:\\d{2}\\s*[~〜–—-]\\s*\\d{1,2}:\\d{2})?'),
+    hoursRe('\\d{1,2}\\s*[~〜–—-]\\s*\\d{1,2}시'),
+    hoursRe('[~〜]\\s*\\d{1,2}:\\d{2}'),   /* "~19:00" 처럼 마감만 적힌 표기 */
+    hoursRe('[~〜]\\s*\\d{1,2}시'),        /* "~22시" */
+    /\d{1,2}:\d{2}\s*(?:오픈|개장|마감)/,
+    /(?:오픈|개장|막입장|최종\s*입장|마감)\s*\d{1,2}:\d{2}/,
+    /\d{1,2}시\s*(?:오픈|개장|마감)/,
+    /24시간(?!\s*전)/
+  ];
+
+  /* 설명에서 운영시간을 뽑고, 같은 문구를 원문에서 지운다.
+     제목 우측 ⏰ 뱃지 하나로 모으기 위함 — 태그(<b> 등)를 넘나드는 매치도 처리한다. */
+  function extractOperatingHours(detail){
+    var nodes=[];
+    var walker=document.createTreeWalker(detail,NodeFilter.SHOW_TEXT,null);
+    var node;
+    while((node=walker.nextNode())){
+      if(node.parentElement && node.parentElement.closest('.ev-titleline,.alt,.evact')) continue;
+      nodes.push(node);
+    }
+    var joined=nodes.map(function(n){ return n.nodeValue; }).join('');
+    var match=null;
+    for(var i=0;i<HOURS_PATTERNS.length && !match;i++) match=joined.match(HOURS_PATTERNS[i]);
+    if(!match) return '';
+
+    var label=match[0]
+      .replace(/(\d)\s*[~〜]\s*(\d)/g,'$1–$2')  /* 범위일 때만 물결→대시. "~19:00"은 그대로 둔다 */
+      .replace(/\s{2,}/g,' ').trim();
+
+    /* 스펙 나열(· 구분 / 괄호 안)일 때만 원문에서 지운다.
+       "동굴은 16시 마감이라 스킵" 같은 문장 속 시간은 지우면 말이 깨진다. */
+    var start=match.index, end=start+match[0].length;
+    var before=joined.slice(0,start).replace(/\s+$/,'');
+    var after=joined.slice(end).replace(/^\s+/,'');
+    var listLike=(!before || /[·(]$/.test(before)) || (!after || /^[·)]/.test(after));
+    if(!listLike) return label;
+
+    var pos=0, touched=[];
+    nodes.forEach(function(n){
+      var from=pos, to=pos+n.nodeValue.length;
+      pos=to;
+      if(to<=start || from>=end) return;
+      n.nodeValue=n.nodeValue.slice(0,Math.max(0,start-from))+n.nodeValue.slice(Math.max(0,Math.min(end,to)-from));
+      touched.push(n);
+    });
+    touched.forEach(function(n){
+      n.nodeValue=n.nodeValue.replace(/\s{2,}/g,' ').replace(/\(\s*\)/g,'');
+    });
+
+    /* 노드를 넘나들며 생긴 "· ·", 앞뒤에 달랑 남은 구분자 정리 */
+    var live=nodes.filter(function(n){ return n.nodeValue.trim(); });
+    var prevEndsSep=false;
+    live.forEach(function(n,idx){
+      if(prevEndsSep) n.nodeValue=n.nodeValue.replace(/^\s*·\s*/,' ');
+      if(idx===0) n.nodeValue=n.nodeValue.replace(/^\s*·\s*/,'');
+      n.nodeValue=n.nodeValue.replace(/·\s*·/g,' · ').replace(/\(\s*·\s*/g,'(').replace(/\s*·\s*\)/g,')').replace(/ ·(?=\S)/g,' · ').replace(/\s{2,}/g,' ');
+      var next=n.nextSibling;
+      if(!next || (next.nodeType===1 && next.tagName==='BR')) n.nodeValue=n.nodeValue.replace(/\s*·\s*$/,'');
+      prevEndsSep=/·\s*$/.test(n.nodeValue);
+    });
+    detail.querySelectorAll('b,strong').forEach(function(el){
+      if(!el.textContent.trim() && !el.children.length) el.remove();
+    });
+    return label;
+  }
+
+  document.querySelectorAll('.tl .fix').forEach(function(badge){ badge.remove(); });
+
+  document.querySelectorAll('.tl .ev .d').forEach(function(detail){
+    removeDescriptionDashes(detail);
+    var eventRow=detail.closest('.ev');
+    var kindCopy=detail.cloneNode(true);
+    kindCopy.querySelectorAll('.alt').forEach(function(alternative){ alternative.remove(); });
+    var detailText=kindCopy.textContent;
+    var isFood=/[🍜🍡🍽☕🥐🎋🍰🍣🍧🍱🥞]/u.test(detailText);
+    var isCafe=/☕|카페\s*·/.test(detailText);
+    var isDessert=/[🍡🍰🍧🥞]|디저트\s*·?/u.test(detailText);
+    if(isFood) eventRow.classList.add('ev-food');
+    if(isCafe) eventRow.classList.add('ev-cafe');
+    else if(isDessert) eventRow.classList.add('ev-dessert');
+    else if(isFood) eventRow.classList.add('ev-meal');
+    var primaryTitle=detail.querySelector(':scope > b');
+    var primaryText=primaryTitle ? primaryTitle.textContent.replace(/\s+/g,' ').trim() : '';
+    if(/몽벨|키노쿠니야|ABC마트|유니클로|돈키호테|잔파라|소프맵|북오프|빅카메라|갓파바시|코마치도리|아메요코|야나카 긴자|サミットストア|스탠다드 프로덕츠|시부야\s*109|아트모스|래그태그|미야시타 파크|파르코|로프트|2nd STREET|아식스|스투시|Seria|세리아|DAISO|다이소/i.test(primaryText)){
+      eventRow.classList.add('ev-shopping');
+    }
+    /* 사진 스팟 — 제목이나 설명에 "뷰 스팟 / 사진 명소 / 포토스팟"이 있으면 시간 아래에 📷 */
+    if(/뷰\s*스팟|사진\s*명소|포토\s*스팟|촬영\s*명소/.test(detailText)) eventRow.classList.add('ev-photo');
+    var timeIcons=[];
+    if(eventRow.classList.contains('ev-photo')) timeIcons.push('📷');
+    if(eventRow.classList.contains('ev-shopping')) timeIcons.push('🛒');
+    if(eventRow.classList.contains('ev-cafe')) timeIcons.push('☕');
+    else if(eventRow.classList.contains('ev-dessert')) timeIcons.push('🍡');
+    else if(eventRow.classList.contains('ev-meal')) timeIcons.push('🍽️');
+    /* 시간 아래에 이미 끼니 라벨(점심·카페…)이 있으면 같은 뜻의 아이콘은 뺀다 */
+    var timeCell=eventRow.querySelector(':scope > .t');
+    var slotLabel=timeCell ? timeCell.querySelector('.slot') : null;
+    if(slotLabel && /아침|점심|저녁|카페|디저트/.test(slotLabel.textContent)){
+      timeIcons=timeIcons.filter(function(icon){ return icon!=='🍽️' && icon!=='☕' && icon!=='🍡'; });
+    }
+    if(timeIcons.length){
+      var iconText=timeIcons.join(' ');
+      eventRow.setAttribute('data-time-icon',iconText);
+      /* attr()는 의사요소가 붙은 그 요소에서만 읽힌다 — .t 에도 같이 심어야 렌더된다 */
+      if(timeCell) timeCell.setAttribute('data-time-icon',iconText);
+    }
+    if(eventRow.classList.contains('move')) return;
+    if(detail.querySelector(':scope > .ev-titleline')) return;
+
+    var first=detail.firstChild;
+    while(first && first.nodeType===3 && !first.nodeValue.trim()) first=first.nextSibling;
+    if(!first || first.nodeType!==1 || first.tagName!=='B') return;
+
+    var titleLine=document.createElement('span');
+    titleLine.className='ev-titleline';
+    var titleMain=document.createElement('span');
+    titleMain.className='ev-titlemain';
+    detail.insertBefore(titleLine,first);
+    titleLine.appendChild(titleMain);
+    titleMain.appendChild(first);
+
+    var next=titleLine.nextSibling;
+    while(next && next.nodeType===3 && !next.nodeValue.trim()){
+      var after=next.nextSibling;
+      titleMain.appendChild(next);
+      next=after;
+    }
+    var hours=extractOperatingHours(detail);
+    if(hours){
+      var hoursLabel=document.createElement('span');
+      hoursLabel.className='ev-hours';
+      hoursLabel.textContent='⏰ '+hours;
+      hoursLabel.setAttribute('aria-label','운영시간 '+hours);
+      titleLine.appendChild(hoursLabel);
+    }
+  });
+})();
+
+/* 일정 속 식당명을 누르면 먹고 페이지와 같은 상세 정보를 행 하단에 펼친다. */
+(function(){
+  var meals=window.TRIP_MEAL_DETAIL;
+  var build=window.buildTripMealDetail;
+  var timelines=document.querySelectorAll('.tl');
+  if(!timelines.length || !meals || !build) return;
+
+  var aliases={
+    'くら寿司 浅草ROX店':['쿠라스시 아사쿠사'],
+    '廚 くろぎ 上野パルコヤ':['廚 くろぎ']
+  };
+  var koreanNames={
+    '宮武讃岐うどん 成田空港第3ターミナル店':'미야타케 사누키 우동',
+    '風雲児 新宿本店':'후운지',
+    'タカマル鮮魚店 西新宿':'타카마루 센교텐',
+    '但馬屋珈琲店 本店 西新宿':'타지마야 코히텐 본점',
+    '追分だんご本舗 新宿本店':'오이와케 당고 혼포',
+    'ベルク BERG 新宿 ルミネエスト B1':'베르크',
+    '茶屋かど 鎌倉 山ノ内':'차야카도',
+    'LONCAFE 江ノ島本店':'롱카페 에노시마 본점',
+    '海光庵 長谷寺 鎌倉':'카이코안',
+    'MAISON CACAO 鎌倉小町店':'메종 카카오 가마쿠라 코마치점',
+    'くら寿司 浅草ROX店':'쿠라스시 아사쿠사 ROX점',
+    'イマカツ 六本木本店':'이마카츠 롯폰기 본점',
+    '雷一茶 浅草本店':'카미나리 잇사 아사쿠사 본점',
+    '廚 くろぎ 上野パルコヤ':'쿠리야 쿠로기',
+    'らぁ麺や 嶋 本町':'라아멘야 시마',
+    '神泉いちのや 渋谷':'신센 이치노야',
+    '茶亭 羽當 渋谷':'사테이 하토우'
+  };
+  var keys=Object.keys(meals);
+  var panelSeq=0;
+
+  function cleanMealMetadata(name,detail){
+    var hasHours=!!detail.querySelector('.ev-hours');
+    var metadata=null, passedName=false;
+    Array.prototype.forEach.call(detail.children,function(child){
+      if(metadata) return;
+      if(child===name || child.contains(name)){ passedName=true; return; }
+      if(passedName && child.classList.contains('muted')) metadata=child;
+      if(passedName && (child.classList.contains('alt') || child.classList.contains('evact'))) passedName=false;
+    });
+    if(!metadata) return;
+
+    var probe=document.createElement('span');
+    var kept=metadata.innerHTML.split('·').filter(function(html){
+      probe.innerHTML=html;
+      var part=probe.textContent.replace(/\s+/g,' ').trim();
+      if(!part || /^타베(?:로그)?\s*\d/.test(part)) return false;
+      if(!hasHours) return true;
+      var timeRange=/(?:\d{1,2}:\d{2}\s*[~〜–—-]\s*\d{1,2}:\d{2}|\d{1,2}\s*[~〜–—-]\s*\d{1,2}시)/;
+      var address=/[A-Za-z가-힣ぁ-んァ-ヶ一-龯々]+\d+(?:-\d+){1,3}/;
+      var location=/(?:역|도보|경내|바로 옆|이동\s*0|길목|숙소 방향|가까운 맛집|파르코야|루미네에스트|코마치도리 안|동쪽\s*\d+m|개찰 안쪽)/;
+      return !timeRange.test(part) && !address.test(part) && !location.test(part);
+    });
+    if(kept.length) metadata.innerHTML=kept.map(function(part){ return part.trim(); }).join(' · ');
+    else metadata.remove();
+
+    if(hasHours){
+      Array.prototype.forEach.call(detail.childNodes,function(child){
+        if(child.nodeType!==3) return;
+        child.nodeValue=child.nodeValue.replace(/\s*기타카마쿠라역\s*도보\s*\d+분(?:\(\d+m\))?\s*/g,' ');
+      });
+    }
+  }
+
+  function mealKeyOf(name){
+    var text=name.textContent.replace(/\s+/g,' ').trim();
+    if(!/[🍜🍡🍽☕🥐🎋🍰🍣🍧🍱]/.test(text)) return '';
+    var mapq=name.getAttribute('data-mapq') || '';
+    for(var i=0;i<keys.length;i++){
+      var key=keys[i];
+      if(mapq && (mapq===key || mapq.indexOf(key)>=0 || key.indexOf(mapq)>=0)) return key;
+      var token=key.split(/\s+/)[0];
+      if(token.length>1 && text.indexOf(token)>=0) return key;
+      var extra=aliases[key] || [];
+      for(var j=0;j<extra.length;j++) if(text.indexOf(extra[j])>=0) return key;
+    }
+    return '';
+  }
+
+  function addKoreanName(name,key){
+    if(name.querySelector('.ev-meal-kr') || !koreanNames[key]) return;
+    if(key==='くら寿司 浅草ROX店'){
+      var walker=document.createTreeWalker(name,NodeFilter.SHOW_TEXT);
+      var node;
+      while((node=walker.nextNode())){
+        if(node.nodeValue.indexOf('쿠라스시 아사쿠사점')<0) continue;
+        node.nodeValue=node.nodeValue.replace('쿠라스시 아사쿠사점','くら寿司 浅草ROX店');
+        break;
+      }
+    }
+    var korean=document.createElement('span');
+    korean.className='ev-meal-kr';
+    korean.textContent=' ('+koreanNames[key]+')'+(name.querySelector('u') ? ' ' : '');
+    name.insertBefore(korean,name.querySelector('u'));
+  }
+
+  function toggleMeal(name,key){
+    var detail=name.closest('.d');
+    detail.querySelectorAll(':scope > .ev-place-panel').forEach(function(place){ place.hidden=true; });
+    detail.querySelectorAll('.ev-place-link[aria-expanded="true"]').forEach(function(link){
+      link.setAttribute('aria-expanded','false');
+    });
+    var panel=detail.querySelector(':scope > .ev-meal-panel');
+    var isSame=panel && panel.getAttribute('data-meal-key')===key;
+    var willOpen=!isSame || panel.hidden;
+
+    detail.querySelectorAll('.ev-meal-link[aria-expanded="true"]').forEach(function(link){
+      link.setAttribute('aria-expanded','false');
+    });
+
+    if(!willOpen){
+      panel.hidden=true;
+      return;
+    }
+
+    if(!panel){
+      panel=document.createElement('div');
+      panel.className='ev-meal-panel';
+      panel.id='ev-meal-panel-'+(++panelSeq);
+      detail.appendChild(panel);
+    }
+    if(!isSame){
+      panel.replaceChildren(build(meals[key],null,'맛집 상세'));
+      var alternatives=detail.querySelectorAll(':scope > .ev-meal-alt-source');
+      if(alternatives.length){
+        var altSection=document.createElement('section');
+        altSection.className='ev-meal-alts';
+        var altTitle=document.createElement('div');
+        altTitle.className='ev-meal-alts-title';
+        altTitle.textContent='대안';
+        altSection.appendChild(altTitle);
+        alternatives.forEach(function(source){
+          var copy=source.cloneNode(true);
+          copy.className='ev-meal-alt-item';
+          altSection.appendChild(copy);
+        });
+        panel.appendChild(altSection);
+      }
+      panel.setAttribute('data-meal-key',key);
+    }
+    panel.hidden=false;
+    name.setAttribute('aria-expanded','true');
+    name.setAttribute('aria-controls',panel.id);
+  }
+
+  document.querySelectorAll('.tl .ev .d b').forEach(function(name){
+    var key=mealKeyOf(name);
+    if(!key) return;
+    addKoreanName(name,key);
+    name.classList.add('ev-meal-link');
+    name.setAttribute('role','button');
+    name.setAttribute('tabindex','0');
+    name.setAttribute('aria-expanded','false');
+    name.setAttribute('title','사진과 추천 메뉴 보기');
+    var detail=name.closest('.d');
+    if(!detail.hasAttribute('data-meal-summary-cleaned')){
+      cleanMealMetadata(name,detail);
+      detail.setAttribute('data-meal-summary-cleaned','');
+    }
+    detail.querySelectorAll(':scope > .alt').forEach(function(alternative){
+      alternative.classList.add('ev-meal-alt-source');
+    });
+    name.addEventListener('click',function(event){
+      if(event.target.closest('a,button')) return;
+      toggleMeal(name,key);
+    });
+    name.addEventListener('keydown',function(event){
+      if(event.key!=='Enter' && event.key!==' ') return;
+      event.preventDefault();
+      toggleMeal(name,key);
+    });
+  });
+})();
+
+/* 일정 속 관광지·거리·전망대 제목을 누르면 대표 사진과 현장 팁을 펼친다. */
+(function(){
+  if(!document.querySelector('.tl')) return;
+
+  var places=[
+    {
+      aliases:['전철 뷰 스팟 · 센다가야'], name:'센다가야 4-26 전철 뷰 스팟',
+      image:'https://mtrl.tokyo/wp-content/uploads/2025/05/yoyogi_fumikiri-750x500.jpg',
+      source:'https://mtrl.tokyo/column/97871',
+      summary:'서로 다른 높이의 선로를 지나는 열차 두 대를 한 화면에 담는 촬영 포인트. 건널목과 고가선이 겹쳐 도쿄다운 장면이 나와요.',
+      highlight:'주오·소부선 + 야마노테선 동시 구도 · 건널목', stay:'10–20분', admission:'상시 · 무료 · 일반 보행로',
+      tip:'두 열차가 동시에 들어오는 순간은 운이 필요하니 동영상이나 연사로 찍는 편이 좋아요. 보행자 통로와 차도를 막지 말고 건널목 바깥에서 촬영하세요.'
+    },
+    {
+      aliases:['오모이데 요코초'], name:'오모이데 요코초 · 골든가이',
+      image:'https://img.lavietaste.com/cmt/c49fe11248f230238110cd7168f68737_s.jpg',
+      source:'https://www.shinjuku-omoide.com/',
+      summary:'신주쿠 서쪽 출구의 좁은 야키토리 골목. 쇼와 시대 분위기와 촘촘한 간판을 짧게 둘러보기 좋아요.',
+      highlight:'입구 간판 · 좁은 골목 풍경 · 야키토리 연기', stay:'10–20분', admission:'거리 관람 무료 · 저녁부터 분위기가 살아남',
+      tip:'사진만 찍는다면 큰길 쪽 입구에서 안쪽으로 한 번 통과하면 충분해요. 좌석이 매우 좁고 작은 가게는 현금만 받는 경우가 많습니다.'
+    },
+    {
+      aliases:['도쿄 도청 전망대'], name:'도쿄 도청 전망대',
+      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Tokyo_Metropolitan_Government_Building_2024.jpg/1280px-Tokyo_Metropolitan_Government_Building_2024.jpg',
+      source:'https://www.yokoso.metro.tokyo.lg.jp/en/tenbou/',
+      summary:'제1본청사 45층의 무료 전망실. 신주쿠 고층 빌딩과 도쿄 야경을 비용 부담 없이 볼 수 있어요.',
+      highlight:'무료 45층 전망 · 신주쿠 야경 · 기념품 숍', stay:'30–45분', admission:'무료 · 일정 기준 최종 입장 21:30',
+      tip:'전용 엘리베이터 앞 보안검색 대기를 감안해 최종 입장보다 20분 먼저 도착하세요. 맑은 낮에는 후지산 방향도 확인해보세요.'
+    },
+    {
+      aliases:['엔가쿠지'], name:'엔가쿠지(円覚寺)',
+      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Stairs_to_Sanmon%2C_Engaku-ji.jpg/1280px-Stairs_to_Sanmon%2C_Engaku-ji.jpg',
+      source:'https://www.engakuji.or.jp/',
+      summary:'기타카마쿠라역 바로 앞의 선종 사찰. 숲에 둘러싸인 산몬과 고요한 경내가 핵심이에요.',
+      highlight:'산몬 · 불전 · 숲길', stay:'30–40분', admission:'배관료 ¥300 · 야외 계단 있음',
+      tip:'이날 동선에서 유일하게 되돌아가는 선택지예요. 시간이 밀렸다면 과감히 생략하고 츠루가오카하치만구로 바로 가는 편이 좋습니다.'
+    },
+    {
+      aliases:['츠루가오카하치만구'], name:'츠루가오카하치만구',
+      image:'https://upload.wikimedia.org/wikipedia/commons/5/5e/TsurugaokaHachiman-M8867.jpg',
+      source:'https://www.hachimangu.or.jp/',
+      summary:'가마쿠라 중심의 대표 신사. 긴 참배로와 붉은 본궁이 이어져 코마치도리와 함께 보기 좋아요.',
+      highlight:'단카즈라 참배로 · 본궁 · 연못', stay:'35–50분', admission:'경내 무료 · 보물전은 별도',
+      tip:'본궁 앞 계단 위에서 아래쪽 참배로를 내려다보는 구도가 좋아요. 코마치도리는 갈 때보다 나올 때 지나면 동선이 매끄럽습니다.'
+    },
+    {
+      aliases:['하세데라'], name:'하세데라',
+      image:'https://upload.wikimedia.org/wikipedia/commons/0/0b/HasederaKannondo20120716.jpg',
+      source:'https://www.hasedera.jp/',
+      summary:'관음당과 가마쿠라 바다를 함께 볼 수 있는 언덕 사찰. 경내 카페와 전망 산책로가 있어 쉬어가기 좋아요.',
+      highlight:'관음당 · 바다 전망대 · 지장당', stay:'45–60분', admission:'유료 입장 · 계단과 경사 있음',
+      tip:'먼저 전망대로 올라간 뒤 내려오며 관음당과 카페를 보는 순서가 편해요. 비가 오면 돌계단이 미끄러우니 신발에 주의하세요.'
+    },
+    {
+      aliases:['고토쿠인 대불'], name:'고토쿠인 대불',
+      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/230128_Kamakura_Daibutsu_Japan04s3.jpg/1280px-230128_Kamakura_Daibutsu_Japan04s3.jpg',
+      source:'https://www.kotoku-in.jp/',
+      summary:'가마쿠라를 대표하는 청동 대불. 경내가 크지 않아 짧은 일정에도 핵심만 보기 쉬워요.',
+      highlight:'청동 아미타 대불 · 정면 사진 · 대불 태내', stay:'25–35분', admission:'유료 입장 · 태내 관람은 현장 확인',
+      tip:'정면만 보지 말고 대불 뒤쪽까지 한 바퀴 돌아보세요. 하세데라에서 도보 이동 후 에노덴을 타기 전 넣기 좋습니다.'
+    },
+    {
+      aliases:['에노시마 신사'], name:'에노시마 신사',
+      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Enoshimajinja_-05.jpg/1280px-Enoshimajinja_-05.jpg',
+      source:'https://enoshimajinja.or.jp/',
+      summary:'섬의 경사를 따라 세 궁이 이어지는 신사. 상점가에서 씨캔들로 올라가는 길 자체가 관람 동선이에요.',
+      highlight:'즈이신몬 · 헤쓰미야 · 섬 경사 풍경', stay:'40–60분', admission:'경내 무료 · 에스카는 유료',
+      tip:'체력을 아끼려면 에스카를 타고 올라가며 보고, 내려올 때 골목을 천천히 걷는 편이 좋아요. 씨캔들 일몰 시간을 우선하세요.'
+    },
+    {
+      aliases:['씨캔들 전망등대'], name:'에노시마 씨캔들 전망등대',
+      image:'https://enoden.co.jp/kr/common/images/tourism/spot/sea-candle/img-01.jpg',
+      source:'https://www.enoden.co.jp/kr/tourism/spot/sea-candle/',
+      summary:'쇼난 해안과 사가미만을 한눈에 보는 에노시마의 전망등대. 일몰부터 야간 조명까지 이어서 보기 좋아요.',
+      highlight:'실내 전망층 · 야외 데크 · 쇼난 일몰', stay:'45–70분', admission:'사무엘 코킹원과 전망대 입장권 필요',
+      tip:'일몰 25분 전에는 전망층에 올라가 자리를 잡으세요. 바람이 강하면 야외 데크가 춥고 통제될 수 있으니 얇은 겉옷을 챙기세요.'
+    },
+    {
+      aliases:['기요스미 정원'], name:'기요스미 정원',
+      image:'https://www.gotokyo.org/de/spot/25/images/25_sub001.jpg',
+      source:'https://www.tokyo-park.or.jp/park/kiyosumi/',
+      summary:'연못과 명석을 따라 걷는 메이지 시대 회유식 정원. 도심 일정 중 조용한 아침 산책을 넣고 싶을 때 좋아요.',
+      highlight:'대천수 연못 · 이소와타리 징검돌 · 료테이', stay:'35–50분', admission:'09:00–17:00 · 입장 ¥150',
+      tip:'연못 가장자리의 징검돌에서 거북이와 잉어를 가까이 볼 수 있어요. 다만 이 코스를 넣으면 뒤 일정이 약 1시간 밀립니다.'
+    },
+    {
+      aliases:['갓파바시 도구가이'], name:'갓파바시 도구가이',
+      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Kappabashi-dori_streetcorner_%28Kitchen_town_-_southern_end%29_Tokyo_Japan.jpg/1280px-Kappabashi-dori_streetcorner_%28Kitchen_town_-_southern_end%29_Tokyo_Japan.jpg',
+      source:'https://www.kappabashi.or.jp/',
+      summary:'칼·그릇·조리도구·식품 모형 전문점이 이어지는 상점가. 구경보다 살 물건을 정해두면 효율이 크게 좋아져요.',
+      highlight:'일본 식칼 · 도자기 · 식품 모형', stay:'60–90분', admission:'거리 무료 · 개별 점포는 대체로 10–17시',
+      tip:'칼을 사면 기내 반입이 안 되므로 위탁수하물 포장을 요청하세요. 같은 물건도 점포별 가격이 달라 초반엔 사진만 찍고 비교하세요.',
+      shopsTitle:'🛍️ 남단 → 북단 순서로 들를 5곳',
+      shopsNote:'9/7은 월요일이라 아래 다섯 곳 모두 영업합니다. ④⑤가 있는 북단 갓파바시 교차로에서 아사쿠사 가미나리몬까지는 도보 12분이에요.',
+      shops:[
+        { n:'①', name:'ニイミ洋食器店', kr:'니이미 양식기점', addr:'松が谷1-1-1 · 거리 남단 입구', hours:'10:00–18:00', desc:'지붕 위 대형 요리사 얼굴이 갓파바시 랜드마크. 유리잔·사케잔이 다른 가게보다 싸다는 후기가 많아요.' },
+        { n:'②', name:'飯田屋', kr:'이이다야', addr:'西浅草2-21-6 · 중간', hours:'10:00–18:00', desc:'조리도구 8,000종의 6층 백화점. 계량·베이킹·1인용 냄비 같은 소품이 강해요.' },
+        { n:'③', name:'釜浅商店', kr:'가마아사 상점', addr:'松が谷2-24-1 · 중간~북', hours:'10:00–17:30', desc:'난부테츠키(남부철기)와 칼. 칼을 사면 이름을 새겨 주는데 시간이 걸려요.' },
+        { n:'④', name:'ユニオン', kr:'유니온', addr:'西浅草3-7-3 · 북단', hours:'평일 9:00–18:00', desc:'커피 기구 전문(드리퍼·주전자·서버). 길 건너 별관은 원두·차를 계량 판매해요.' },
+        { n:'⑤', name:'元祖食品サンプル屋', kr:'음식모형', addr:'西浅草3-7-6 · 북단', hours:'10:00–17:30', desc:'열쇠고리·자석 기념품. 제작 체험은 예약제라 워크인은 구경만 됩니다.' }
+      ]
+    },
+    {
+      aliases:['아사쿠사'], name:'아사쿠사 · 센소지',
+      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Sensoji_2023.jpg/1280px-Sensoji_2023.jpg',
+      source:'https://www.senso-ji.jp/',
+      summary:'가미나리몬에서 나카미세를 지나 본당까지 이어지는 도쿄의 대표 사찰 코스예요.',
+      highlight:'가미나리몬 · 나카미세 · 센소지 본당', stay:'60–90분', admission:'경내 무료 · 상점은 저녁 전 순차 마감',
+      tip:'가미나리몬 정면은 늘 붐비니 문을 통과한 뒤 뒤돌아보는 사진도 좋아요. 본당에서는 향 연기를 몸 쪽으로 쐬는 체험도 할 수 있습니다.'
+    },
+    {
+      aliases:['아메요코'], name:'아메요코',
+      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Ueno_20241210_133139.jpg/1280px-Ueno_20241210_133139.jpg',
+      source:'https://www.ameyoko.net/',
+      summary:'우에노와 오카치마치 사이 고가 아래에 식품·잡화·화장품 상점이 밀집한 시장 거리예요.',
+      highlight:'고가 아래 시장 · 과자와 건어물 · 활기찬 간판', stay:'30–50분', admission:'거리 무료 · 점포별 영업시간 상이',
+      tip:'메인 골목만 보지 말고 고가 아래 평행 골목도 확인하세요. 가격표가 없는 식품은 양과 금액을 먼저 확인하고 주문하는 편이 안전합니다.'
+    },
+    {
+      aliases:['야나카 긴자'], name:'야나카 긴자',
+      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Tokyo_-_Yanaka_143.jpg/1280px-Tokyo_-_Yanaka_143.jpg',
+      source:'https://www.yanakaginza.com/',
+      summary:'옛 도쿄 분위기의 작은 상점가. 닛포리 쪽 유야케 단단에서 내려다보는 노을 풍경이 대표 장면이에요.',
+      highlight:'유야케 단단 · 고양이 모티프 · 동네 간식', stay:'35–50분', admission:'거리 무료 · 작은 상점은 일찍 닫을 수 있음',
+      tip:'닛포리역에서 접근하면 계단 위에서 상점가 전체를 먼저 볼 수 있어요. 해질녘 사진을 우선하고 간식은 열린 곳 위주로 가볍게 고르세요.'
+    },
+    {
+      aliases:['오차노미즈'], name:'오차노미즈 성교(聖橋) 전철 뷰',
+      image:'https://pds.exblog.jp/pds/1/201009/25/93/f0100593_1949113.jpg',
+      source:'https://www.gotokyo.org/en/spot/79/index.html',
+      summary:'간다강 위로 JR 주오·소부선과 지하철 마루노우치선이 교차하는 도쿄의 대표 전철 촬영 지점이에요.',
+      highlight:'3색 전철 교차 · 간다강 · 성교 난간 뷰', stay:'10–20분', admission:'상시 · 무료',
+      tip:'열차 세 대가 동시에 겹치는 장면은 운이 필요해요. 난간 앞을 오래 점유하지 말고 연속 촬영으로 짧게 기다리는 편이 좋습니다.'
+    },
+    {
+      aliases:['롯폰기 모리타워 전망대'], name:'롯폰기 모리타워 전망대',
+      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Roppongi_Hills_2013-12-01.jpg/1280px-Roppongi_Hills_2013-12-01.jpg',
+      source:'https://art-view.roppongihills.com/en/tcv/',
+      summary:'롯폰기 힐스 고층에서 도쿄타워 방향의 야경을 보는 실내 전망대. 비가 와도 실내 관람은 가능해요.',
+      highlight:'도쿄타워 정면 뷰 · 실내 전망층 · 야경', stay:'60–90분', admission:'일정 기준 ¥2,000+ · 최종 입장 21:00',
+      tip:'도쿄타워가 보이는 창가부터 먼저 확보하세요. 유리 반사를 줄이려면 휴대폰을 창에 가깝게 붙이고 화면 밝기를 낮추면 좋아요.'
+    },
+    {
+      aliases:['개장·입장'], name:'도쿄 디즈니랜드',
+      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Tokyo_Disneyland_Cinderella_Castle_2023-07-02.jpg/1280px-Tokyo_Disneyland_Cinderella_Castle_2023-07-02.jpg',
+      source:'https://www.tokyodisneyresort.jp/en/tdl/',
+      summary:'하루 전체를 쓰는 테마파크 일정. 입장 직후 앱에서 대기시간과 유료·무료 패스를 먼저 확인하는 것이 핵심이에요.',
+      highlight:'신데렐라성 · 인기 어트랙션 · 야간 퍼레이드', stay:'하루', admission:'모바일 티켓 QR 준비 · 당일 운영 캘린더 확인',
+      tip:'입장 직후 사진보다 DPA와 패스부터 처리하세요. 보조배터리와 우비를 챙기고, 굿즈는 폐장 직전보다 오후에 미리 사는 편이 덜 붐빕니다.'
+    },
+    {
+      aliases:['미야시타 파크'], name:'미야시타 파크',
+      image:'https://res.klook.com/image/upload/fl_lossy.progressive,q_85/c_fill,w_1000/v1696399283/c5depkxlghsumdc6rv7y.jpg',
+      source:'https://www.miyashita-park.tokyo/',
+      summary:'쇼핑몰 옥상에 공원과 스포츠 시설을 올린 시부야의 입체형 복합 공간. 이동 중 짧게 들르기 좋아요.',
+      highlight:'옥상 공원 · 시부야 스카이라인 · 시부야 요코초', stay:'15–30분', admission:'옥상 공원 무료 · 일정 기준 08:00–23:00',
+      tip:'시간이 짧으면 엘리베이터로 바로 옥상에 올라가 한 바퀴만 도세요. 파르코 방향으로 내려오면 다음 쇼핑 동선이 자연스럽습니다.'
+    },
+    {
+      aliases:['키노쿠니야 신주쿠본점'], name:'A BATHING APE HYBRID CAMO 대용량 토트',
+      kicker:'쇼핑 상세', sourceLabel:'부록 상세 정보 ↗',
+      image:'https://travel.watch.impress.co.jp/img/trw/list/2112/081/00.jpg',
+      source:'https://travel.watch.impress.co.jp/docs/news/2112081.html',
+      summary:'smart 2026년 8·9월 합병호에 포함된 베이프 부록. 내추럴 컬러 몸판에 손잡이와 바닥의 멀티컬러 HYBRID CAMO가 포인트예요.',
+      highlight:'smart 2026 8·9월 합병호 · JAN 4912155210967', stay:'약 45×37×14cm', admission:'정가 ¥1,890 · 2026년 6월 25일 발매',
+      labels:['찾을 제품','크기','구매 정보'], tipTitle:'🔎 찾는 팁',
+      tip:'잡지 표지보다 부록 사진과 JAN 코드를 직원에게 보여주는 게 빨라요. 9월에는 차기호로 교체됐을 가능성이 있어 재고가 없으면 다른 대형서점·편의점 순으로 확인하세요.'
+    },
+    {
+      aliases:['ABC마트 그랜드 스테이지'], name:'VANS COASTAL V5131 TATAMI',
+      kicker:'쇼핑 상세', sourceLabel:'쇼핑 목록에서 보기 ↗',
+      image:'https://img.apim.abc-mart.biz/img/6748/6748290001/674829000101.jpg',
+      source:'buy.html',
+      summary:'네이비 스트랩과 실제 다다미에 쓰는 골풀 소재 발판을 조합한 일본 한정형 플립플롭. 일반 반스 스니커즈가 아니라 샌들이에요.',
+      highlight:'품번 V5131 · NAVY/TATAMI', stay:'유니섹스 23–28cm', admission:'ABC마트 전용 · 매장 재고 별도 확인',
+      labels:['찾을 제품','사이즈','구매 정보'], tipTitle:'🔎 찾는 팁',
+      tip:'직원에게 사진과 “V5131 TATAMI” 품번을 함께 보여주세요. 온라인 품절이어도 오프라인 잔여 재고가 있을 수 있어 대형 그랜드 스테이지부터 확인하는 편이 좋습니다.'
+    },
+    {
+      aliases:['아트모스 시부야','아식스 하라주쿠 플래그십'], name:'ASICS GEL-KAYANO 14',
+      kicker:'쇼핑 상세', sourceLabel:'쇼핑 목록에서 보기 ↗',
+      image:'https://images.asics.com/is/image/asics/1201A019_101_SR_RT_GLB',
+      source:'buy.html',
+      summary:'2000년대 러닝화 실루엣을 살린 레트로 스니커즈. 실버 메시와 크림 계열 패널이 겹치는 형태라 사진으로 모델을 확인하면 찾기 쉬워요.',
+      highlight:'스타일코드 1201A019 계열 · GEL-KAYANO 14', stay:'원하는 사이즈 착화 필수', admission:'인기 컬러는 매장별 재고 편차 큼',
+      labels:['찾을 제품','착화','구매 정보'], tipTitle:'🔎 찾는 팁',
+      tip:'컬러가 많으므로 “젤카야노 14”만 말하지 말고 원하는 컬러 사진과 스타일코드를 보여주세요. 당일 오래 걸을 예정이면 구매 직후보다 다음 날부터 신는 편이 안전합니다.'
+    },
+    {
+      aliases:['래그태그 시부야','2nd STREET 하라주쿠'], name:'PORTER FREE STYLE 카드케이스',
+      kicker:'쇼핑 상세', sourceLabel:'쇼핑 목록에서 보기 ↗',
+      image:'https://shopping.c.yimg.jp/lib/selection/707-08227-70.jpg',
+      source:'buy.html',
+      summary:'검은색 캔버스처럼 보이지만 표면을 코팅한 포터 스테디셀러 카드케이스. 스냅으로 여는 납작한 직사각형 형태예요.',
+      highlight:'품번 707-08227 · BLACK', stay:'W115×H75×D20mm', admission:'중고는 품번보다 상태와 가격 우선',
+      labels:['찾을 제품','크기','구매 정보'], tipTitle:'🔎 중고 확인 팁',
+      tip:'모서리 코팅 벗겨짐, 스냅 강도, 내부 오염을 먼저 보세요. 중고가가 신품 정가의 60%를 넘으면 신품 매장 가격과 비교하는 편이 좋습니다.'
+    },
+    {
+      aliases:['스투시 하라주쿠'], name:'Stüssy Stock Tokyo Tee · Black',
+      kicker:'쇼핑 상세', sourceLabel:'쇼핑 목록에서 보기 ↗',
+      image:'https://images.stockx.com/images/stussy-stock-tokyo-tee-black-3.jpg',
+      source:'buy.html',
+      summary:'검은색 몸판 앞면에 작은 스톡 로고, 뒷면에 흰색 Stüssy Tokyo 그래픽이 크게 들어간 도쿄 챕터 티셔츠예요.',
+      highlight:'스타일코드 3903987 · BLACK', stay:'M/L 인기 사이즈 우선 확인', admission:'도쿄 챕터 매장 한정 · 재고 변동 큼',
+      labels:['찾을 제품','사이즈','구매 정보'], tipTitle:'🔎 찾는 팁',
+      tip:'비슷한 검정 스톡 티가 많으니 뒷면의 TOKYO 표기와 스타일코드를 함께 확인하세요. 원하는 사이즈가 있으면 매장 도착 직후 먼저 물어보는 게 좋아요.'
+    },
+    {
+      aliases:['호텔 가조엔 도쿄'], name:'호텔 가조엔 도쿄 · 백단계단',
+      image:'https://images.ctfassets.net/j05yk38inose/3scFJ2K9z8xGgvzFnPI2tF/2a7dfffafbb6fd5a49a74e4d56066efe/1_KV_____________.jpg',
+      source:'https://www.hotelgajoen-tokyo.com/100dan',
+      summary:'1935년 건축의 화려한 방들을 99개 계단이 잇는 문화재 공간. 전시 기간에 맞아야 내부 관람이 가능해요.',
+      highlight:'채색 천장화 · 7개 장식 방 · 쇼와 시대 공예', stay:'60–90분', admission:'전시 기간·입장권을 공식 사이트에서 확인',
+      tip:'내부가 어두워 휴대폰 야간 모드가 유용해요. 전시가 없으면 백단계단은 볼 수 없으니 출발 전에 당일 운영 여부를 반드시 확인하세요.'
+    },
+    {
+      aliases:['요요기공원'], name:'요요기공원',
+      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Tokyo_%E6%9D%B1%E4%BA%AC_%2851335433586%29.jpg/1280px-Tokyo_%E6%9D%B1%E4%BA%AC_%2851335433586%29.jpg',
+      source:'https://www.tokyo-park.or.jp/park/yoyogi/',
+      summary:'하라주쿠 옆의 넓은 도심 공원. 출국 전 일정에서는 관광보다 잠깐 쉬어가는 용도로 쓰기 좋아요.',
+      highlight:'넓은 잔디 · 느티나무 길 · 사람 구경', stay:'15–30분', admission:'무료 · 상시 출입 가능 구역 중심',
+      tip:'이번 일정은 공원 안쪽까지 들어가면 공항 이동이 빠듯해요. 하라주쿠문 근처 벤치에서 10–15분 쉬고 바로 돌아오는 정도로 제한하세요.'
+    }
+  ];
+
+  var panelSeq=0;
+  function placeFor(title){
+    var text=title.textContent.replace(/\s+/g,' ').trim();
+    for(var i=0;i<places.length;i++){
+      for(var j=0;j<places[i].aliases.length;j++) if(text.indexOf(places[i].aliases[j])>=0) return places[i];
+    }
+    return null;
+  }
+  function fact(label,value){
+    var row=document.createElement('div'); row.className='ev-place-fact';
+    var dt=document.createElement('dt'); dt.textContent=label;
+    var dd=document.createElement('dd'); dd.textContent=value;
+    row.append(dt,dd); return row;
+  }
+  function buildPanel(place){
+    var panel=document.createElement('div');
+    panel.className='ev-place-panel'; panel.id='ev-place-panel-'+(++panelSeq); panel.hidden=true;
+    var detail=document.createElement('section'); detail.className='ev-place-detail';
+    var photo=document.createElement('figure'); photo.className='ev-place-photo';
+    var img=document.createElement('img'); img.src=place.image; img.alt=place.name+' 대표 사진'; img.loading='lazy'; img.decoding='async';
+    img.addEventListener('error',function(){ photo.hidden=true; });
+    var credit=document.createElement('a'); credit.href=place.source; credit.target='_blank'; credit.rel='noopener'; credit.textContent=place.sourceLabel || '사진·공식 정보 ↗';
+    photo.append(img,credit);
+    var body=document.createElement('div'); body.className='ev-place-body';
+    var kicker=document.createElement('div'); kicker.className='ev-place-kicker'; kicker.textContent=place.kicker || '장소 상세';
+    var heading=document.createElement('h4'); heading.textContent=place.name;
+    var summary=document.createElement('p'); summary.className='ev-place-summary'; summary.textContent=place.summary;
+    var facts=document.createElement('dl'); facts.className='ev-place-facts';
+    var labels=place.labels || ['볼거리','권장 체류','입장·운영'];
+    facts.append(fact(labels[0],place.highlight),fact(labels[1],place.stay),fact(labels[2],place.admission));
+    var tip=document.createElement('div'); tip.className='ev-place-tip';
+    var tipTitle=document.createElement('strong'); tipTitle.textContent=place.tipTitle || '💡 현장 팁';
+    var tipText=document.createElement('p'); tipText.textContent=place.tip;
+    tip.append(tipTitle,tipText);
+    body.append(kicker,heading,summary,facts,tip);
+    /* 들를 상점 목록 — 있으면 상세보기 맨 아래에 붙인다 */
+    if(place.shops && place.shops.length){
+      var shops=document.createElement('div'); shops.className='ev-place-shops';
+      var shopsTitle=document.createElement('strong'); shopsTitle.textContent=place.shopsTitle || '🛍️ 들를 상점';
+      shops.appendChild(shopsTitle);
+      var list=document.createElement('ol'); list.className='ev-shop-list';
+      place.shops.forEach(function(shop){
+        var li=document.createElement('li');
+        var head=document.createElement('div'); head.className='ev-shop-head';
+        var num=document.createElement('span'); num.className='ev-shop-no'; num.textContent=shop.n;
+        var nm=document.createElement('b'); nm.textContent=shop.name;
+        nm.setAttribute('data-mapq',shop.name+' かっぱ橋');
+        var kr=document.createElement('span'); kr.className='krn'; kr.textContent='('+shop.kr+')';
+        var hrs=document.createElement('span'); hrs.className='ev-shop-hours'; hrs.textContent='⏰ '+shop.hours;
+        head.append(num,nm,kr,hrs);
+        var meta=document.createElement('div'); meta.className='ev-shop-addr'; meta.textContent=shop.addr;
+        var desc=document.createElement('p'); desc.className='ev-shop-desc'; desc.textContent=shop.desc;
+        li.append(head,meta,desc); list.appendChild(li);
+      });
+      shops.appendChild(list);
+      if(place.shopsNote){
+        var note=document.createElement('p'); note.className='ev-shop-note'; note.textContent=place.shopsNote;
+        shops.appendChild(note);
+      }
+      body.appendChild(shops);
+    }
+    detail.append(photo,body); panel.appendChild(detail); return panel;
+  }
+  function togglePlace(title,place){
+    var detail=title.closest('.d');
+    var panel=detail.querySelector(':scope > .ev-place-panel');
+    if(!panel){ panel=buildPanel(place); detail.appendChild(panel); }
+    var willOpen=panel.hidden;
+    detail.querySelectorAll(':scope > .ev-meal-panel').forEach(function(meal){ meal.hidden=true; });
+    detail.querySelectorAll('.ev-meal-link[aria-expanded="true"]').forEach(function(link){ link.setAttribute('aria-expanded','false'); });
+    panel.hidden=!willOpen;
+    title.setAttribute('aria-expanded',willOpen ? 'true' : 'false');
+    title.setAttribute('aria-controls',panel.id);
+  }
+
+  document.querySelectorAll('.tl .ev:not(.move) .ev-titlemain > b:first-child').forEach(function(title){
+    if(title.classList.contains('ev-meal-link')) return;
+    var place=placeFor(title); if(!place) return;
+    title.classList.add('ev-place-link');
+    title.setAttribute('role','button'); title.setAttribute('tabindex','0'); title.setAttribute('aria-expanded','false');
+    title.setAttribute('title',place.kicker==='쇼핑 상세' ? '상품 사진과 구매 팁 보기' : '사진과 현장 팁 보기');
+    title.addEventListener('click',function(event){
+      if(event.target.closest('a,button')) return;
+      togglePlace(title,place);
+    });
+    title.addEventListener('keydown',function(event){
+      if(event.key!=='Enter' && event.key!==' ') return;
+      event.preventDefault(); togglePlace(title,place);
+    });
+  });
+})();
+
 /* ================= 지역 정규화 · 색상 =================
    .bdg 뱃지 텍스트나 .zgrp의 data-rg를 표준 지역명 배열로 바꾸고,
    지역명마다 안정적인(해시 기반) 색을 하나만 부여한다 — .bdg/.litem 띠/.zgrp가 전부 이 색을 공유. */
 var REGION_ALIAS = { '전국 공통':'전국' };
-var REGION_DROP = ['지점 다수', "Sac's Bar", 'ABC마트', '지바']; /* 지역이 아니라 브랜드·설명 토큰 */
+var REGION_DROP = ['지점 다수', "Sac's Bar", 'ABC마트', '지바', '서밋', '숙소 근처']; /* 지역이 아니라 브랜드·설명 토큰 */
 function regionsOf(el){
   if(!el) return [];
   var cached = el.getAttribute('data-rg');
@@ -142,18 +1098,47 @@ function regionColor(name){
     if(kids.length){ Array.prototype.forEach.call(kids, function(k){ attach(k, cl); }); }
     else { attach(c, cl); }
   });
-  /* 섹션별 진행률 (h2에 n/m) */
+  /* 섹션별 진행률 (h2에 n/m). 접히는 소제목(details.acc)은 닫아두면 안이 안 보이므로
+     summary 에도 같은 방식으로 제 몫만 세어 붙인다. */
   function updateCounts(){
-    document.querySelectorAll('.sheet > section').forEach(function(sec){
+    document.querySelectorAll('.sheet > section, details.acc').forEach(function(sec){
       var boxes=sec.querySelectorAll('input.ckbox'); if(!boxes.length) return;
-      var h2=sec.querySelector('h2'); if(!h2) return;
+      /* 'h2, summary' 한 방에 찾으면 details.fold 처럼 summary 가 h2 를 감싼 경우
+         트리 순서상 조상인 summary 가 먼저 잡힌다 — h2 를 먼저 본다. */
+      var h2=sec.querySelector('h2')||sec.querySelector('summary'); if(!h2) return;
       var done=0; Array.prototype.forEach.call(boxes,function(b){ if(b.checked) done++; });
       var c=h2.querySelector('.cnt');
-      if(!c){ c=document.createElement('span'); c.className='cnt'; h2.insertBefore(c, h2.querySelector('.bdg')); }
+      if(!c){
+        c=document.createElement('span'); c.className='cnt';
+        var ref=h2.querySelector('.bdg');
+        h2.insertBefore(c, (ref && ref.parentNode===h2) ? ref : null);
+      }
       c.textContent=done+'/'+boxes.length;
     });
   }
   updateCounts();
+})();
+
+/* ================= 섹션 접기 (details.fold) =================
+   다녀온 매장을 접어두면 남은 곳만 보인다. 접힘 상태는 탭+제목 기준으로 저장해
+   페이지를 다시 열어도 유지된다. */
+(function(){
+  var folds=document.querySelectorAll('details.fold'); if(!folds.length) return;
+  var KEY='tokyoTripFolds', saved={};
+  try{ saved=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
+  var tab=document.body.getAttribute('data-tab')||'';
+  Array.prototype.forEach.call(folds, function(d){
+    var h2=d.querySelector('summary h2'); if(!h2) return;
+    /* 진행률(.cnt)·지역 뱃지는 내용이 바뀌므로 키에서 뺀다 */
+    var c=h2.cloneNode(true);
+    Array.prototype.forEach.call(c.querySelectorAll('.cnt,.bdg'), function(x){ x.parentNode.removeChild(x); });
+    var k=tab+'##'+c.textContent.replace(/\s+/g,' ').trim().slice(0,60);
+    if(saved[k]===0) d.open=false;
+    d.addEventListener('toggle', function(){
+      if(d.open) delete saved[k]; else saved[k]=0;   /* 펼침이 기본이라 접힌 것만 저장 */
+      try{ localStorage.setItem(KEY, JSON.stringify(saved)); }catch(e){}
+    });
+  });
 })();
 
 /* ================= 구글맵 핀 ================= */
@@ -169,7 +1154,9 @@ function regionColor(name){
   });
   document.querySelectorAll('[data-mapq]').forEach(function(el){
     if(el.querySelector('a.mappin')) return;
-    el.appendChild(pin(el.getAttribute('data-mapq')));
+    var mapPin=pin(el.getAttribute('data-mapq'));
+    if(el.classList.contains('ev-meal-link')) el.insertAdjacentElement('afterend',mapPin);
+    else el.appendChild(mapPin);
   });
 })();
 
@@ -456,6 +1443,32 @@ var SB={
 };
 SB.init();
 
+/* ================= 로그인 전용 영역 =================
+   [data-authonly] 블록은 로그인한 기기에서만 펼치고, 아니면 그 자리에 안내를 대신 넣는다.
+   정적 페이지라 HTML 소스에는 그대로 남는다 — 서버 검증이 아니라 어깨너머로 보는 눈을
+   가리는 수준의 보호다. 로그인은 💴 지출 탭 한 곳에서만 받는다. */
+function paintAuthOnly(){
+  var boxes=document.querySelectorAll('[data-authonly]');
+  if(!boxes.length) return;
+  var on=SB.loggedIn();
+  var href=(/\/pages\//.test(location.pathname)?'':'pages/')+'money.html';
+  Array.prototype.forEach.call(boxes, function(box){
+    box.hidden=!on;
+    var lock=box.previousElementSibling;
+    if(lock && lock.className!=='authlock') lock=null;
+    if(on){ if(lock) lock.remove(); return; }
+    if(!lock){
+      lock=document.createElement('div');
+      lock.className='authlock';
+      lock.innerHTML='🔒 <b>로그인해야 보이는 내용이에요</b><br>' +
+        '<span class="muted">'+(box.getAttribute('data-authonly')||'개인 정보라 로그인한 기기에서만 보여요.')+'</span><br>' +
+        '<a class="lockbtn" href="'+href+'">💴 지출 탭에서 로그인하기 →</a>';
+      box.parentNode.insertBefore(lock, box);
+    }
+  });
+}
+paintAuthOnly();
+
 /* ================= 지출·정산 (pages/money.html 전용) =================
    기존 체크 시스템(data-cl → attach → updateCounts)은 정적 항목 전용이라 쓰지 않는다.
    attach()는 로드 시 한 번만 도는 querySelectorAll 결과에만 붙고 IIFE에 갇혀 있으며,
@@ -700,7 +1713,7 @@ SB.init();
       elAuth.innerHTML='<button type="button" id="exp-signout" class="expauthlink">로그아웃</button>';
       document.getElementById('exp-signout').addEventListener('click', function(){
         if(!confirm('로그아웃할까요?\n이 기기의 기록은 그대로 남고, 동기화만 멈춥니다.')) return;
-        SB.signOut(); paintAuth(); paintSync();
+        SB.signOut(); paintAuth(); paintSync(); paintAuthOnly();
       });
     } else {
       elAuth.innerHTML=
@@ -720,7 +1733,7 @@ SB.init();
         if(!em || !pw){ msg.textContent='이메일과 비밀번호를 모두 넣어주세요.'; return; }
         msg.textContent='로그인 중…';
         SB.signIn(em, pw).then(function(){
-          paintAuth();
+          paintAuth(); paintAuthOnly();
           /* 로그인 시점의 로컬 기록은 전부 올려보낸다 */
           data.items.forEach(function(x){ if(!x.updated_at) x.updated_at=Date.now(); x.dirty=1; });
           save(); return sync();
@@ -754,6 +1767,11 @@ SB.init();
 (function(){
   var RK='tokyoTripRegion', saved=null;
   try{ var raw=localStorage.getItem(RK); if(raw) saved=JSON.parse(raw); }catch(e){}
+  /* 과거 설명 뱃지에서 잘못 저장된 비지역 필터는 원래 '지역 전체' 상태로 되돌린다. */
+  if(saved && saved.length){
+    saved=saved.filter(function(r){ return REGION_DROP.indexOf(r)<0; });
+    if(!saved.length){ try{ localStorage.removeItem(RK); }catch(e){} }
+  }
   if(!window.__applyFilter) return;
   if(saved && saved.length) window.__applyFilter(saved, {restore:true});
   else window.__applyFilter(null, {restore:true});

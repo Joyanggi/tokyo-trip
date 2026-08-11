@@ -10,7 +10,7 @@
   if (!R || !R.length) return;
 
   var BASE = '../';
-  var V = '?v=19';
+  var V = '?v=53';
   var TZ = 9;                    /* 일본 표준시 */
   var TRIP_Y = 2026;
 
@@ -41,6 +41,14 @@
 
   /* 일정 타임라인의 .ev 행을 (날짜, 시각)으로 찾아 지역·색을 물려받는다 */
   var dcards = {}, evIndex = {};
+  function eventTimeKey(timeEl) {
+    /* 시간 아래의 점심/카페/[선택] 라벨은 .t 안에 중첩되어 있다.
+       textContent 전체를 쓰면 "13:00점심"이 되어 route-data의 "13:00"과
+       매칭되지 않으므로 실제 시각만 키로 사용한다. */
+    var raw = timeEl.getAttribute('data-time') || timeEl.textContent || '';
+    var match = raw.match(/\b\d{1,2}:\d{2}\b/);
+    return match ? match[0] : raw.trim();
+  }
   document.querySelectorAll('.dcard[data-d]').forEach(function (dc) {
     var d = dc.getAttribute('data-d');
     dcards[d] = dc;
@@ -50,7 +58,7 @@
       zg.querySelectorAll('.ev').forEach(function (ev) {
         var t = ev.querySelector('.t');
         if (!t) return;
-        var key = t.textContent.trim();
+        var key = eventTimeKey(t);
         if (!evIndex[d][key]) evIndex[d][key] = { el: ev, rg: rg, zg: zg };
       });
     });
@@ -146,6 +154,35 @@
     });
   });
 
+  /* route-data에 아직 좌표가 없는 신규 일정도 지도 검색어(data-mapq)가 있으면
+     길찾기·지도·캘린더 3개는 제공한다. 오버뷰 지도 버튼만 좌표가 있을 때 노출한다. */
+  document.querySelectorAll('.dcard[data-d] .ev:not(.move)').forEach(function (row) {
+    if (row.querySelector('.evact')) return;
+    var target = row.querySelector('.ev-titlemain > [data-mapq]');
+    var timeEl = row.querySelector('.t');
+    if (!target || !timeEl) return;
+    var destination = target.getAttribute('data-mapq');
+    var date = row.closest('.dcard').getAttribute('data-d');
+    var time = eventTimeKey(timeEl);
+    var titleCopy = target.cloneNode(true);
+    titleCopy.querySelectorAll('a,button,.mappin').forEach(function (control) { control.remove(); });
+    var title = titleCopy.textContent.replace(/\s+/g, ' ').trim();
+    var dq = encodeURIComponent(destination);
+    var act = el('div', 'evact');
+    var dirLink = el('a');
+    dirLink.href = 'https://www.google.com/maps/dir/?api=1&destination=' + dq + '&travelmode=transit';
+    dirLink.target = '_blank'; dirLink.rel = 'noopener'; dirLink.textContent = '🧭 길찾기';
+    var mapLink = el('a');
+    mapLink.href = 'https://www.google.com/maps/search/?api=1&query=' + dq;
+    mapLink.target = '_blank'; mapLink.rel = 'noopener'; mapLink.textContent = '📍 지도';
+    var calendar = el('button', 'ics');
+    calendar.type = 'button'; calendar.textContent = '📅 캘린더';
+    calendar.setAttribute('data-date', date); calendar.setAttribute('data-time', time);
+    calendar.setAttribute('data-title', title); calendar.setAttribute('data-location', destination);
+    act.append(dirLink, mapLink, calendar);
+    row.querySelector('.d').appendChild(act);
+  });
+
   /* .ics 내보내기 */
   function icsFor(di, i) {
     var day = R[di], p = day.pts[i];
@@ -171,9 +208,38 @@
     setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
   }
 
+  function icsForStandalone(button) {
+    var date = button.getAttribute('data-date'), time = button.getAttribute('data-time');
+    var md = date.split('-'), hm = time.split(':');
+    var st = Date.UTC(TRIP_Y, +md[0] - 1, +md[1], +hm[0] - TZ, +hm[1]);
+    var en = st + 60 * 60 * 1000;
+    function z(ms) {
+      var x = new Date(ms);
+      return x.getUTCFullYear() + pad(x.getUTCMonth() + 1) + pad(x.getUTCDate()) + 'T' +
+        pad(x.getUTCHours()) + pad(x.getUTCMinutes()) + '00Z';
+    }
+    var title = button.getAttribute('data-title') || '도쿄 여행 일정';
+    var location = button.getAttribute('data-location') || '';
+    var body = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//tokyo-trip//KO', 'BEGIN:VEVENT',
+      'UID:' + date + '-' + time.replace(':', '') + '-standalone@tokyo-trip',
+      'DTSTAMP:' + z(st), 'DTSTART:' + z(st), 'DTEND:' + z(en),
+      'SUMMARY:' + title, 'LOCATION:' + location,
+      'DESCRIPTION:2026 도쿄 여행 일정', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    var url = URL.createObjectURL(new Blob([body], { type: 'text/calendar;charset=utf-8' }));
+    var a = document.createElement('a');
+    a.href = url; a.download = date + '_' + time.replace(':', '') + '.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+  }
+
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('.evact .ics');
-    if (b) { e.preventDefault(); icsFor(+b.getAttribute('data-di'), +b.getAttribute('data-i')); return; }
+    if (b) {
+      e.preventDefault();
+      if (b.hasAttribute('data-di')) icsFor(+b.getAttribute('data-di'), +b.getAttribute('data-i'));
+      else icsForStandalone(b);
+      return;
+    }
     var m = e.target.closest && e.target.closest('.evact .onmap');
     if (m) { e.preventDefault(); setView('map'); selectDay(m.getAttribute('data-d'), +m.getAttribute('data-i')); }
   });

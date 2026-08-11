@@ -11,7 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%97%BC%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="../icon-180.png">
 <link rel="manifest" href="../manifest.webmanifest">
-<link rel="stylesheet" href="../assets/style.css?v=19">
+<link rel="stylesheet" href="../assets/style.css?v=70">
 </head>
 <body data-tab="go">
 <div class="sheet">
@@ -30,7 +30,6 @@
       <div class="info">
         <div class="cat muted">테마파크 · 지바현 우라야스 (숙소에서 전철 약 1시간)</div>
         <h3 style="margin:2px 0 6px; font-size:18px;" data-mapq="東京ディズニーランド" data-cl="disney">도쿄 디즈니랜드 (Tokyo Disneyland)</h3>
-        <div class="tip">🎟️ <b>예약 완료</b> — 예약번호 <b class="pcode">***REMOVED***</b> · 1-Day Passport 어른 2매 <b>¥18,800</b> · <b>9/8(화)</b> 날짜지정. 상세는 아래 표 참고.</div>
         <div class="warn">
           ⚠️ <b>당일 체크리스트</b>
           <ul style="margin:6px 0 0; padding-left:18px;">
@@ -40,15 +39,24 @@
             <li>어트랙션 휴장·리뉴얼이 있을 수 있으니 방문 전 공식 운영 캘린더 확인.</li>
           </ul>
         </div>
+        <!-- 티켓 종류·날짜·금액·동선은 식별 정보가 아니라 잠그지 않는다 -->
+        <div class="tip">🎟️ <b>예약 완료</b> — 1-Day Passport 어른 2매 <b>¥18,800</b> · <b>9/8(화)</b> 날짜지정. <span class="muted">예약번호·입장 QR은 로그인 후 아래에서 확인.</span></div>
         <div class="resbox">
           <table>
-            <tr><td>예약번호</td><td><b class="pcode" style="font-size:14px;">***REMOVED***</b> <span class="muted">(2026.8.9 16:25 접수)</span></td></tr>
             <tr><td>티켓</td><td><b>1-Day Passport</b> · 도쿄 디즈니랜드 · <b>2026년 9월 8일(화)</b> 날짜지정</td></tr>
             <tr><td>인원·금액</td><td>어른 <b>¥9,400 × 2</b> = <b style="color:var(--accent2);">¥18,800</b> <span class="muted">(세금포함)</span></td></tr>
-            <tr><td>입장</td><td>MyDisney 계정·공식 앱의 <b>QR 코드</b>로 입장 — <b style="color:var(--accent);">미리 캡처 저장</b>, 2인 각자 폰에 연동</td></tr>
             <tr><td>가는 길</td><td>니시신주쿠 → JR 신주쿠 → 도쿄역 → 게이요선 <b>마이하마역</b> (약 1시간). 개장 30분 전 도착 권장.</td></tr>
             <tr><td>운영시간</td><td>방문 전 <a href="https://www.tokyodisneyresort.jp/kr/tdl/calendar.html" target="_blank" rel="noopener">공식 운영 캘린더</a>에서 개장·폐장·휴장 어트랙션 확인</td></tr>
           </table>
+        </div>
+        <!-- 예약번호·입장 QR만 로그인한 기기에서 (app.js의 paintAuthOnly) -->
+        <div data-authonly="예약번호·입장 정보라 로그인한 기기에서만 보여요." hidden>
+        <div class="resbox">
+          <table>
+            <tr><td>예약번호</td><td><b class="pcode" style="font-size:14px;">***REMOVED***</b> <span class="muted">(2026.8.9 16:25 접수)</span></td></tr>
+            <tr><td>입장</td><td>MyDisney 계정·공식 앱의 <b>QR 코드</b>로 입장 — <b style="color:var(--accent);">미리 캡처 저장</b>, 2인 각자 폰에 연동</td></tr>
+          </table>
+        </div>
         </div>
       </div>
     </div>
@@ -112,6 +120,6 @@
   </section>
 
 </div>
-<script src="../assets/app.js?v=19"></script>
+<script src="../assets/app.js?v=70"></script>
 </body>
 </html>

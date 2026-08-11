@@ -11,7 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%97%BC%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="assets/style.css?v=19">
+<link rel="stylesheet" href="assets/style.css?v=70">
 </head>
 <body data-tab="home">
 <div class="sheet">
@@ -20,6 +20,9 @@
     <div class="stamp">가 정 통 신 문</div>
     <h1>🗼 2026 도쿄 현장체험학습 안내문</h1>
     <p class="sub">— 니시신주쿠 거점 · 4박 5일 · 사고·먹고·가고 리스트 —</p>
+    <!-- 제목 우측 장식 — absolute라 제목 가운데 정렬에 영향을 주지 않는다.
+         폭이 좁아 겹칠 만하면 아래 미디어쿼리에서 흐름으로 돌아가 다음 줄에 놓인다. -->
+    <div class="duo"><img src="assets/duo.png?v=1" alt="" width="380" height="251"></div>
   </header>
 
   <details class="banner">
@@ -35,16 +38,20 @@
 
   <section>
     <h2><span class="no">i</span> 여행 개요</h2>
-    <table class="ov">
+    <!-- 항공편은 개인 식별 정보가 없어 잠그지 않는다. 편명·시각만 있고 예약번호는 없다. -->
+    <div class="flight">
+      <div class="leg"><div class="muted">🛫 가는편 · 9/5(토)</div><div class="route">인천(ICN) ✈ 나리타(NRT)</div><div><b>09:45</b> ICN T1 → <b>12:15</b> NRT T3</div><div class="muted">제주항공 7C1175 · 2시간 30분</div></div>
+      <div class="leg"><div class="muted">🛬 오는편 · 9/9(수)</div><div class="route">나리타(NRT) ✈ 인천(ICN)</div><div><b>18:30</b> NRT T3 → <b>21:20</b> ICN T1</div><div class="muted">제주항공 7C1108 · 2시간 50분</div></div>
+    </div>
+    <!-- 숙소 주소·전화, 보험 증권번호가 들어 있어 로그인한 기기에서만 펼친다(app.js).
+         hidden을 미리 걸어 두면 스크립트가 도는 사이 잠깐 보이는 일이 없다. -->
+    <div data-authonly="숙소·보험 정보라 로그인한 기기에서만 보여요." hidden>
+    <table class="ov ovsoft" style="margin-top:14px;">
       <tr><th>기간</th><td>2026년 9월 5일(토) ~ 9월 9일(수) · <b>4박 5일</b></td></tr>
       <tr><th>참가자</th><td>***REMOVED***, ***REMOVED*** (성인 2인)</td></tr>
       <tr><th>거점 숙소</th><td data-mapq="アパホテル 西新宿五丁目駅前タワー"><b style="font-weight:600;">APA Hotel &amp; Resort 니시신주쿠 고초메 에키마에 타워</b><br>
         <span class="muted">西新宿五丁目駅前タワー · 東京都渋谷区***REMOVED*** · <a class="tel" href="tel:***REMOVED***">***REMOVED***</a> · 스몰더블룸(금연)</span></td></tr>
     </table>
-    <div class="flight" style="margin-top:14px;">
-      <div class="leg"><div class="muted">가는편 · 9/5(토)</div><div class="route">인천(ICN) ✈ 나리타(NRT)</div><div><b>09:45</b> ICN T1 → <b>12:15</b> NRT T3</div><div class="muted">제주항공 7C1175 · 2시간 30분</div></div>
-      <div class="leg"><div class="muted">오는편 · 9/9(수)</div><div class="route">나리타(NRT) ✈ 인천(ICN)</div><div><b>18:30</b> NRT T3 → <b>21:20</b> ICN T1</div><div class="muted">제주항공 7C1108 · 2시간 50분</div></div>
-    </div>
     <h3 style="font-size:16px; margin:20px 0 4px; color:var(--accent2);">🛡️ 여행자보험 (가입 완료)</h3>
     <div class="resbox">
       <table>
@@ -54,19 +61,81 @@
         <tr><td>사고 시</td><td><a class="tel" href="tel:+8223602541">+82-2-360-2541</a> <b style="color:var(--accent);">24시간 긴급연락</b> · <a class="tel" href="tel:+82269251517">02-6925-1517</a> 고객센터. 도난은 <b>현지 폴리스리포트</b> 필수, 의료·지연은 <b>영수증 보관</b>.</td></tr>
       </table>
     </div>
+    </div>
   </section>
 
   <section>
     <h2><span class="no">!</span> 준비물 및 유의사항</h2>
-    <ol class="notes">
-      <li><b>여권 지참</b> — 면세(Tax-Free)엔 여권 필수. 한 매장 세금포함 5,500엔 이상이면 면세 대상.</li>
+
+    <details class="acc">
+      <summary><span class="acct">1️⃣ 출발 전 준비 체크리스트</span></summary>
+      <div class="accb">
+      <p class="ckn">출발까지 <b>25일</b> 남았어요. 위에서부터 순서대로 하면 돼요.</p>
+      <div class="ckl" data-cl="prep-before">
+      <div class="n"><i class="dd">D-14</i><span><b>eSIM 또는 로밍 확정</b> — 4박 5일 데이터. eSIM은 <b>출발 전 QR 설치만 해두고 현지 도착 후 활성화</b>. 둘 중 한 명은 로밍으로 두면 eSIM 오류 시 백업이 돼요.</span></div>
+      <div class="n"><i class="dd">D-14</i><span><b>트래블카드 엔화 충전</b> — 트래블월렛·트래블로그 등. <b>2인 각자 1장씩</b> 만들어 분산(분실·한도 대비). 엔화는 환율 좋을 때 미리 나눠 충전.</span></div>
+      <div class="n"><i class="dd">D-10</i><span><b>모바일 Suica / PASMO 등록</b> — 아이폰 지갑에 추가하면 실물 카드 없이 개찰구·편의점 결제 가능. 충전은 트래블카드로. 안드로이드는 실물 카드를 현지에서 구매.</span></div>
+      <div class="n"><i class="dd">D-7</i><span><b>Visit Japan Web 등록</b> — 입국심사·세관신고 QR. <b>의무는 아니지만</b> 있으면 나리타 심사줄이 크게 줄어요. <b>2인 각각</b> 계정 등록 후 QR 캡처. <span class="muted">※ JESTA(전자여행허가)는 2028년경 도입 예정이라 이번엔 해당 없음.</span></span></div>
+      <div class="n"><i class="dd">D-5</i><span><b>앱 설치 &amp; 로그인</b> — 구글맵(오프라인 지도 도쿄 다운로드) · 파파고/구글번역(카메라 번역) · <b>도쿄디즈니리조트</b> · <b>ecbo cloak</b> · EPARK · 항공사 앱.</span></div>
+      <div class="n"><i class="dd">D-3</i><span><b>오프라인 스크린샷</b> — 여권 사진면 · e티켓 · 보험증권번호 · 숙소 주소(일본어) · <b>긴급 연락처</b>(아래 🆘 표). 데이터가 끊겨도 보이게 사진첩에 저장.</span></div>
+      <div class="n"><i class="dd">D-2</i><span><b>태풍·기상 확인</b> — 9월 도쿄는 <b>태풍 시즌</b>. 결항·전철 계획운휴 가능성이 있어 출발 전 예보를 보고, 비 오면 일정표 <b>플랜 B</b>(요코하마 실내)로 전환.</span></div>
+      <div class="n"><i class="dd">D-1</i><span><b>온라인 체크인</b> — 제주항공 앱에서 미리. 나리타 <b>제3터미널(T3)</b>은 LCC 전용이라 역이 없어요. 도착·출국 모두 <b>T2까지 도보 약 600m 또는 셔틀</b>, 15분쯤 여유를 두세요.</span></div>
+      <div class="n"><i class="dd">D-1</i><span><b>보조배터리 포장</b> — <b>위탁수하물 불가, 기내만</b> 가능. 1인 2개·개당 160Wh 이하, 단자를 절연테이프나 파우치로 감싸 개별 포장. 2026년 4월 규정 개정으로 <b>기내 선반 보관·기내 충전 금지</b>(몸이나 앞주머니에).</span></div>
+      </div>
+      </div>
+    </details>
+
+    <details class="acc">
+      <summary><span class="acct">2️⃣ 챙겨야 할 것 체크리스트</span></summary>
+      <div class="accb">
+      <p class="ckn">9월 도쿄는 <b>낮 30℃ 넘고 습도 높음</b>, 아침저녁만 선선. 여름옷 기준으로 싸고 얇은 겉옷 하나.</p>
+      <div class="ckl" data-cl="prep-pack">
+      <div class="n"><i class="dd doc">서류</i><span><b>여권 · 여권 사본</b> — 사본은 캐리어에 따로. <b>면세(Tax-Free)엔 여권 실물 필수</b>라 쇼핑 날엔 꼭 들고 나가기.</span></div>
+      <div class="n"><i class="dd doc">서류</i><span><b>e티켓 · VJW QR · 보험증권</b> — 종이 1부씩 있으면 폰이 죽어도 안전.</span></div>
+      <div class="n"><i class="dd pay">결제</i><span><b>트래블카드 2장 + 예비 신용카드</b> — 2인이 각자 나눠 소지. 한 장은 캐리어 보관.</span></div>
+      <div class="n"><i class="dd pay">결제</i><span><b>엔화 현금 3~5만엔</b> — 일본도 대부분 카드가 되지만 <b>노포·빙수·소규모 식당은 현금 전용</b>(코오리야 피스 등). 자판기·사찰 배관료·동전 코인락커도 현금.</span></div>
+      <div class="n"><i class="dd pay">결제</i><span><b>동전 지갑</b> — 1엔·5엔 잔돈이 순식간에 쌓여요. 작은 파우치 하나면 충분.</span></div>
+      <div class="n"><i class="dd elec">전자</i><span><b>돼지코(플러그 어댑터) 2~3개</b> — 일본은 <b>100V·납작한 A타입</b>이라 한국 둥근 플러그가 안 들어가요. 요즘 충전기는 100~240V 프리볼트라 <b>변압기는 불필요</b>, 모양만 바꿔주면 됩니다.</span></div>
+      <div class="n"><i class="dd elec">전자</i><span><b>멀티탭 1개 + 케이블</b> — 호텔 콘센트가 부족해요. 돼지코 1개에 멀티탭을 물리면 2인이 한 번에 충전.</span></div>
+      <div class="n"><i class="dd elec">전자</i><span><b>보조배터리</b> — 하루 종일 지도·번역·사진이라 배터리가 빨리 닳아요. 기내 반입만 가능(위 규정 참고).</span></div>
+      <div class="n"><i class="dd med">상비약</i><span><b>진통제 · 소화제 · 지사제 · 밴드</b> — 낯선 음식과 하루 2만보. <b>슈도에페드린·코데인 성분 감기약은 제외</b>.</span></div>
+      <div class="n"><i class="dd med">상비약</i><span><b>발 물집 밴드 · 근육 파스</b> — 도쿄는 환승 도보가 길어요. 있으면 여행 후반이 편해집니다.</span></div>
+      <div class="n"><i class="dd wear">의류</i><span><b>반팔 위주 + 얇은 가디건/셔츠 1</b> — 실내 냉방이 세고, 비 오면 기온이 뚝 떨어져요.</span></div>
+      <div class="n"><i class="dd wear">의류</i><span><b>접이식 우산 · 얇은 우비</b> — 9월 소나기·태풍 대비. 우비는 디즈니(9/8)에서도 유용.</span></div>
+      <div class="n"><i class="dd etc">기타</i><span><b>에코백 · 접이식 보조가방</b> — 일본도 <b>비닐봉투 유료</b>. 쇼핑 짐 늘어날 9/9 대비용 보조가방도 하나.</span></div>
+      <div class="n"><i class="dd etc">기타</i><span><b>자외선차단제 · 휴대용 선풍기 · 쿨링타월</b> — 9월에도 30℃ 넘는 날이 흔해요. 디즈니 야외 대기엔 필수급.</span></div>
+      <div class="n"><i class="dd etc">기타</i><span><b>지퍼백 몇 장</b> — 젖은 옷·먹다 남은 간식·영수증 정리(면세·보험 청구용) 겸용.</span></div>
+      </div>
+      </div>
+    </details>
+
+    <details class="acc">
+      <summary><span class="acct">3️⃣ 예약 체크리스트</span></summary>
+      <div class="accb">
+      <div class="ckl" data-cl="prep-book">
+      <div class="n"><i class="dd done">완료</i><span><b>항공권 · 숙소 · 여행자보험</b> — 제주항공 7C1175/7C1108 · APA 니시신주쿠 고초메 · 한화손보. <span class="muted">위 여행 개요 참고.</span></span></div>
+      <div class="n"><i class="dd done">완료</i><span><b>도쿄 디즈니랜드 (9/8 화)</b> — 티켓 확보 완료. <b>앱에 티켓을 미리 연동하고 QR을 캡처</b>해 두세요. 프리미어 액세스·스탠바이 패스는 <b>입장 후 당일 앱</b>에서만 발권됩니다.</span></div>
+      <div class="n"><i class="dd must">권장</i><span><b>로망스카 특급권 (9/6 일, 가마쿠라·에노시마)</b> — 오다큐 앱 또는 신주쿠역. 일요일 오전은 금방 매진되니 <b>며칠 전 예약</b>. 좌석 지정이라 앉아서 갑니다.</span></div>
+      <div class="n"><i class="dd must">권장</i><span><b>N'EX 좌석 지정 (9/9 수, 시부야 → 나리타)</b> — <b>전 좌석 지정제</b>라 미리 잡아야 안전. 늦어도 <b>전날까지</b>. 18:30 출발편이니 역산해서 여유 있는 편으로.</span></div>
+      <div class="n"><i class="dd must">권장</i><span><b>ecbo cloak 짐 보관 (9/9, 시부야역)</b> — 앱에서 <b>사전 예약</b>. 출국 당일 캐리어를 끌고 쇼핑할 순 없어요. 코인락커는 만석일 확률이 높습니다.</span></div>
+      </div>
+      </div>
+    </details>
+
+    <!-- 유의사항만 접지 않는다 — 늘 눈에 보여야 하는 내용이라 details 대신 고정 블록. -->
+    <div class="acc">
+      <div class="acch"><span class="acct">⚠️ 유의사항</span></div>
+      <div class="accb">
+      <ol class="notes">
+      <li><b>면세(Tax-Free)는 이번 여행까진 즉시 면세</b> — 한 매장 세금포함 <b>5,500엔 이상</b>이면 대상, 여권 필수. <span class="muted">2026년 11월 1일부터 '결제 후 공항 환급' 방식으로 바뀌지만, 9월 여행은 기존 방식이라 매장에서 바로 빠집니다.</span></li>
+      <li><b>숙박세</b> — 현행 정액제(1인 1박 100~200엔)로 체크아웃 시 별도 정산. <span class="muted">3% 정률제 인상은 2027년 4월부터라 이번엔 해당 없음.</span></li>
       <li><b>품번 스크린샷</b> — 이 안내문을 매장에서 보여주면 재고를 바로 찾아줘요.</li>
       <li><b>온라인 품절 ≠ 매장 품절</b> — 몽벨 품절 3종도 오프라인엔 있을 수 있어요.</li>
-      <li><b>현금 챙기기</b> — 로컬 노포·빙수 일부(코오리야 피스 등)는 현금 전용.</li>
-      <li><b>예약 현황</b> — 디즈니랜드(9/8) <b style="color:var(--accent2);">✅ 완료</b> · 로망스카(9/6 가마쿠라) 권장 · <b>N'EX 좌석 지정(9/9 시부야발)</b> 전날까지 권장 · 시부야역 짐 보관은 <b>ecbo cloak 앱 사전 예약</b> · 롯폰기 모리타워·쿠라스시는 예약 불필요(쿠라스시는 EPARK 발권 가능).</li>
+      <li><b>근교 확정</b> — 9/6(일) 가마쿠라+에노시마. 우천 시 요코하마(실내)로 교체 — 상단 일정표 플랜 B 참고.</li>
       <li>사고·먹고·간 곳은 <b>체크박스로 흔적</b>, <b>📍</b>로 구글맵, <b>지역 뱃지</b>로 필터.</li>
-      <li><b>근교 확정</b> — 9/6(일) 가마쿠라+에노시마. 로망스카 예약 권장. 우천 시 요코하마(실내)로 교체 — 상단 일정표 플랜 B 참고.</li>
-    </ol>
+      </ol>
+      </div>
+    </div>
   </section>
 
   <section id="sec-sos">
@@ -85,6 +154,6 @@
   </section>
 
 </div>
-<script src="assets/app.js?v=19"></script>
+<script src="assets/app.js?v=70"></script>
 </body>
 </html>
