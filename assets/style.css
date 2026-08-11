@@ -142,11 +142,14 @@
   /* 체크 항목 숨기기 모드 */
   body.hideck .n.ckd, body.hideck .prow.ckd, body.hideck .special.ckd, body.hideck .mcd .item.ckd, body.hideck .litem.ckd{ display:none;}
   /* 탭해서 전화 걸기 */
-  /* 긴급 연락처는 현지에서 급할 때 누른다 — 인라인 밑줄이 아니라 손가락이 닿는 칩으로 */
-  a.tel{ display:inline-flex; align-items:center; min-height:36px; padding:2px 11px; margin:1px 2px 1px 0; border-radius:8px;
-    background:var(--soft); border:1px solid var(--line); color:inherit; font-weight:700; text-decoration:none; white-space:nowrap;
-    -webkit-tap-highlight-color:transparent;}
-  a.tel:active{ background:var(--tag);}
+  /* 전화번호는 문장 속 밑줄이 아니라 누를 수 있는 뱃지로.
+     개요·긴급 어디서든 같은 베이지 뱃지 하나로 통일 — 번호가 먼저, 설명이 뒤에 온다. */
+  a.tel{ display:inline-flex; align-items:center; gap:4px; min-height:30px; padding:3px 10px; margin:1px 3px 1px 0;
+    border-radius:999px; background:var(--tag); border:1px solid var(--line); color:var(--accent2);
+    font-size:13px; font-weight:800; line-height:1.25; letter-spacing:-.1px; font-variant-numeric:tabular-nums;
+    text-decoration:none; white-space:nowrap; vertical-align:middle; -webkit-tap-highlight-color:transparent;}
+  a.tel::before{ content:'☎'; font-size:11px; opacity:.7;}
+  a.tel:active{ background:var(--line);}
   /* 일자별 타임라인 */
   .dcard{ border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-top:14px; background:#fff;}
   .dhead{ color:#fff; font-weight:800; font-size:15px; min-height:52px; padding:12px 14px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
@@ -294,22 +297,54 @@
 .mday{ border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-top:14px; background:#fff;}
 .mdh{ color:#fff; font-weight:800; font-size:14.5px; padding:9px 13px;}
 .mtb{ padding:2px 0;}
-.mrow{ display:flex; gap:8px; padding:8px 12px; border-bottom:1px solid var(--soft); align-items:flex-start; font-size:12.5px; line-height:1.5;}
+.madd{ margin:12px 10px 10px; padding-top:9px; border-top:1px dashed var(--line);}
+.madd-title{ color:var(--accent2); font-size:11.5px; font-weight:800; letter-spacing:.2px;}
+.madd-note{ margin-left:5px; color:#8a8272; font-size:10px; font-weight:500;}
+.madd-area{ margin:8px 0 4px; color:#6f685a; font-size:11px; font-weight:800;}
+.madd-table{ overflow:hidden; border:1px solid var(--soft); border-radius:8px;}
+.madd-table + .madd-area{ margin-top:11px;}
+.mrow{ display:grid; grid-template-columns:54px minmax(182px,1.2fr) 84px 40px 66px minmax(190px,1.4fr); row-gap:8px; column-gap:4px; padding:8px 12px; border-bottom:1px solid var(--soft); align-items:flex-start; font-size:12.5px; line-height:1.5;}
 .mrow:last-child{ border-bottom:none;}
 .mrow:nth-child(even){ background:rgba(244,237,221,.5);}
 .mrow.mh{ font-weight:800; color:#8a8272; font-size:11.5px; background:var(--tag);}
-.mrow > span:nth-child(1){ flex:0 0 62px;}
-.mrow > span:nth-child(2){ flex:0 0 38%; min-width:0; font-weight:600;}
-.mrow > span:nth-child(3){ flex:1; min-width:0; color:#6f685a; font-size:11.5px;}
-.mc{ display:inline-block; font-size:10.5px; font-weight:800; padding:2px 6px; border-radius:9px; color:#fff; white-space:nowrap;}
+.mrow > span{ min-width:0;}
+.mrow > span:nth-child(2){ font-weight:600;}
+.mrow > span:nth-child(6){ color:#6f685a; font-size:11.5px;}
+.foodtype{ margin-left:5px; color:#8a8272; font-size:10.5px; font-weight:700; white-space:nowrap;}
+.foodtype::before{ content:'· ';}
+.status{ padding-inline:0; margin-inline:0; font-size:10.5px; line-height:1.45; text-align:start;}
+.status b{ display:block;}
+.status .altm{ white-space:normal;}
+.metric{ display:inline-flex; align-items:center; justify-content:flex-start; min-height:24px; padding:2px 0; margin-inline:0; text-align:start; font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap; background:transparent;}
+.metric.tabe{ color:#9b4c17;}
+.metric.google{ color:#245f51;}
+.metric.google.low{ color:#a23d32;}
+.metric.na{ color:#8a8272; font-size:10.5px;}
+/* 구분 뱃지는 54px 칸을 꽉 채우고 글자를 가운데로 — 세로로 줄줄이 놓였을 때 축이 맞는다 */
+.mc{ display:flex; align-items:center; justify-content:center; text-align:center;
+  font-size:10px; font-weight:800; padding:2px 4px; border-radius:9px; color:#fff; white-space:nowrap;}
+/* 일본어 상호 뒤 한국어 독음 */
+.krn{ color:#8a8272; font-weight:600;}
 .mc.eat{ background:#c0392b;} .mc.cafe{ background:#2e6e5a;} .mc.des{ background:#c98a1e;}
 .mrow.mh .mc{ background:none; color:inherit; padding:0;}
+.mrow.mh > span:nth-child(4){ font-size:0;}
+.mrow.mh > span:nth-child(4)::before{ content:'타베'; font-size:11.5px;}
 @media(max-width:640px){
-  .mrow{ flex-wrap:wrap; }
-  .mrow > span:nth-child(2){ flex:1 1 auto; }
-  .mrow > span:nth-child(3){ flex:1 1 100%; padding-left:70px; }
-  /* 헤더 줄만은 접히면 '메모'가 둘째 줄로 떨어져 지저분해진다 — 한 줄로 유지 */
-  .mrow.mh > span:nth-child(3){ flex:0 0 auto; padding-left:0; }
+  .mrow{ grid-template-columns:54px 58px 78px 1fr; row-gap:6px; column-gap:4px; padding:10px 12px; }
+  .mrow.mh{ display:none; }
+  .mrow > span:nth-child(1){ grid-column:1; grid-row:1; }
+  .mrow > span:nth-child(2){ grid-column:2 / -1; grid-row:1; }
+  .mrow > span:nth-child(3){ grid-column:1 / 3; grid-row:2; }
+  .mrow > span:nth-child(4){ grid-column:3; grid-row:2; }
+  .mrow > span:nth-child(5){ grid-column:4; grid-row:2; }
+  .mrow > span:nth-child(6){ grid-column:1 / -1; grid-row:3; padding-top:4px; }
+  .status{ display:flex; align-items:center; min-height:22px; padding-block:2px; text-align:start;}
+  .status b{ display:inline;}
+  .metric{ justify-content:flex-start; min-height:22px; padding:2px 0; font-size:11px; }
+  .metric::before{ margin-right:3px; color:#8a8272; font-weight:700; }
+  .metric.tabe::before{ content:'타베'; }
+  .metric.google::before{ content:'구글'; }
+  .metric.na{ font-size:9.5px; }
   .foldsec{ margin:24px 14px 0; }
 }
 
@@ -395,14 +430,11 @@
 .ev.nowhit{ outline:2px solid var(--accent); outline-offset:1px; background:rgba(217,79,61,.09) !important;}
 
 /* ================= 터치·가독성 보정 ================= */
-/* 긴급 연락처는 급할 때 한 손으로 누른다 — 문장 속 인라인 칩이면 뒤 설명이
-   어정쩡하게 줄바꿈되고 타깃도 작다. 이 섹션에서만 전폭 버튼으로 세운다. */
-#sec-sos a.tel{ display:flex; width:100%; justify-content:center; min-height:46px;
-  margin:7px 0 3px; padding:2px 12px; font-size:16.5px; font-weight:800; letter-spacing:.2px;
-  background:var(--accent2); border-color:var(--accent2); color:#fff;}
-#sec-sos a.tel:active{ background:#255c4b;}
-#sec-sos table.ov td{ line-height:1.6;}
-#sec-sos .muted{ display:block; margin-top:2px;}
+/* 긴급 연락처 — 뱃지가 줄 안에서 튀지 않도록 행 간격만 살짝 벌린다.
+   설명(.muted)은 뱃지 뒤에 그대로 흐르게 두고, 라벨이 붙는 줄만 블록으로 끊는다. */
+#sec-sos table.ov td{ line-height:1.9;}
+#sec-sos .telrow{ display:block;}
+#sec-sos .telrow + .telrow{ margin-top:2px;}
 
 /* 체크박스 히트 영역 — 보이는 상자는 24px 그대로, 누를 수 있는 범위만 넓힌다 */
 /* inline-flex 여야 한다 — flex 면 블록 레벨이라 .place 처럼 부모가 플렉스가 아닌 곳에서
