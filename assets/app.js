@@ -405,7 +405,7 @@
     else if(isFood) eventRow.classList.add('ev-meal');
     var primaryTitle=detail.querySelector(':scope > b');
     var primaryText=primaryTitle ? primaryTitle.textContent.replace(/\s+/g,' ').trim() : '';
-    if(/몽벨|키노쿠니야|ABC마트|유니클로|돈키호테|잔파라|소프맵|북오프|빅카메라|갓파바시|코마치도리|아메요코|야나카 긴자|サミットストア|스탠다드 프로덕츠|시부야\s*109|아트모스|래그태그|미야시타 파크|파르코|로프트|2nd STREET|아식스|스투시|Seria|세리아|DAISO|다이소/i.test(primaryText)){
+    if(/몽벨|키노쿠니야|ABC마트|유니클로|돈키호테|잔파라|소프맵|북오프|빅카메라|갓파바시|코마치도리|아메요코|야나카 긴자|サミットストア|스탠다드 프로덕츠|시부야\s*109|아트모스|래그태그|미야시타 파크|파르코|로프트|핸즈|ハンズ|2nd STREET|아식스|스투시|Seria|세리아|DAISO|다이소/i.test(primaryText)){
       eventRow.classList.add('ev-shopping');
     }
     /* 사진 스팟 — 제목이나 설명에 "뷰 스팟 / 사진 명소 / 포토스팟"이 있으면 시간 아래에 📷 */
