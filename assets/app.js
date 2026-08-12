@@ -1460,6 +1460,9 @@ SB.init();
    그래서 공개 파일·저장소 히스토리에는 숙소 주소·증권번호·예약번호가 남지 않는다.
    로그인은 💴 지출 탭 한 곳에서만 받는다. */
 var secretErr=null;
+/* 마지막으로 받아온 키 목록 — 요청은 성공했는데 그 블록이 없는 경우와
+   아직 못 받아온 경우를 구분해야 ⏳에서 영원히 멈추지 않는다 */
+var secretKeys=null;
 
 function readSecrets(){
   try{ return JSON.parse(localStorage.getItem(SECRET_K)||'null') || null; }catch(e){ return null; }
@@ -1510,11 +1513,16 @@ function fillSecret(box, cache){
   }
   if(box.getAttribute('data-filled')) return;     /* 잠깐 실패했더라도 이미 보이는 내용은 지우지 않는다 */
   box.classList.add('authlock');
+  var retry='<button type="button" class="lockbtn" onclick="loadSecrets()">다시 시도</button>';
   box.innerHTML = !navigator.onLine
       ? '📴 <b>오프라인이라 아직 못 받아왔어요</b><br><span class="muted">온라인일 때 한 번 열어 두면 이후엔 오프라인에서도 보여요.</span>'
     : secretErr
-      ? '⚠️ <b>내용을 불러오지 못했어요</b><br><span class="muted">'+secretErr+'</span><br>' +
-        '<button type="button" class="lockbtn" onclick="loadSecrets()">다시 시도</button>'
+      ? '⚠️ <b>내용을 불러오지 못했어요</b><br><span class="muted">'+secretErr+'</span><br>'+retry
+    /* 요청은 성공했는데 이 키가 없다 — 테이블에 행이 없거나 키가 다른 경우다 */
+    : (secretKeys && secretKeys.indexOf(key)<0)
+      ? '🗄️ <b>서버에 이 내용이 없어요</b><br><span class="muted">private_blocks 테이블에 <b>'+key+'</b> 행이 있는지 확인해 주세요' +
+        (secretKeys.length ? ' (받아온 키: '+secretKeys.join(', ')+')' : ' (받아온 행이 0개예요)') +
+        '.</span><br>'+retry
       : '⏳ <span class="muted">불러오는 중…</span>';
 }
 
@@ -1522,12 +1530,14 @@ function fillSecret(box, cache){
 function loadSecrets(){
   if(!document.querySelector('[data-secret]')) return Promise.resolve();
   if(!SB.loggedIn()){ paintAuthOnly(); return Promise.resolve(); }
-  secretErr=null;
+  secretErr=null; secretKeys=null;
   paintAuthOnly();
   return SB.rest('private_blocks?select=key,html').then(function(rows){
     var blocks={};
     (rows||[]).forEach(function(r){ blocks[r.key]=r.html; });
-    try{ localStorage.setItem(SECRET_K, JSON.stringify({ blocks:blocks, at:Date.now() })); }catch(e){}
+    secretKeys=Object.keys(blocks);
+    /* 빈 응답으로 이미 받아 둔 내용을 덮어쓰지 않는다 — 정책이 잠깐 조여졌을 수도 있다 */
+    if(secretKeys.length) try{ localStorage.setItem(SECRET_K, JSON.stringify({ blocks:blocks, at:Date.now() })); }catch(e){}
     secretErr=null;
   }).catch(function(e){
     /* fetch 자체가 실패하면 영문 메시지가 그대로 오므로 한 번 더 우리 말로 바꿔 준다 */
