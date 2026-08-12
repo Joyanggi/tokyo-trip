@@ -11,7 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%97%BC%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="assets/style.css?v=71">
+<link rel="stylesheet" href="assets/style.css?v=86">
 </head>
 <body data-tab="home">
 <div class="sheet">
@@ -32,7 +32,8 @@
     각 항목엔 <b>지역 뱃지</b>(<span class="bdg sb" data-demo="1">시부야</span><span class="bdg sj" data-demo="1">신주쿠</span><span class="bdg gz" data-demo="1">긴자</span><span class="bdg nt" data-demo="1">전국</span>)를 달았어요.
     <b>뱃지를 누르면 그 지역 것만</b> 남아요(전국 체인은 항상 표시). 사진·이름 누르면 확대, 📍는 구글맵, 체크박스는 저장.
     하단 바에서 <b>탭을 눌러 이동</b>하고, 헤더 아래 <b>📍지역</b> 바에서 필터를 걸면 탭을 넘어가도 유지돼요. 같은 자리의 <b>✅숨김</b>으로 다녀온 곳 감추기.
-    쓴 돈은 <b>💴지출</b> 탭에 기록하면 <b>보람↔양기 정산</b>까지 계산해 줘요.
+    <!-- 이름은 로그인 전엔 별명으로 보인다 — app.js의 paintNames가 [data-nm]을 갈아 끼운다 -->
+    쓴 돈은 <b>💴지출</b> 탭에 기록하면 <b><span data-nm="b">햄찌</span>↔<span data-nm="y">감자</span> 정산</b>까지 계산해 줘요.
     </div>
   </details>
 
@@ -43,25 +44,10 @@
       <div class="leg"><div class="muted">🛫 가는편 · 9/5(토)</div><div class="route">인천(ICN) ✈ 나리타(NRT)</div><div><b>09:45</b> ICN T1 → <b>12:15</b> NRT T3</div><div class="muted">제주항공 7C1175 · 2시간 30분</div><div class="fuji">🗻 <b>오른쪽 좌석</b>에 앉으면 후지산이 보여요</div></div>
       <div class="leg"><div class="muted">🛬 오는편 · 9/9(수)</div><div class="route">나리타(NRT) ✈ 인천(ICN)</div><div><b>18:30</b> NRT T3 → <b>21:20</b> ICN T1</div><div class="muted">제주항공 7C1108 · 2시간 50분</div></div>
     </div>
-    <!-- 숙소 주소·전화, 보험 증권번호가 들어 있어 로그인한 기기에서만 펼친다(app.js).
-         hidden을 미리 걸어 두면 스크립트가 도는 사이 잠깐 보이는 일이 없다. -->
-    <div data-authonly="숙소·보험 정보라 로그인한 기기에서만 보여요." hidden>
-    <table class="ov ovsoft" style="margin-top:14px;">
-      <tr><th>기간</th><td>2026년 9월 5일(토) ~ 9월 9일(수) · <b>4박 5일</b></td></tr>
-      <tr><th>참가자</th><td>***REMOVED***, ***REMOVED*** (성인 2인)</td></tr>
-      <tr><th>거점 숙소</th><td data-mapq="アパホテル 西新宿五丁目駅前タワー"><b style="font-weight:600;">APA Hotel &amp; Resort 니시신주쿠 고초메 에키마에 타워</b><br>
-        <span class="muted">西新宿五丁目駅前タワー · 東京都渋谷区***REMOVED*** · <a class="tel" href="tel:***REMOVED***">***REMOVED***</a> · 스몰더블룸(금연)</span></td></tr>
-    </table>
-    <h3 style="font-size:16px; margin:20px 0 4px; color:var(--accent2);">🛡️ 여행자보험 (가입 완료)</h3>
-    <div class="resbox">
-      <table>
-        <tr><td>보험사</td><td>한화손해보험 (마이뱅크 단체) · 증권번호 <b>***REMOVED***</b></td></tr>
-        <tr><td>피보험자</td><td>***REMOVED*** · ***REMOVED*** (2인) / 기간 9/5 07:00 ~ 9/9 23:00 · 보험료 19,300원</td></tr>
-        <tr><td>주요 보장</td><td>해외 의료비 상해·질병 <b>각 US$2만</b> · 긴급구조/송환 US$3만 · 배상책임 US$2만 · 휴대품 파손·도난 <b>100만원</b>(품목당 20만·자기부담 1만) · 항공/수하물 지연 30만 · 여권분실 6만 · 식중독입원 30만</td></tr>
-        <tr><td>사고 시</td><td><a class="tel" href="tel:+8223602541">+82-2-360-2541</a> <b style="color:var(--accent);">24시간 긴급연락</b> · <a class="tel" href="tel:+82269251517">02-6925-1517</a> 고객센터. 도난은 <b>현지 폴리스리포트</b> 필수, 의료·지연은 <b>영수증 보관</b>.</td></tr>
-      </table>
-    </div>
-    </div>
+    <!-- 참가자 실명·숙소 주소·전화, 보험 증권번호가 들어가는 자리. 내용은 이 파일에 없고
+         Supabase의 private_blocks(키: stay-insurance)에서 로그인한 뒤 받아 온다(app.js의 loadSecrets).
+         hidden을 미리 걸어 두면 스크립트가 도는 사이 빈 칸이 깜빡이지 않는다. -->
+    <div data-authonly="숙소·보험 정보라 로그인한 기기에서만 보여요." data-secret="stay-insurance" hidden></div>
   </section>
 
   <section>
@@ -116,7 +102,6 @@
       <div class="n"><i class="dd done">완료</i><span><b>항공권 · 숙소 · 여행자보험</b> — 제주항공 7C1175/7C1108 · APA 니시신주쿠 고초메 · 한화손보. <span class="muted">위 여행 개요 참고.</span></span></div>
       <div class="n"><i class="dd done">완료</i><span><b>도쿄 디즈니랜드 (9/8 화)</b> — 티켓 확보 완료. <b>앱에 티켓을 미리 연동하고 QR을 캡처</b>해 두세요. 프리미어 액세스·스탠바이 패스는 <b>입장 후 당일 앱</b>에서만 발권됩니다.</span></div>
       <div class="n"><i class="dd must">권장</i><span><b>로망스카 특급권 (9/6 일, 가마쿠라·에노시마)</b> — 오다큐 앱 또는 신주쿠역. 일요일 오전은 금방 매진되니 <b>며칠 전 예약</b>. 좌석 지정이라 앉아서 갑니다.</span></div>
-      <div class="n"><i class="dd must">권장</i><span><b>N'EX 좌석 지정 (9/9 수, 시부야 → 나리타)</b> — <b>전 좌석 지정제</b>라 미리 잡아야 안전. 늦어도 <b>전날까지</b>. 18:30 출발편이니 역산해서 여유 있는 편으로.</span></div>
       <div class="n"><i class="dd must">권장</i><span><b>ecbo cloak 짐 보관 (9/9, 시부야역)</b> — 앱에서 <b>사전 예약</b>. 출국 당일 캐리어를 끌고 쇼핑할 순 없어요. 코인락커는 만석일 확률이 높습니다.</span></div>
       </div>
       </div>
@@ -128,11 +113,7 @@
       <div class="accb">
       <ol class="notes">
       <li><b>면세(Tax-Free)는 이번 여행까진 즉시 면세</b> — 한 매장 세금포함 <b>5,500엔 이상</b>이면 대상, 여권 필수. <span class="muted">2026년 11월 1일부터 '결제 후 공항 환급' 방식으로 바뀌지만, 9월 여행은 기존 방식이라 매장에서 바로 빠집니다.</span></li>
-      <li><b>숙박세</b> — 현행 정액제(1인 1박 100~200엔)로 체크아웃 시 별도 정산. <span class="muted">3% 정률제 인상은 2027년 4월부터라 이번엔 해당 없음.</span></li>
-      <li><b>품번 스크린샷</b> — 이 안내문을 매장에서 보여주면 재고를 바로 찾아줘요.</li>
-      <li><b>온라인 품절 ≠ 매장 품절</b> — 몽벨 품절 3종도 오프라인엔 있을 수 있어요.</li>
-      <li><b>근교 확정</b> — 9/6(일) 가마쿠라+에노시마. 우천 시 요코하마(실내)로 교체 — 상단 일정표 플랜 B 참고.</li>
-      <li>사고·먹고·간 곳은 <b>체크박스로 흔적</b>, <b>📍</b>로 구글맵, <b>지역 뱃지</b>로 필터.</li>
+      <li><b>숙박세 — 이번 숙소는 낼 것 없어요</b> <span style="color:var(--accent2);">✅</span> 도쿄도 숙박세는 <b>1인 1박 숙박료(소비세 제외) ¥10,000 미만이면 비과세</b>인데, 2인 1실은 <b>객실 요금을 인원수로 나눠</b> 판정해서 우리 방은 기준 아래입니다. <span class="muted">과세 구간이어도 1인 100~200엔. 3% 정률제 인상은 2027년 4월부터라 이번엔 해당 없음.</span></li>
       </ol>
       </div>
     </div>
@@ -154,6 +135,6 @@
   </section>
 
 </div>
-<script src="assets/app.js?v=71"></script>
+<script src="assets/app.js?v=86"></script>
 </body>
 </html>

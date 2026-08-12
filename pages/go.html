@@ -11,7 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%97%BC%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="../icon-180.png">
 <link rel="manifest" href="../manifest.webmanifest">
-<link rel="stylesheet" href="../assets/style.css?v=71">
+<link rel="stylesheet" href="../assets/style.css?v=86">
 </head>
 <body data-tab="go">
 <div class="sheet">
@@ -49,15 +49,9 @@
             <tr><td>운영시간</td><td>방문 전 <a href="https://www.tokyodisneyresort.jp/kr/tdl/calendar.html" target="_blank" rel="noopener">공식 운영 캘린더</a>에서 개장·폐장·휴장 어트랙션 확인</td></tr>
           </table>
         </div>
-        <!-- 예약번호·입장 QR만 로그인한 기기에서 (app.js의 paintAuthOnly) -->
-        <div data-authonly="예약번호·입장 정보라 로그인한 기기에서만 보여요." hidden>
-        <div class="resbox">
-          <table>
-            <tr><td>예약번호</td><td><b class="pcode" style="font-size:14px;">***REMOVED***</b> <span class="muted">(2026.8.9 16:25 접수)</span></td></tr>
-            <tr><td>입장</td><td>MyDisney 계정·공식 앱의 <b>QR 코드</b>로 입장 — <b style="color:var(--accent);">미리 캡처 저장</b>, 2인 각자 폰에 연동</td></tr>
-          </table>
-        </div>
-        </div>
+        <!-- 예약번호·입장 정보는 이 파일에 없다 — Supabase private_blocks(키: tdl-reservation)에서
+             로그인한 뒤 받아 온다(app.js의 loadSecrets). -->
+        <div data-authonly="예약번호·입장 정보라 로그인한 기기에서만 보여요." data-secret="tdl-reservation" hidden></div>
       </div>
     </div>
   </section>
@@ -120,6 +114,6 @@
   </section>
 
 </div>
-<script src="../assets/app.js?v=71"></script>
+<script src="../assets/app.js?v=86"></script>
 </body>
 </html>

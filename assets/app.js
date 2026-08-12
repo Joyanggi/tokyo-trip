@@ -1152,12 +1152,16 @@ function regionColor(name){
     var jp=it.querySelector('.ljp'); var extra=(jp && /[぀-ヿ㐀-鿿]/.test(jp.textContent)) ? ' '+jp.textContent.trim().split(/[·\/]/)[0] : '';
     lt.appendChild(pin(nm.textContent.trim()+extra+' 東京'));
   });
-  document.querySelectorAll('[data-mapq]').forEach(function(el){
-    if(el.querySelector('a.mappin')) return;
-    var mapPin=pin(el.getAttribute('data-mapq'));
-    if(el.classList.contains('ev-meal-link')) el.insertAdjacentElement('afterend',mapPin);
-    else el.appendChild(mapPin);
-  });
+  /* 로그인 후 주입되는 블록(숙소 행 등)에도 핀을 달아야 해서 밖에서 다시 부를 수 있게 열어 둔다 */
+  window.attachMapPins=function(root){
+    (root||document).querySelectorAll('[data-mapq]').forEach(function(el){
+      if(el.querySelector('a.mappin')) return;
+      var mapPin=pin(el.getAttribute('data-mapq'));
+      if(el.classList.contains('ev-meal-link')) el.insertAdjacentElement('afterend',mapPin);
+      else el.appendChild(mapPin);
+    });
+  };
+  window.attachMapPins(document);
 })();
 
 /* ================= 지역 필터 & 표시 바 (탭을 넘어가도 유지) ================= */
@@ -1366,6 +1370,8 @@ function regionColor(name){
    필요한 건 auth 토큰 발급/갱신과 REST 두 가지뿐이라 직접 부른다.
    publishable key는 공개돼도 안전 — 테이블에 RLS가 걸려 있어 로그인 없이는
    읽기도 쓰기도 거부된다(42501). 로그인 정보는 저장소에 없고 각자 기기에만 있다. */
+/* 로그인 후 받아 온 비공개 블록을 담아 두는 곳 — 오프라인에서도 숙소 주소·긴급연락처가 보여야 한다 */
+var SECRET_K='tokyoTripSecrets';
 var SB={
   url:'https://jiwtfwkbfraolwxbnzzv.supabase.co',
   key:'sb_publishable_vu6Al-Urwr_eymf6K77ouQ_PhJfKIaV',
@@ -1375,6 +1381,8 @@ var SB={
   setSession:function(s){
     this.session=s;
     try{ s ? localStorage.setItem(this.SK, JSON.stringify(s)) : localStorage.removeItem(this.SK); }catch(e){}
+    /* 로그아웃·갱신 실패로 세션이 끊기면 받아 둔 비공개 블록도 이 기기에서 지운다 */
+    if(!s) try{ localStorage.removeItem(SECRET_K); }catch(e){}
   },
   email:function(){ return this.session && this.session.email; },
   loggedIn:function(){ return !!(this.session && this.session.refresh_token); },
@@ -1384,8 +1392,10 @@ var SB={
     'Email not confirmed':'이메일 확인이 안 된 계정이에요 (대시보드에서 Auto Confirm 체크)',
     'Failed to fetch':'네트워크에 연결할 수 없어요'
   },
+  /* .then(this._json)으로 넘기면 this가 끊기므로 SB를 직접 참조한다 —
+     안 그러면 MSG 한글 변환이 아니라 TypeError 메시지가 사용자에게 보인다 */
   _json:function(r){
-    var self=this;
+    var self=SB;
     return r.text().then(function(txt){
       var j=null; try{ j=txt?JSON.parse(txt):null; }catch(e){}
       if(!r.ok){
@@ -1445,18 +1455,35 @@ SB.init();
 
 /* ================= 로그인 전용 영역 =================
    [data-authonly] 블록은 로그인한 기기에서만 펼치고, 아니면 그 자리에 안내를 대신 넣는다.
-   정적 페이지라 HTML 소스에는 그대로 남는다 — 서버 검증이 아니라 어깨너머로 보는 눈을
-   가리는 수준의 보호다. 로그인은 💴 지출 탭 한 곳에서만 받는다. */
+   [data-secret="키"]가 붙은 블록은 내용 자체가 이 저장소에 없다 — Supabase의
+   private_blocks 테이블(로그인한 사용자만 읽을 수 있는 RLS)에서 받아 와 채운다.
+   그래서 공개 파일·저장소 히스토리에는 숙소 주소·증권번호·예약번호가 남지 않는다.
+   로그인은 💴 지출 탭 한 곳에서만 받는다. */
+var secretErr=null;
+
+function readSecrets(){
+  try{ return JSON.parse(localStorage.getItem(SECRET_K)||'null') || null; }catch(e){ return null; }
+}
+
 function paintAuthOnly(){
   var boxes=document.querySelectorAll('[data-authonly]');
   if(!boxes.length) return;
   var on=SB.loggedIn();
   var href=(/\/pages\//.test(location.pathname)?'':'pages/')+'money.html';
+  var cache=on ? readSecrets() : null;
   Array.prototype.forEach.call(boxes, function(box){
     box.hidden=!on;
     var lock=box.previousElementSibling;
     if(lock && lock.className!=='authlock') lock=null;
-    if(on){ if(lock) lock.remove(); return; }
+    if(on){
+      if(lock) lock.remove();
+      fillSecret(box, cache);
+      return;
+    }
+    /* 로그아웃 상태에선 받아 둔 내용을 화면에서도 비운다 */
+    if(box.hasAttribute('data-secret')){
+      box.innerHTML=''; box.removeAttribute('data-filled'); box.classList.remove('authlock');
+    }
     if(!lock){
       lock=document.createElement('div');
       lock.className='authlock';
@@ -1467,7 +1494,72 @@ function paintAuthOnly(){
     }
   });
 }
+
+/* 받아 온 블록을 그려 넣는다. 아직 없으면 그 자리에 상태만 알려 준다. */
+function fillSecret(box, cache){
+  var key=box.getAttribute('data-secret');
+  if(!key) return;                                /* 서버에서 받아올 게 없는 잠금 블록 */
+  var html=cache && cache.blocks && cache.blocks[key];
+  if(html){
+    if(box.getAttribute('data-filled')===key) return; /* 이미 같은 내용이면 다시 그리지 않는다 */
+    box.classList.remove('authlock');               /* 아래 안내 상태에서 붙였을 수 있다 */
+    box.innerHTML=html;
+    box.setAttribute('data-filled', key);
+    if(window.attachMapPins) window.attachMapPins(box);  /* 주입된 숙소 행에 📍 달기 */
+    return;
+  }
+  if(box.getAttribute('data-filled')) return;     /* 잠깐 실패했더라도 이미 보이는 내용은 지우지 않는다 */
+  box.classList.add('authlock');
+  box.innerHTML = !navigator.onLine
+      ? '📴 <b>오프라인이라 아직 못 받아왔어요</b><br><span class="muted">온라인일 때 한 번 열어 두면 이후엔 오프라인에서도 보여요.</span>'
+    : secretErr
+      ? '⚠️ <b>내용을 불러오지 못했어요</b><br><span class="muted">'+secretErr+'</span><br>' +
+        '<button type="button" class="lockbtn" onclick="loadSecrets()">다시 시도</button>'
+      : '⏳ <span class="muted">불러오는 중…</span>';
+}
+
+/* Supabase에서 비공개 블록을 받아 이 기기에 담아 둔다(오프라인 대비). */
+function loadSecrets(){
+  if(!document.querySelector('[data-secret]')) return Promise.resolve();
+  if(!SB.loggedIn()){ paintAuthOnly(); return Promise.resolve(); }
+  secretErr=null;
+  paintAuthOnly();
+  return SB.rest('private_blocks?select=key,html').then(function(rows){
+    var blocks={};
+    (rows||[]).forEach(function(r){ blocks[r.key]=r.html; });
+    try{ localStorage.setItem(SECRET_K, JSON.stringify({ blocks:blocks, at:Date.now() })); }catch(e){}
+    secretErr=null;
+  }).catch(function(e){
+    /* fetch 자체가 실패하면 영문 메시지가 그대로 오므로 한 번 더 우리 말로 바꿔 준다 */
+    secretErr=SB.MSG[e.message]||e.message||'불러오기 실패';
+  }).then(function(){
+    /* 토큰이 만료돼 세션이 끊겼을 수도 있다 — 그러면 이름도 별명으로 되돌려야 한다 */
+    paintAuthOnly(); paintNames();
+  });
+}
+
+/* ================= 이름 표기 =================
+   로그인 전에는 별명(감자·햄찌)만 보이고, 로그인한 기기에서만 실제 호칭을 쓴다.
+   정적 텍스트는 [data-nm="y|b"]에 별명을 적어 두고 여기서 갈아 끼운다. */
+var NICK={ b:'햄찌', y:'감자' }, REAL={ b:'보람', y:'양기' };
+function NAMES(){ return SB.loggedIn() ? REAL : NICK; }
+/* 「보람이 결제」/「감자가 결제」 — 받침에 따라 주격 조사가 달라진다 */
+function subj(name){
+  var last=name.charCodeAt(name.length-1)-0xAC00;
+  var batchim=(last>=0 && last<11172) && (last%28!==0);
+  return name+(batchim?'이':'가');
+}
+function paintNames(){
+  var m=NAMES();
+  document.querySelectorAll('[data-nm]').forEach(function(el){
+    var name=m[el.getAttribute('data-nm')]; if(!name) return;
+    el.textContent=(el.hasAttribute('data-nm-p') ? subj(name) : name) + (el.getAttribute('data-nm-sfx')||'');
+  });
+}
+
 paintAuthOnly();
+paintNames();
+loadSecrets();
 
 /* ================= 지출·정산 (pages/money.html 전용) =================
    기존 체크 시스템(data-cl → attach → updateCounts)은 정적 항목 전용이라 쓰지 않는다.
@@ -1477,7 +1569,7 @@ paintAuthOnly();
   var form=document.getElementById('exp-add'); if(!form) return; /* 다른 탭에선 아무것도 안 함 */
 
   var EK='tokyoTripExpenses';
-  var PEOPLE={ b:'보람', y:'양기' };
+  /* 이름은 로그인 여부에 따라 별명↔실제 호칭이 바뀌므로 그릴 때마다 NAMES()를 본다 */
   var DAYS={ '09-05':'9/5 (토)', '09-06':'9/6 (일)', '09-07':'9/7 (월)', '09-08':'9/8 (화)', '09-09':'9/9 (수)', 'etc':'기타' };
   var DAY_ORDER=['09-05','09-06','09-07','09-08','09-09','etc']; /* 입력 순서와 무관하게 날짜순으로 묶는다 */
 
@@ -1526,6 +1618,7 @@ paintAuthOnly();
   function render(){
     var c=calc();
     var L=live();
+    var PEOPLE=NAMES();
     /* 새로고침 버튼은 로그인했을 때만 — 안 했으면 받아올 곳이 없다 */
     elTotal.innerHTML='<span>총 지출 <span class="muted">'+L.length+'건</span></span>' +
       '<span class="tr"><b>'+yen(c.total)+'</b>' +
@@ -1557,7 +1650,7 @@ paintAuthOnly();
       elSettle.innerHTML='✅ 정산할 게 없어요';
     } else {
       elSettle.style.display='';
-      var from=(c.net>0)?'양기':'보람', to=(c.net>0)?'보람':'양기', amt=Math.abs(c.net);
+      var from=(c.net>0)?PEOPLE.y:PEOPLE.b, to=(c.net>0)?PEOPLE.b:PEOPLE.y, amt=Math.abs(c.net);
       elSettle.className='expsettle';
       elSettle.innerHTML='💸 <b>'+from+' → '+to+'</b> <b class="amt">'+yen(amt)+'</b> <span class="muted">미정산</span>';
     }
@@ -1669,6 +1762,8 @@ paintAuthOnly();
       lastErr=e.message||'동기화 실패';
     }).then(function(){
       syncing=false; paintSync();
+      /* 갱신 실패로 로그아웃됐으면 로그인 폼·별명 표기로 되돌린다 */
+      if(!SB.loggedIn()){ paintAuth(); paintNames(); render(); }
       if(pending){ pending=false; return sync(); }
     });
   }
@@ -1713,7 +1808,8 @@ paintAuthOnly();
       elAuth.innerHTML='<button type="button" id="exp-signout" class="expauthlink">로그아웃</button>';
       document.getElementById('exp-signout').addEventListener('click', function(){
         if(!confirm('로그아웃할까요?\n이 기기의 기록은 그대로 남고, 동기화만 멈춥니다.')) return;
-        SB.signOut(); paintAuth(); paintSync(); paintAuthOnly();
+        /* 세션을 지우면 비공개 블록 캐시도 함께 사라지고, 이름도 별명으로 돌아간다 */
+        SB.signOut(); paintAuth(); paintSync(); paintAuthOnly(); paintNames(); render();
       });
     } else {
       elAuth.innerHTML=
@@ -1733,7 +1829,7 @@ paintAuthOnly();
         if(!em || !pw){ msg.textContent='이메일과 비밀번호를 모두 넣어주세요.'; return; }
         msg.textContent='로그인 중…';
         SB.signIn(em, pw).then(function(){
-          paintAuth(); paintAuthOnly();
+          paintAuth(); paintAuthOnly(); paintNames(); loadSecrets();
           /* 로그인 시점의 로컬 기록은 전부 올려보낸다 */
           data.items.forEach(function(x){ if(!x.updated_at) x.updated_at=Date.now(); x.dirty=1; });
           save(); return sync();

@@ -11,7 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%97%BC%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="../icon-180.png">
 <link rel="manifest" href="../manifest.webmanifest">
-<link rel="stylesheet" href="../assets/style.css?v=71">
+<link rel="stylesheet" href="../assets/style.css?v=86">
 </head>
 <body data-tab="money">
 <div class="sheet">
@@ -19,11 +19,12 @@
   <header>
     <div class="stamp">가 정 통 신 문</div>
     <h1>💴 지출·정산</h1>
-    <p class="sub">— 얼마 썼는지 · 보람 ↔ 양기 정산 —</p>
+    <!-- 이름은 로그인 전엔 별명으로 보인다 — app.js의 paintNames가 [data-nm]을 갈아 끼운다 -->
+    <p class="sub">— 얼마 썼는지 · <span data-nm="b">햄찌</span> ↔ <span data-nm="y">감자</span> 정산 —</p>
   </header>
 
   <section id="sec-money">
-    <p class="muted" style="margin-top:14px;"><b>부담</b>이 <b>공동</b>이면 반반으로 나눠 정산하고, <b>보람</b>/<b>양기</b>면 그 사람이 전액 부담해요. 내 돈으로 내 것을 사도 <b>총 지출·실부담엔 그대로 기록</b>돼요 — 서로 주고받을 돈만 안 생기는 거예요.</p>
+    <p class="muted" style="margin-top:14px;"><b>부담</b>이 <b>공동</b>이면 반반으로 나눠 정산하고, <b data-nm="b">햄찌</b>/<b data-nm="y">감자</b>면 그 사람이 전액 부담해요. 내 돈으로 내 것을 사도 <b>총 지출·실부담엔 그대로 기록</b>돼요 — 서로 주고받을 돈만 안 생기는 거예요.</p>
 
     <!-- ── 계정·동기화 ── -->
     <div id="exp-auth"></div>
@@ -45,13 +46,13 @@
       <div class="exprow2">
         <div class="expyen"><span>¥</span><input type="text" id="exp-a" inputmode="numeric" placeholder="금액" aria-label="금액"></div>
         <select id="exp-p" aria-label="결제자">
-          <option value="b">보람이 결제</option>
-          <option value="y">양기가 결제</option>
+          <option value="b" data-nm="b" data-nm-p="1" data-nm-sfx=" 결제">햄찌가 결제</option>
+          <option value="y" data-nm="y" data-nm-p="1" data-nm-sfx=" 결제">감자가 결제</option>
         </select>
         <select id="exp-k" aria-label="부담">
           <option value="g">공동 부담</option>
-          <option value="b">보람 부담</option>
-          <option value="y">양기 부담</option>
+          <option value="b" data-nm="b" data-nm-sfx=" 부담">햄찌 부담</option>
+          <option value="y" data-nm="y" data-nm-sfx=" 부담">감자 부담</option>
         </select>
         <button type="button" id="exp-add">＋ 추가</button>
       </div>
@@ -71,6 +72,6 @@
   </section>
 
 </div>
-<script src="../assets/app.js?v=71"></script>
+<script src="../assets/app.js?v=86"></script>
 </body>
 </html>

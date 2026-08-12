@@ -1,0 +1,5 @@
+# 개인정보(숙소 주소·전화, 보험 증권번호, 예약번호)는 Supabase private_blocks 테이블에만 둔다.
+# private/ 는 그 값의 원본·백업이라 커밋하지 않는다.
+private/
+
+.DS_Store
