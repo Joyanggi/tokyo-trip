@@ -99,6 +99,22 @@
   /* 접힌 바가 연달아 놓일 땐 h2 아래 여백이 남아 사이가 벌어진다 */
   details.fold:not([open]) > summary h2{ margin-bottom:0;}
   details.fold > summary h2 .bdg{ margin-right:2px;}
+  /* 일정 한 줄 안에서 긴 설명을 접어 두는 아코디언 —
+     식당 이름 펼침(.ev-place-link)과 같은 모양: 제목에 점선 밑줄 + ⌄, 펼치면 윗선으로 구분된 패널 */
+  details.evfold > summary{ list-style:none; cursor:pointer; -webkit-tap-highlight-color:transparent;}
+  details.evfold > summary::-webkit-details-marker{ display:none;}
+  details.evfold > summary > b:first-child{ text-decoration-line:underline; text-decoration-style:dotted;
+    text-decoration-thickness:1px; text-underline-offset:3px; text-decoration-color:rgba(102,83,55,.42);}
+  details.evfold > summary > b:first-child::after{ content:'⌄'; display:inline-block; margin-left:4px;
+    color:#7f6b4e; font-size:11px; text-decoration:none; transition:transform .18s ease-out;}
+  details.evfold[open] > summary > b:first-child::after{ transform:rotate(180deg);}
+  details.evfold > summary:hover > b:first-child{ color:#765d37;}
+  details.evfold > .fb{ margin:10px 0 2px; padding-top:11px; border-top:1px solid var(--line); background:#fbfaf6;}
+  /* 펼친 내용은 문장 한 줄씩 — 줄마다 여백을 주고, 소제목(.fbh)만 조금 띄운다 */
+  details.evfold > .fb > div{ margin-top:3px;}
+  details.evfold > .fb > div:first-child{ margin-top:0;}
+  details.evfold > .fb > .fbh{ margin-top:9px; color:var(--accent2); font-weight:800;}
+  @media(prefers-reduced-motion:reduce){ details.evfold > summary > b:first-child::after{ transition:none;}}
   .acc > .accb{ border-top:1px solid var(--line); padding:0 0 2px;}
   .acc > .accb > ol.notes{ margin:11px 0; padding-right:14px;}
   p.ckn{ font-size:12.5px; color:#8a8272; margin:0; padding:10px 14px 0;}

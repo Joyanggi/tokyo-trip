@@ -120,7 +120,8 @@
   R.forEach(function (day, di) {
     day.pts.forEach(function (p, i) {
       var m = evIndex[day.d] && evIndex[day.d][p.t];
-      if (!m || m.el.querySelector('.evact')) return;
+      /* data-noact: 공항 도착처럼 길찾기·캘린더가 무의미한 행은 버튼을 달지 않는다 */
+      if (!m || m.el.querySelector('.evact') || m.el.hasAttribute('data-noact')) return;
       var prev = i > 0 ? day.pts[i - 1] : null;
       var leg = i > 0 ? day.legs[i - 1] : null;
       var mode = leg && leg.mv === 'walk' ? 'walking' : 'transit';
@@ -157,7 +158,7 @@
   /* route-data에 아직 좌표가 없는 신규 일정도 지도 검색어(data-mapq)가 있으면
      길찾기·지도·캘린더 3개는 제공한다. 오버뷰 지도 버튼만 좌표가 있을 때 노출한다. */
   document.querySelectorAll('.dcard[data-d] .ev:not(.move)').forEach(function (row) {
-    if (row.querySelector('.evact')) return;
+    if (row.querySelector('.evact') || row.hasAttribute('data-noact')) return;
     var target = row.querySelector('.ev-titlemain > [data-mapq]');
     var timeEl = row.querySelector('.t');
     if (!target || !timeEl) return;
