@@ -1469,12 +1469,14 @@ function readSecrets(){
 }
 
 function paintAuthOnly(){
-  var boxes=document.querySelectorAll('[data-authonly]');
+  var boxes=document.querySelectorAll('[data-authonly],[data-secret]');
   if(!boxes.length) return;
   var on=SB.loggedIn();
   var href=(/\/pages\//.test(location.pathname)?'':'pages/')+'money.html';
   var cache=on ? readSecrets() : null;
   Array.prototype.forEach.call(boxes, function(box){
+    /* [data-secret]만 붙은 요소는 문장 속 인라인 값 — 자물쇠 안내 대신 대체 문구를 쓴다 */
+    if(!box.hasAttribute('data-authonly')){ fillInlineSecret(box, cache); return; }
     box.hidden=!on;
     var lock=box.previousElementSibling;
     if(lock && lock.className!=='authlock') lock=null;
@@ -1496,6 +1498,25 @@ function paintAuthOnly(){
       box.parentNode.insertBefore(lock, box);
     }
   });
+}
+
+/* 문장 속 값(숙소·역 이름, 공항버스 노선처럼 한 줄 안에 박힌 것) —
+   정적 HTML에는 「숙소」처럼 무해한 대체 문구를 적어 두고, 로그인하면 그것만 갈아 끼운다.
+   블록 방식과 달리 자물쇠 안내나 ⏳를 문장 중간에 끼워 넣지 않는다. */
+function fillInlineSecret(box, cache){
+  var key=box.getAttribute('data-secret'); if(!key) return;
+  /* 원래 문구는 처음 만났을 때 보관해 둔다 — 로그아웃하면 되돌려야 한다 */
+  if(!box.hasAttribute('data-fb')) box.setAttribute('data-fb', box.innerHTML);
+  var html=cache && cache.blocks && cache.blocks[key];
+  if(html){
+    if(box.getAttribute('data-filled')===key) return;
+    box.innerHTML=html;
+    box.setAttribute('data-filled', key);
+    if(window.attachMapPins) window.attachMapPins(box);
+  } else if(box.getAttribute('data-filled')){
+    box.innerHTML=box.getAttribute('data-fb');
+    box.removeAttribute('data-filled');
+  }
 }
 
 /* 받아 온 블록을 그려 넣는다. 아직 없으면 그 자리에 상태만 알려 준다. */
