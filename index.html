@@ -11,7 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%97%BC%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="assets/style.css?v=88">
+<link rel="stylesheet" href="assets/style.css?v=93">
 </head>
 <body data-tab="home">
 <div class="sheet">
@@ -134,7 +134,16 @@
     <div class="warn">💡 <b>여권 분실 시</b> → 가까운 <b>경찰서에서 분실·도난 신고</b> 후 <b>대사관</b>에서 긴급여권 발급. 이 번호들은 <b>스크린샷 저장</b> 추천(로밍/데이터 안 될 때 대비).</div>
   </section>
 
+  <!-- 날씨는 앱 안에 담지 않고 tenki.jp 예보로 넘긴다 — 매일 다시 볼 값이라 링크 한 줄이면 충분.
+       하단 ☀️날씨 탭도 같은 곳으로 간다. section으로 감싸야 좌우 여백이 다른 단락과 맞는다. -->
+  <section>
+    <div class="wx">
+      <div class="wxt">🌤️ 도쿄 날씨 예보</div>
+      <a class="wxb" href="https://tenki.jp/forecast/3/16/?date=2" target="_blank" rel="noopener">tenki.jp 도쿄 예보 열기</a>
+    </div>
+  </section>
+
 </div>
-<script src="assets/app.js?v=88"></script>
+<script src="assets/app.js?v=93"></script>
 </body>
 </html>

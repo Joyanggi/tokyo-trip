@@ -1017,13 +1017,19 @@ function regionColor(name){
     ['go','🗺️','가고','pages/go.html'],
     ['trip','🚃','근교','pages/trip.html'],
     ['local','🤖','로컬','pages/local.html'],
-    ['money','💴','지출','pages/money.html']
+    ['money','💴','지출','pages/money.html'],
+    /* 날씨만 외부 사이트(tenki.jp 도쿄 예보)라 맨 끝에 둔다. '://'가 있으면 BASE를 붙이지 않고
+       새 탭으로 연다 — 홈 화면에 설치한 PWA에서 같은 창으로 나가면 돌아올 수단이 없어서. */
+    ['weather','☀️','날씨','https://tenki.jp/forecast/3/16/?date=2']
   ];
   var curTab = document.body.getAttribute('data-tab') || 'home';
   if(!document.getElementById('nav')){
     var navHtml = TABS.map(function(t){
+      var ext = t[3].indexOf('://') > -1;
       var cls = (t[0]===curTab) ? ' class="on"' : '';
-      return '<a'+cls+' href="'+BASE+t[3]+'"><span class="ico">'+t[1]+'</span>'+t[2]+'</a>';
+      var href = ext ? t[3] : (BASE + t[3]);
+      var tgt = ext ? ' target="_blank" rel="noopener"' : '';
+      return '<a'+cls+' href="'+href+'"'+tgt+'><span class="ico">'+t[1]+'</span>'+t[2]+'</a>';
     }).join('');
     document.body.insertAdjacentHTML('beforeend', '<nav id="nav">'+navHtml+'</nav>');
   }

@@ -38,6 +38,17 @@
   /* 가는편 좌석 팁 — 항공권 카드 안에서만 쓰는 한 줄 */
   .fuji{ margin-top:7px; padding-top:7px; border-top:1px dashed var(--line); font-size:12.5px; color:#5c5544;}
   .fuji b{ color:var(--accent2);}
+  /* 🌤️ 날씨 — 개요 아래 외부 예보 링크 카드(하단 ☀️날씨 탭과 같은 곳).
+     제목과 버튼을 한 줄에 놓고, 폭이 모자라면 버튼이 다음 줄로 내려간다. */
+  .wx{ margin-top:14px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:10px 14px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
+  .wxt{ font-size:15px; font-weight:700;}
+  /* 높이는 line-height 대신 inline-flex + 세로 패딩으로 잡는다 — 글자가 줄바꿈돼도 안 깨진다.
+     .lockbtn 처럼 아래 「문장 속 링크」 규칙(.sheet a:not(...))의 제외 목록에 .wxb 를 넣어야 한다 —
+     안 그러면 그쪽 padding:7px 2px 가 이겨서 좌우 패딩이 통째로 무시된다 */
+  .wxb{ display:inline-flex; align-items:center; justify-content:center; min-height:28px; padding:3px 26px;
+    background:#eef6f2; color:var(--accent2); border:1px solid var(--accent2); font-weight:700; font-size:12.5px;
+    line-height:1.35; border-radius:15px; text-decoration:none; -webkit-tap-highlight-color:transparent;}
   .muted{ color:#8a8272; font-size:12.5px;}
   .kv{ font-size:13px; margin:1px 0;}
   .kv b{ color:var(--accent2);}
@@ -625,7 +636,7 @@
 .mcd .item .ckwrap, .noodlegrid .n .ckwrap{ align-items:center;}
 
 /* 문장 속 링크: 인라인 요소의 세로 패딩은 줄 높이를 바꾸지 않으면서 탭 영역만 넓혀준다 */
-.sheet a:not(.mappin):not(.tel):not(.evact a):not(.lockbtn){ padding:7px 2px; margin:0 -2px;}
+.sheet a:not(.mappin):not(.tel):not(.evact a):not(.lockbtn):not(.wxb){ padding:7px 2px; margin:0 -2px;}
 .evact a{ padding:3px 8px; margin:0;}
 
 /* 아이콘 단독 버튼이 정사각형을 유지하도록 */
