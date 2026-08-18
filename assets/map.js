@@ -424,7 +424,13 @@
         }),
         zIndexOffset: 100 + n
       }).addTo(layer);
-      mk.bindTooltip(p.t + ' ' + p.i + ' ' + p.n, { direction: 'top', offset: [0, -14], className: 'mtip' });
+      mk.bindTooltip(p.t + ' ' + p.i + ' ' + p.n, {
+        permanent: true,
+        direction: 'top',
+        offset: [0, -14],
+        className: 'mtip',
+        opacity: 1
+      });
       mk.on('click', function () { goto(n, false); });
       marks.push(mk);
       all.push(p.ll);
@@ -457,7 +463,6 @@
       if (e) e.classList.toggle('on', k === n);
       /* 가까운 가게끼리 핀이 겹치므로 현재 지점을 항상 맨 위로 */
       m.setZIndexOffset(k === n ? 1000 : 100 + k);
-      if (k === n) m.openTooltip(); else m.closeTooltip();
     });
     panel.querySelector('.mnow').innerHTML =
       '<b>' + p.t + '</b> ' + p.i + ' ' + p.n +

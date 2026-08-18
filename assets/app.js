@@ -47,8 +47,11 @@
     },
     '追分だんご本舗 新宿本店':{
       name:'오이와케 당고 혼포', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWnCy3xPp0UAKPO-qcadL8VVqg2fFdbjqVTszjsIuTdUwWZK5IcYTHDq_7LsI0BL8R7Mp9bOX7aFN5djKGHI1qTrfpriK3-qaZJy733tVLo3DHWeU_7xl_yDtaH96ZyAEO2opT0L3DacFW8T=w408-h306-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/195826/640x640_rect_303096773c2cb951396f56e177baa173.jpg',
-      order:'미타라시 + 요모기 츠부앙 당고', review:'공식 인기 정석 두 가지예요. 당일 아침 만든 쫀득한 당고라 서로 다른 짠단·팥 조합을 한 번에 비교하기 좋아요.',
-      hours:'토·일·공휴 11:30–18:00 (L.O. 17:30)', reservation:'찻집 좌석 예약 불가 · 상품은 전화 예약 가능', payment:'카드·교통계 IC 등 가능', cashOnly:false
+      order:'だんご2本盛 ¥847~ · 미타라시 + 요모기 츠부앙',
+      review:'당고 2개를 골라 담는 기본 세트예요. 당일 아침 만든 쫀득한 당고라 짠단·팥 조합을 한 번에 비교하기 좋아요. 찻집 자리에서 먹으면 짭조름한 시오콘부(소금다시마)가 함께 나와서 단짠으로 이어 먹기 좋은데, 포장만 하면 이건 못 받아요. 여름엔 카키고리가 가장 인기고 안미츠 ¥1,155, 味の散歩(당고+안미츠+토코로텐) ¥1,496 같은 세트도 있어요. 한국어 메뉴판은 없습니다.',
+      history:'뿌리는 1698년(겐로쿠 11년) — 무로마치 시대 오타 도칸에게 헌상했다는 「도칸 당고」를 팔던 찻집이 이 무렵 고슈카이도와 오메카이도가 갈라지는 신주쿠 追分으로 옮겨오면서 「오이와케 당고」가 됐어요. 약 330년 내력이지만 지금 가게 자체는 1947년 창업 — 창업자가 동네 어르신들에게 그 유래를 듣고 맛을 되살린 곳입니다. 찻집 입구 왼편의 가마쿠라보리 조각이 옛날 이 자리에서 당고 만들던 모습이에요.',
+      hours:'토·일·공휴 찻집 11:30–18:00 (L.O. 17:30) · 포장 매대는 10:30–19:00 · 품절 시 조기 마감',
+      reservation:'찻집 좌석 예약 불가 · 상품은 전화 예약 가능', payment:'카드·교통계 IC 등 가능', cashOnly:false
     },
     'ベルク BERG 新宿 ルミネエスト B1':{
       name:'BERG 신주쿠', image:'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmSy_LmzRhzO53Ogp_xWuMOT0pYG1rxuelj_XxkA75ybRQqtDZaQVqhKZDI0vxSETOqAnkBrAzSQ6Sp9kPKX6XstXQgpeboWgDzcGr_K_28vrMD3tXjIhSvOaQN6Vt2jxgLxkxs9Fm819Xm=w426-h240-k-no', foodImage:'https://tblg.k-img.com/restaurant/images/Rvw/208118/640x640_rect_4f5a8bfd74098193f257d811769774e8.jpg',
@@ -176,11 +179,14 @@
     order.appendChild(orderLabel); order.appendChild(orderName); order.appendChild(review); body.appendChild(order);
 
     var meta=document.createElement('dl'); meta.className='meal-plan-detail-meta';
-    [
+    var metaRows=[
       ['운영 시간',data.hours,''],
       ['예약',data.reservation,''],
       ['결제',data.payment,data.cashOnly ? ' is-cash-only' : '']
-    ].forEach(function(info){
+    ];
+    /* 노포는 내력이 방문 이유의 절반이라, 있는 가게만 맨 위에 한 줄 붙인다 */
+    if(data.history) metaRows.unshift(['내력',data.history,'']);
+    metaRows.forEach(function(info){
       var row=document.createElement('div'); row.className='meal-plan-detail-meta-row'+info[2];
       var dt=document.createElement('dt'); dt.textContent=info[0];
       var dd=document.createElement('dd'); dd.textContent=info[1];
@@ -775,7 +781,7 @@
       image:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Roppongi_Hills_2013-12-01.jpg/1280px-Roppongi_Hills_2013-12-01.jpg',
       source:'https://art-view.roppongihills.com/en/tcv/',
       summary:'롯폰기 힐스 고층에서 도쿄타워 방향의 야경을 보는 실내 전망대. 비가 와도 실내 관람은 가능해요.',
-      highlight:'도쿄타워 정면 뷰 · 실내 전망층 · 야경', stay:'60–90분', admission:'일정 기준 ¥2,000+ · 최종 입장 21:00',
+      highlight:'도쿄타워 정면 뷰 · 52층 실내 전망층 · 야경', stay:'60–90분', admission:'¥2,000+ · 10:00–22:00 · 최종 입장 21:30',
       tip:'도쿄타워가 보이는 창가부터 먼저 확보하세요. 유리 반사를 줄이려면 휴대폰을 창에 가깝게 붙이고 화면 밝기를 낮추면 좋아요.'
     },
     {
@@ -845,14 +851,6 @@
       tip:'비슷한 검정 스톡 티가 많으니 뒷면의 TOKYO 표기와 스타일코드를 함께 확인하세요. 원하는 사이즈가 있으면 매장 도착 직후 먼저 물어보는 게 좋아요.'
     },
     {
-      aliases:['호텔 가조엔 도쿄'], name:'호텔 가조엔 도쿄 · 백단계단',
-      image:'https://images.ctfassets.net/j05yk38inose/3scFJ2K9z8xGgvzFnPI2tF/2a7dfffafbb6fd5a49a74e4d56066efe/1_KV_____________.jpg',
-      source:'https://www.hotelgajoen-tokyo.com/100dan',
-      summary:'1935년 건축의 화려한 방들을 99개 계단이 잇는 문화재 공간. 전시 기간에 맞아야 내부 관람이 가능해요.',
-      highlight:'채색 천장화 · 7개 장식 방 · 쇼와 시대 공예', stay:'60–90분', admission:'전시 기간·입장권을 공식 사이트에서 확인',
-      tip:'내부가 어두워 휴대폰 야간 모드가 유용해요. 전시가 없으면 백단계단은 볼 수 없으니 출발 전에 당일 운영 여부를 반드시 확인하세요.'
-    },
-    {
       aliases:['요요기공원'], name:'요요기공원',
       image:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Tokyo_%E6%9D%B1%E4%BA%AC_%2851335433586%29.jpg/1280px-Tokyo_%E6%9D%B1%E4%BA%AC_%2851335433586%29.jpg',
       source:'https://www.tokyo-park.or.jp/park/yoyogi/',
@@ -872,19 +870,6 @@
       admission:'입장권에 포함(무료) · 쇼 DPA는 1인 ¥2,500이지만 안 사도 충분',
       tipTitle:'💡 자리 잡는 요령',
       tip:'시작 30분쯤 전에 루트 가장자리에 앉으면 DPA 없이도 잘 보여요. 플로트가 높아서 앞줄이 아니어도 시야가 열립니다. 신데렐라성 앞 광장이 경쟁이 가장 심하니 웨스턴랜드·투모로우랜드 쪽 직선 구간이 편해요. 강풍·우천이면 중지되니 당일 앱 공지를 확인하세요.'
-    },
-    {
-      aliases:['스카이 풀 오브 컬러즈'], name:'불꽃 「스카이 풀 오브 컬러즈」', kicker:'밤 불꽃',
-      image:'',
-      source:'https://www.tokyodisneyresort.jp/tdl/show/detail/7800/',
-      sourceLabel:'공식 안내 페이지 ↗',
-      summary:'디즈니랜드와 디즈니씨 사이 상공에 쏘아 올려 두 파크에서 동시에 볼 수 있는 불꽃. 2026년은 6월 15일~9월 14일 기간 한정이라 9/8은 마지막 주에 아슬아슬하게 걸쳐 있어요.',
-      labels:['명당','공연','주의'],
-      highlight:'① 박력 — 웨스턴랜드 아메리카강 변, 특히 톰소여섬 뗏목 승강장 부근이 발사 지점과 가장 가까워요 · ② 사진 — 신데렐라성 앞, 미키 동상 주변(불꽃과 성을 한 화면에) · ③ 영상 — 판타지랜드(주변 광원이 적어 어둡게 찍혀요)',
-      stay:'약 5분 · 9/8은 20:30 예정',
-      admission:'무료 · 강풍·우천 시 예고 없이 중지',
-      tipTitle:'💡 어디에 자리를 잡을까',
-      tip:'불꽃은 랜드와 씨 사이 상공에 올라가요. 소리·크기로 압도되고 싶으면 웨스턴랜드 강변, 성과 같이 담고 싶으면 신데렐라성 앞이 정답인데 성 앞은 음악 연출까지 겹쳐 가장 붐빕니다. 앞선 19:45 일렉트리컬 퍼레이드를 웨스턴랜드 직선 구간에서 보면 끝나자마자 그대로 강변 명당에 남을 수 있어 이동이 없어요. 5분뿐이라 자리를 옮기다 놓치기 쉬우니 퍼레이드 끝나면 바로 하늘이 트인 쪽에 서 있으세요. 9월 초는 태풍 시즌이라 중지 확률이 낮지 않으니 기대치는 조금 낮춰두는 편이 마음 편합니다. 사진은 2024년 시작한 신작이라 자유 이용 이미지가 아직 없어 넣지 않았어요.'
     }
   ];
 

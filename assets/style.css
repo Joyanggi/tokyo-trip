@@ -624,8 +624,8 @@
   box-shadow:0 3px 12px rgba(0,0,0,.14);}
 .mapbox::after{ content:''; position:absolute; inset:5px; border:1px solid var(--line); pointer-events:none; z-index:600;}
 #tmap{ height:min(56vh,420px); border-radius:2px; background:var(--soft);}
-/* 타일을 종이색으로 — 안내문 톤 유지 */
-#tmap .leaflet-tile-pane{ filter:sepia(.34) saturate(.72) contrast(1.03) brightness(1.03);}
+/* 지도 글자와 도로가 흐려지지 않도록 원본 타일 색상·선명도를 유지한다 */
+#tmap .leaflet-tile-pane{ filter:none;}
 #tmap .leaflet-control-attribution{ background:rgba(255,253,247,.82); font-size:9px; color:#8a8272;}
 #tmap .leaflet-bar a{ background:var(--paper); color:var(--ink); border-bottom-color:var(--line);}
 .mapoff{ display:none; flex-direction:column; gap:6px; position:absolute; inset:5px; z-index:700; align-items:center; justify-content:center;
