@@ -278,6 +278,54 @@
   .plbar button:hover{ background:var(--tag);}
   .plbar button.on{ background:var(--accent2); color:#fff; border-color:var(--accent2);}
 
+  /* 디즈니 DAY — 공략 순서와 실제 시간표를 분리해 한눈에 훑을 수 있게 한다 */
+  .disney-day{
+    --disney-space-xs:4px;
+    --disney-space-sm:8px;
+    --disney-space-md:12px;
+    --disney-space-lg:16px;
+    --disney-space-xl:24px;
+  }
+  .disney-guide{ margin:var(--disney-space-lg) var(--disney-space-lg) var(--disney-space-xl);}
+  .disney-guide-title{ display:flex; align-items:baseline; flex-wrap:wrap; gap:var(--disney-space-sm);
+    margin-bottom:var(--disney-space-md);}
+  .disney-guide-title strong{ color:#594183; font-size:14px;}
+  .disney-guide-title span{ color:#8a8272; font-size:11.5px;}
+  .disney-priority-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .disney-priority{ min-width:0; padding:var(--disney-space-md) var(--disney-space-lg) var(--disney-space-lg);}
+  .disney-priority + .disney-priority{ border-left:1px solid var(--line);}
+  .disney-priority-head{ display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap;
+    gap:var(--disney-space-xs) var(--disney-space-sm);}
+  .disney-priority-head span{ color:#755a97; font-size:10.5px; font-weight:900; font-variant-numeric:tabular-nums;}
+  .disney-priority-head strong{ color:#39352e; font-size:12px;}
+  .disney-priority ol{ margin:var(--disney-space-sm) 0 0; padding:0; list-style:none; counter-reset:disney-rank;}
+  .disney-priority li{ counter-increment:disney-rank; display:grid;
+    grid-template-columns:20px minmax(0,1fr) max-content; gap:var(--disney-space-sm); align-items:baseline;
+    padding:var(--disney-space-sm) 0; border-top:1px solid var(--soft); font-size:12px; line-height:1.4;}
+  .disney-priority li::before{ content:counter(disney-rank); color:#755a97; font-size:11px; font-weight:900; text-align:center;}
+  .disney-priority li b{ min-width:0; color:#39352e;}
+  .disney-priority li span{ color:#8a8272; font-size:10.5px; white-space:nowrap;}
+  .disney-guide-foot{ margin:var(--disney-space-md) 0 0; color:#6f685a; font-size:11px; line-height:1.55;}
+  .disney-guide-foot b{ color:#594183;}
+  .disney-timeline-head{ display:flex; align-items:baseline; flex-wrap:wrap; gap:var(--disney-space-sm);
+    margin:0 var(--disney-space-lg) var(--disney-space-xs); padding-top:var(--disney-space-sm);}
+  .disney-timeline-head strong{ color:#39352e; font-size:13.5px;}
+  .disney-timeline-head span{ color:#8a8272; font-size:11px;}
+  .disney-day .zgrp.z-dl + .zgrp.z-dl{ margin-top:var(--disney-space-lg);}
+  .disney-day .zgrp.z-dl .zone{ font-size:12px;}
+
+  @media(max-width:640px){
+    .disney-guide{ margin:var(--disney-space-md) 10px var(--disney-space-xl);}
+    .disney-guide-title{ display:block;}
+    .disney-guide-title span{ display:block; margin-top:var(--disney-space-xs); line-height:1.5;}
+    .disney-priority-grid{ grid-template-columns:1fr;}
+    .disney-priority{ padding:var(--disney-space-md) var(--disney-space-xs) var(--disney-space-lg);}
+    .disney-priority + .disney-priority{ border-left:0; border-top:1px solid var(--line);}
+    .disney-timeline-head{ display:block; margin-right:10px; margin-left:10px;}
+    .disney-timeline-head span{ display:block; margin-top:var(--disney-space-xs); line-height:1.45;}
+  }
+
   /* ================= 지출·정산 (money.html) =================
      이 저장소 최초의 입력 폼 — font-family:inherit을 반드시 지정해야
      본문(Apple SD Gothic Neo)과 폰트가 어긋나지 않는다. */
@@ -672,6 +720,10 @@
 .ev-place-link:focus-visible{ outline:2px solid #9a7b4e; outline-offset:3px; border-radius:2px;}
 .ev-place-panel{ margin:10px 0 2px; padding-top:11px; border-top:1px solid var(--line); background:#fbfaf6;}
 .ev-place-detail{ display:grid; grid-template-columns:168px minmax(0,1fr); gap:14px; align-items:start;}
+/* 자유 이용 사진이 없는 항목 — 사진 열을 빼고 본문이 폭을 다 쓰게 한다 */
+.ev-place-detail--nophoto{ grid-template-columns:minmax(0,1fr);}
+.ev-place-srclink{ margin:8px 0 0; font-size:10.5px;}
+.ev-place-srclink a{ color:#765d37; font-weight:800;}
 .ev-place-photo{ position:relative; min-height:126px; margin:0; overflow:hidden; border-radius:10px; background:var(--soft);}
 .ev-place-photo img{ display:block; width:100%; height:126px; object-fit:cover;}
 .ev-place-photo a{ position:absolute; right:6px; bottom:6px; padding:3px 6px !important; margin:0 !important;

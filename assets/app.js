@@ -859,6 +859,32 @@
       summary:'하라주쿠 옆의 넓은 도심 공원. 출국 전 일정에서는 관광보다 잠깐 쉬어가는 용도로 쓰기 좋아요.',
       highlight:'넓은 잔디 · 느티나무 길 · 사람 구경', stay:'15–30분', admission:'무료 · 상시 출입 가능 구역 중심',
       tip:'이번 일정은 공원 안쪽까지 들어가면 공항 이동이 빠듯해요. 하라주쿠문 근처 벤치에서 10–15분 쉬고 바로 돌아오는 정도로 제한하세요.'
+    },
+    {
+      aliases:['일렉트리컬 퍼레이드'], name:'일렉트리컬 퍼레이드 드림라이츠', kicker:'밤 퍼레이드',
+      image:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Tokyo_Disneyland_Tokyo_Disneyland_Electrical_Parade_Dreamlights_%2853441979653%29.jpg/1280px-Tokyo_Disneyland_Tokyo_Disneyland_Electrical_Parade_Dreamlights_%2853441979653%29.jpg',
+      source:'https://commons.wikimedia.org/wiki/File:Tokyo_Disneyland_Tokyo_Disneyland_Electrical_Parade_Dreamlights_(53441979653).jpg',
+      sourceLabel:'사진 © Dick Thomas Johnson · CC BY 2.0 ↗',
+      summary:'전구로 뒤덮인 플로트가 줄지어 퍼레이드 루트를 도는 야간 퍼레이드. 2001년에 시작해 25년째 이어지는 도쿄 디즈니랜드의 밤 대표 콘텐츠이고, 참고한 후기 세 편이 모두 "무조건 봐야 한다"로 꼽았어요.',
+      labels:['볼거리','공연','비용'],
+      highlight:'피터팬 해적선 · 신데렐라 호박마차 · 미키 기차 등 전구 플로트 행렬',
+      stay:'약 45분 · 9/8은 19:45 시작 예정',
+      admission:'입장권에 포함(무료) · 쇼 DPA는 1인 ¥2,500이지만 안 사도 충분',
+      tipTitle:'💡 자리 잡는 요령',
+      tip:'시작 30분쯤 전에 루트 가장자리에 앉으면 DPA 없이도 잘 보여요. 플로트가 높아서 앞줄이 아니어도 시야가 열립니다. 신데렐라성 앞 광장이 경쟁이 가장 심하니 웨스턴랜드·투모로우랜드 쪽 직선 구간이 편해요. 강풍·우천이면 중지되니 당일 앱 공지를 확인하세요.'
+    },
+    {
+      aliases:['스카이 풀 오브 컬러즈'], name:'불꽃 「스카이 풀 오브 컬러즈」', kicker:'밤 불꽃',
+      image:'',
+      source:'https://www.tokyodisneyresort.jp/tdl/show/detail/7800/',
+      sourceLabel:'공식 안내 페이지 ↗',
+      summary:'디즈니랜드와 디즈니씨 사이 상공에 쏘아 올려 두 파크에서 동시에 볼 수 있는 불꽃. 2026년은 6월 15일~9월 14일 기간 한정이라 9/8은 마지막 주에 아슬아슬하게 걸쳐 있어요.',
+      labels:['명당','공연','주의'],
+      highlight:'① 박력 — 웨스턴랜드 아메리카강 변, 특히 톰소여섬 뗏목 승강장 부근이 발사 지점과 가장 가까워요 · ② 사진 — 신데렐라성 앞, 미키 동상 주변(불꽃과 성을 한 화면에) · ③ 영상 — 판타지랜드(주변 광원이 적어 어둡게 찍혀요)',
+      stay:'약 5분 · 9/8은 20:30 예정',
+      admission:'무료 · 강풍·우천 시 예고 없이 중지',
+      tipTitle:'💡 어디에 자리를 잡을까',
+      tip:'불꽃은 랜드와 씨 사이 상공에 올라가요. 소리·크기로 압도되고 싶으면 웨스턴랜드 강변, 성과 같이 담고 싶으면 신데렐라성 앞이 정답인데 성 앞은 음악 연출까지 겹쳐 가장 붐빕니다. 앞선 19:45 일렉트리컬 퍼레이드를 웨스턴랜드 직선 구간에서 보면 끝나자마자 그대로 강변 명당에 남을 수 있어 이동이 없어요. 5분뿐이라 자리를 옮기다 놓치기 쉬우니 퍼레이드 끝나면 바로 하늘이 트인 쪽에 서 있으세요. 9월 초는 태풍 시즌이라 중지 확률이 낮지 않으니 기대치는 조금 낮춰두는 편이 마음 편합니다. 사진은 2024년 시작한 신작이라 자유 이용 이미지가 아직 없어 넣지 않았어요.'
     }
   ];
 
@@ -881,10 +907,16 @@
     panel.className='ev-place-panel'; panel.id='ev-place-panel-'+(++panelSeq); panel.hidden=true;
     var detail=document.createElement('section'); detail.className='ev-place-detail';
     var photo=document.createElement('figure'); photo.className='ev-place-photo';
-    var img=document.createElement('img'); img.src=place.image; img.alt=place.name+' 대표 사진'; img.loading='lazy'; img.decoding='async';
-    img.addEventListener('error',function(){ photo.hidden=true; });
     var credit=document.createElement('a'); credit.href=place.source; credit.target='_blank'; credit.rel='noopener'; credit.textContent=place.sourceLabel || '사진·공식 정보 ↗';
-    photo.append(img,credit);
+    /* 자유 이용 사진을 못 구한 항목(신작 쇼 등)은 사진칸 자체를 접고, 출처 링크만 본문 끝에 남긴다 */
+    if(place.image){
+      var img=document.createElement('img'); img.src=place.image; img.alt=place.name+' 대표 사진'; img.loading='lazy'; img.decoding='async';
+      img.addEventListener('error',function(){ photo.hidden=true; });
+      photo.append(img,credit);
+    } else {
+      /* 사진칸을 display:none 시켜도 그리드의 168px 열은 남는다 — 한 열짜리로 바꿔줘야 본문이 안 눌린다 */
+      photo.hidden=true; detail.classList.add('ev-place-detail--nophoto');
+    }
     var body=document.createElement('div'); body.className='ev-place-body';
     var kicker=document.createElement('div'); kicker.className='ev-place-kicker'; kicker.textContent=place.kicker || '장소 상세';
     var heading=document.createElement('h4'); heading.textContent=place.name;
@@ -897,6 +929,10 @@
     var tipText=document.createElement('p'); tipText.textContent=place.tip;
     tip.append(tipTitle,tipText);
     body.append(kicker,heading,summary,facts,tip);
+    if(!place.image && place.source){
+      var srcRow=document.createElement('p'); srcRow.className='ev-place-srclink';
+      srcRow.appendChild(credit); body.appendChild(srcRow);
+    }
     /* 들를 상점 목록 — 있으면 상세보기 맨 아래에 붙인다 */
     if(place.shops && place.shops.length){
       var shops=document.createElement('div'); shops.className='ev-place-shops';
