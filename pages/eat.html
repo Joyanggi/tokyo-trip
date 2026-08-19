@@ -11,7 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%97%BC%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="../icon-180.png">
 <link rel="manifest" href="../manifest.webmanifest">
-<link rel="stylesheet" href="../assets/style.css?v=120">
+<link rel="stylesheet" href="../assets/style.css?v=121">
 </head>
 <body data-tab="eat">
 <div class="sheet">
@@ -22,8 +22,8 @@
     <p class="sub">— 편의점 · 마트 · 맛집 · 디저트 —</p>
   </header>
 
-  <section data-solo="1" id="sec-meal">
-    <h2><span class="no">🍱</span> 식사 후보 (타베로그 · 구글맵 비교)</h2>
+  <details class="foldsec" data-solo="1" id="sec-meal" open>
+    <summary class="foldhead"><h2><span class="no">🍱</span> 식사 후보 (타베로그 · 구글맵 비교)</h2></summary>
     <p class="muted" style="margin-top:-4px;"><b style="color:var(--accent);">⛔</b>는 <b>영업일·동선상 이번엔 못 가는 곳</b>이에요. 음식 종류는 가게 이름 옆에 표시하고, 메모는 <b>시간·휴무·가격 | 위치</b> 순이에요. 일본어 상호 뒤 <span class="krn">(괄호)</span>는 한국어 독음이에요.</p>
 
     <div class="mday"><div class="mdh" style="background:linear-gradient(90deg,#5a6d85,#8195ad);">Day 1 · 9/5 (토) — 신주쿠</div>
@@ -51,9 +51,7 @@
     <div class="mday"><div class="mdh" style="background:linear-gradient(90deg,#2b5a86,#4a86c5);">Day 2 · 9/6 (일) — 가마쿠라·에노시마</div>
       <div class="mtb"><div class="mrow mh"><span>구분</span><span>가게</span><span>일정</span><span>타베/리뷰</span><span>구글/리뷰</span><span>메모</span></div>
       <div class="mrow" id="m-f7789672"><span class="mc eat">맛집 ★</span><span data-mapq="麺処 ら塾 藤沢">麺処 ら塾 <span class="krn">(멘도코로 라주쿠)</span> <span class="foodtype">라멘</span></span><span class="status"><b style="color:var(--accent);">⛔ 동선 밖</b></span><span class="metric tabe">3.72/674</span><span class="metric google">4.1/514</span><span><b>일 11:30–14:00 / 18–19 · 화 휴무</b> · <span class="tabe-price">¥1,000–1,999</span><br>藤沢市鵠沼花沢町2-16 — <b>후지사와역</b>이라 기타카마쿠라→가마쿠라→에노시마 동선에서 벗어나요</span></div>
-        <div class="mrow" id="m-07fb591d"><span class="mc cafe">카페 ★</span><span data-mapq="茶房 雲母 鎌倉">茶房 雲母 <span class="krn">(사보 키라라)</span> <span class="foodtype">시라타마 안미츠</span></span><span class="status"><b class="altm">↔ 9/6 카페 대안</b></span><span class="metric tabe">3.71/1,654</span><span class="metric google">4.1/1,191</span><span><b>일 10:30–18:00 · 화·수·목 휴무</b> · <span class="tabe-price">¥1,000–1,999</span><br>御成町16-7(<b>가마쿠라역 서쪽</b>) · 하세·대불과 반대 방향</span></div>
         <div class="mrow" id="m-cc505da3"><span class="mc cafe">카페 ★</span><span data-mapq="喫茶ミンカ 北鎌倉">喫茶ミンカ <span class="krn">(킷사 민카)</span> <span class="foodtype">고민가 카페</span></span><span class="status"><b class="altm">↔ 9/6 점심 대안</b></span><span class="metric tabe">3.54/345</span><span class="metric google">4.2/349</span><span><b>일 11:30–17:30 · 금 휴무</b> · <span class="tabe-price">¥1,000–1,999</span><br>山ノ内377-2(<b>기타카마쿠라</b>) — 차야카도 대기가 길 때</span></div>
-        <div class="mrow" id="m-b8a2ef64"><span class="mc des">디저트 ★</span><span data-mapq="江の島プリン">江の島プリン <span class="krn">(에노시마 푸딩)</span> <span class="foodtype">푸딩</span></span><span class="status"><b class="altm">↔ 9/6 디저트 대안</b></span><span class="metric tabe">3.48/215</span><span class="metric google">4.2/662</span><span><b>10:00–17:00 · 화 휴무</b> · <span class="tabe-price">≤¥999</span><br>片瀬海岸1-11-27 — 18:30 귀갓길엔 이미 마감</span></div>
       </div>
     <div class="madd">
       <div class="madd-title">＋ 추가로 찾은 맛집 <span class="madd-note">구글 4.0↑ · 리뷰 1,000개↑ · 타베 3.3↑</span></div>
@@ -115,8 +113,6 @@
         <div class="mrow" id="m-69992dfc"><span class="mc eat">맛집</span><span data-mapq="炭火焼酒場 ホルイチ 渋谷">炭火焼酒場 ホルイチ <span class="krn">(스미비야키 사카바 호루이치)</span> <span class="foodtype">숯불구이 이자카야</span></span><span class="status"><b style="color:var(--accent);">⛔ 17시 오픈 → 9/9 불가</b></span><span class="metric tabe">3.31/128</span><span class="metric google">4.4/284</span><span><b>17:00 오픈</b> · <span class="tabe-price">¥5,000–5,999</span><br>시부야 — 출국이 18:30이라 저녁도 불가능</span></div>
         <div class="mrow" id="m-fb705b41"><span class="mc cafe">카페 ★</span><span data-mapq="ガーデンラウンジ 坐忘 セルリアンタワー">ガーデンラウンジ 坐忘 <span class="krn">(가든라운지 자보)</span> <span class="foodtype">라운지·일본정원 뷰</span></span><span class="status"><b class="altm">↔ 9/9 카페 대안</b></span><span class="metric tabe">3.67/540</span><span class="metric google">4.2/559</span><span><b>10:00–22:00 무휴 · 예약가능</b> · <span class="tabe-price">¥5,000–5,999</span><br>세루리안타워 LBF</span></div>
         <div class="mrow" id="m-929111ad"><span class="mc cafe">카페 ★</span><span data-mapq="喫茶サテラ 渋谷">喫茶サテラ <span class="krn">(킷사 사테라)</span> <span class="foodtype">킷사텐·푸딩</span></span><span class="status"><b class="altm">↔ 9/9 카페 대안</b></span><span class="metric tabe">3.65/838</span><span class="metric google">4.3/387</span><span><b>10:00–22:00</b> · <span class="tabe-price">저녁 ¥1,000–1,999 / 점심 ≤¥999</span><br>渋谷1-7-5</span></div>
-        <div class="mrow" id="m-236db932"><span class="mc des">디저트 ★</span><span data-mapq="レインボーパンケーキ 原宿">レインボーパンケーキ <span class="krn">(레인보우 팬케이크)</span> <span class="foodtype">팬케이크</span></span><span class="status"><b class="altm">↔ 9/9 디저트(시간 남을 때)</b></span><span class="metric tabe">3.61/686</span><span class="metric google">4.2/1,178</span><span><b>10:00–18:30 · 예약가능</b> · <span class="tabe-price">¥1,000–1,999</span><br>神宮前4-28-4 · 2nd STREET 도보 2분</span></div>
-        <div class="mrow" id="m-d0588cfa"><span class="mc des">디저트 ★</span><span data-mapq="La Fee Delice 原宿">La Fee Delice <span class="foodtype">갈레트·크레페</span></span><span class="status"><b style="color:var(--accent);">⛔ 수 휴무 → 9/9 불가</b></span><span class="metric tabe">3.52/485</span><span class="metric google">4.2/384</span><span><b>수 휴무</b> · <span class="tabe-price">¥2,000–2,999</span><br>神宮前5-11-13</span></div>
       </div>
     <div class="madd">
       <div class="madd-title">＋ 추가로 찾은 맛집 <span class="madd-note">구글 4.0↑ · 리뷰 1,000개↑ · 타베 3.3↑</span></div>
@@ -139,12 +135,13 @@
 
     <div class="tip">🎯 <b>이동 0으로 붙는 곳</b> — 하세데라→<b>海光庵</b>(경내) · 씨캔들→<b>LONCAFE</b>(옆) · 코마치도리→<b>MAISON CACAO</b>(길 안). 전부 일정에 넣어뒀어요.</div>
     <div class="warn">💴 <b>현금 전용</b> — 菊丸 · とんかつ山家 · 大黒家 · 茶屋かど · 茶房雲母 · 無心庵 · ら塾 · たん焼忍 · 麺屋我論 · 但馬屋珈琲 · 茶亭羽當 · 五ノ神製作所 · 原宿餃子樓 · らぁ麺や 嶋.</div>
-  </section>
+  </details>
 
   <details class="foldsec" data-solo="1">
     <summary class="foldhead"><h2><span class="no">🏪</span> 편의점 먹거리</h2></summary>
-      <div class="cvs-head cvs-7" style="border-radius:10px 10px 0 0;">🟢 세븐일레븐 · 7-ELEVEN</div>
-      <div class="cvlist">
+      <details class="subfold" open>
+        <summary class="cvs-head cvs-7" style="border-radius:10px 10px 0 0;">🟢 세븐일레븐 · 7-ELEVEN</summary>
+        <div class="cvlist">
         <div class="cvsub">🍙 오니기리</div>
           <div class="n"><details class="evfold"><summary><b>연어 오니기리</b> <span class="jp">サーモンの寿司 · ¥275</span></summary><div class="fb"><img loading="lazy" decoding="async" src="https://s.mognavi.jp/image/food/02/39/01/2997174_original.jpg" alt="연어"></div></details></div>
           <div class="n"><details class="evfold"><summary><b>게살 마요네즈 오니기리</b> <span class="jp">カニカマの寿司 · ¥198</span></summary><div class="fb"><img loading="lazy" decoding="async" src="https://img-afd.7api-01.dp1.sej.co.jp/item-image/041505/1F29E8EDA52070F4EF17A24DEAB7B5E0.jpg" alt="게살마요"></div></details></div>
@@ -157,9 +154,11 @@
         <div class="cvsub">🍮 디저트</div>
           <div class="n"><b>⭐ 슈가 버터 크레페</b> <span class="jp">シュガーバタークレープ · 세븐일레븐 · 냉장 스위츠 매대</span></div>
       </div>
+      </details>
 
-      <div class="cvs-head cvs-l" style="border-radius:10px 10px 0 0; margin-top:14px;">🔵 로손 · LAWSON</div>
-      <div class="cvlist">
+      <details class="subfold" open>
+        <summary class="cvs-head cvs-l" style="border-radius:10px 10px 0 0; margin-top:14px;">🔵 로손 · LAWSON</summary>
+        <div class="cvlist">
         <div class="cvsub">🍙 오니기리</div>
           <div class="n"><details class="evfold"><summary><b>연어알 간장 오니기리</b> <span class="jp">いくら醤油漬</span></summary><div class="fb"><img loading="lazy" decoding="async" src="https://www.lawson.co.jp/recommend/original/detail/img/l810846.png" alt="연어알 간장"></div></details></div>
           <div class="n"><details class="evfold"><summary><b>구운 연어(하라미) 오니기리</b> <span class="jp">焼さけハラミ · ¥225</span></summary><div class="fb"><img loading="lazy" decoding="async" src="https://www.lawson.co.jp/recommend/original/detail/img/l786917.png" alt="구운연어 하라미"></div></details></div>
@@ -178,9 +177,11 @@
           <div class="n"><details class="evfold"><summary><b>모치식감 롤케이크</b> <span class="jp">もち食感ロール · ¥354</span></summary><div class="fb"><img loading="lazy" decoding="async" src="https://www.lawson.co.jp/recommend/original/detail/img/l814228.jpg" alt="모치식감 롤"></div></details></div>
           <div class="n"><details class="evfold"><summary><b>큼직한 트윈 슈크림</b> <span class="jp">大きなツインシュー · ¥157</span></summary><div class="fb"><img loading="lazy" decoding="async" src="https://www.lawson.co.jp/recommend/original/detail/img/l725158_1.jpg" alt="트윈 슈크림"></div></details></div>
       </div>
+      </details>
 
-      <div class="cvs-head cvs-f" style="border-radius:10px 10px 0 0; margin-top:14px;">🟢 패밀리마트 · FamilyMart</div>
-      <div class="cvlist">
+      <details class="subfold" open>
+        <summary class="cvs-head cvs-f" style="border-radius:10px 10px 0 0; margin-top:14px;">🟢 패밀리마트 · FamilyMart</summary>
+        <div class="cvlist">
         <div class="cvsub">🍙 오니기리</div>
           <div class="n"><details class="evfold"><summary><b>반숙 계란 차슈 오니기리</b> <span class="jp">マヨたまチャーシュー</span></summary><div class="fb"><img loading="lazy" decoding="async" src="https://s.mognavi.jp/image/food/00/01/01/3503308_original.jpg" alt="반숙계란차슈"></div></details></div>
           <div class="n"><details class="evfold"><summary><b>명란 오니기리</b> <span class="jp">辛子明太子</span></summary><div class="fb"><img loading="lazy" decoding="async" src="https://www.family.co.jp/content/dam/family/goods/0410120.jpg" alt="명란"></div></details></div>
@@ -198,9 +199,11 @@
           <div class="n"><details class="evfold"><summary><b>자쿠호로 슈크림</b> <span class="jp">ザクほろシュー · ¥254</span></summary><div class="fb"><img loading="lazy" decoding="async" src="https://www.family.co.jp/content/dam/family/goods/1943030.jpg" alt="자쿠호로 슈"></div></details></div>
           <div class="n"><details class="evfold"><summary><b>큼직한 딸기 생다이후쿠</b> <span class="jp">ふわもち生大福 いちご · ¥198</span></summary><div class="fb"><img loading="lazy" decoding="async" src="https://www.family.co.jp/content/dam/family/goods/1940220.jpg" alt="생다이후쿠"></div></details></div>
       </div>
+      </details>
 
-      <div class="cvs-head " style="border-radius:10px 10px 0 0; background:#444; margin-top:14px;">🏪 3사 공통 <span class="cvsnote" style="color:rgba(255,255,255,.72);">어느 편의점에서나</span></div>
-      <div class="cvlist">
+      <details class="subfold" open>
+        <summary class="cvs-head " style="border-radius:10px 10px 0 0; background:#444; margin-top:14px;">🏪 3사 공통 <span class="cvsnote" style="color:rgba(255,255,255,.72);">어느 편의점에서나</span></summary>
+        <div class="cvlist">
         <div class="cvsub">🍜 신상 · 컵라면</div>
           <div class="n"><details class="evfold"><summary><b>냉시 컵누들 (냉수 전용)</b> <span class="jp">冷しカップヌードル · 김치/레몬 2종</span></summary><div class="fb"><img loading="lazy" decoding="async" src="https://cdn.nissin.com/gr-documents/attachments/articles/67120/8caf6e6aa7c04df8/limited/20260713-1_2.png" alt="냉시 컵누들"></div></details></div>
           <div class="n"><details class="evfold"><summary><b>닛신 UFO 명란 야끼소바</b> <span class="jp">U.F.O 濃い濃いたらこ</span></summary><div class="fb"><img loading="lazy" decoding="async" src="https://m.media-amazon.com/images/I/719FldKgMrL.jpg" alt=""></div></details></div>
@@ -248,16 +251,17 @@
           <div class="n"><details class="evfold"><summary><b>⭐ 야쿠르트 1000</b> <span class="jp">Yakult1000 · 품절 잦음 · ¥170</span></summary><div class="fb"><img loading="lazy" decoding="async" src="https://item-shopping.c.yimg.jp/i/l/yy-store11_230522" alt="야쿠르트1000"></div></details></div>
           <div class="n"><details class="evfold"><summary><b>포카리스웨트</b> <span class="jp">ポカリスエット · 9월 도쿄 더위 대비 · ¥150</span></summary><div class="fb"><img loading="lazy" decoding="async" src="https://item-shopping.c.yimg.jp/i/l/jetprice_b23266" alt="포카리스웨트"></div></details></div>
       </div>
+      </details>
     <div class="tip">🥤 <b>음료 사는 법</b> — 편의점보다 <b>자판기</b>가 대체로 ¥10~30 싸고, <b>드럭스토어·서밋(마트)</b>가 제일 쌉니다(같은 500ml가 ¥88~110). 무거우니 그날 마실 것만 편의점에서, <b>숙소에 쟁여둘 건 마트에서</b> 사세요.</div>
     <div class="warn">⚠️ 이미지는 공식·상품DB 매칭이라 포장 리뉴얼로 실물과 미세하게 다를 수 있어요. <b>여름 한정</b>(냉시 컵누들·냉면·수박스틱)은 9월엔 빠졌을 수 있음. 一燈은 로손 계열 한정. <b>편의점 디저트는 2~3개월마다 라인업이 바뀝니다</b> — 위 가격·품목은 2026년 8월 기준이고, 없으면 같은 매대의 비슷한 걸 고르면 돼요. ⭐는 라인업이 바뀌어도 남는 스테디셀러.</div>
   </details>
 
-  <section id="sec-newcand">
-    <h2><span class="no">🆕</span> 추가 조사 후보 (직접 받은 목록)</h2>
+  <details class="foldsec" id="sec-newcand" open>
+    <summary class="foldhead"><h2><span class="no">🆕</span> 추가 조사 후보 (직접 받은 목록)</h2></summary>
     <p class="muted" style="margin-top:-4px;"><b style="color:var(--accent2);">✅ 동선 가능</b> / <b style="color:var(--accent);">❌ 동선 밖</b>으로 나눴습니다. 위 <b>식사 후보</b> 표는 이미 확정된 조합이라 건드리지 않았어요</p>
 
     <div class="mday"><div class="mdh" style="background:linear-gradient(90deg,#256b56,#3f9179);">✅ 동선에 넣을 수 있는 곳</div>
-    <div class="mtb">
+    <div class="mtb mtb3">
       <div class="mrow mh"><span>구분</span><span>가게</span><span>메모</span></div>
       <div class="mrow" id="m-d27dbd5c"><span class="mc eat">맛집</span><span data-mapq="うどん 慎 代々木"><b>3.68</b> うどん 慎 (우동 신)</span><span>代々木2-20-16 · <b>11:00–22:00</b> · <b>예약가능</b>(유료 패스트패스) · 예산 ¥1,000–1,999<br><b style="color:var(--accent2);">9/5 저녁 風雲児에서 도보 3분</b> — 츠케멘 대기가 길면 바로 여기로. 단 <b>둘 다 면류</b>라 카테고리는 겹칩니다.</span></div>
       <div class="mrow" id="m-9c9ca044"><span class="mc eat">맛집</span><span data-mapq="日本橋海鮮丼 つじ半 ミッドタウン店"><b>3.42</b> つじ半 미드타운점</span><span>赤坂9-7-1 도쿄 미드타운 B1F · <b>11:00–21:00</b>(L.O. 20:30) · 예약불가 · 해산물덮밥<br><b style="color:var(--accent2);">9/7 롯폰기 저녁 대안</b> — 이마카츠(돈카츠) 대신 해산물덮밥. 토라야와 같은 건물이에요.</span></div>
@@ -269,7 +273,7 @@
     </div></div>
 
     <div class="mday"><div class="mdh" style="background:linear-gradient(90deg,#8a8272,#a89f8c);">❌ 동선 밖 · 이번엔 어려운 곳</div>
-    <div class="mtb">
+    <div class="mtb mtb3">
       <div class="mrow mh"><span>구분</span><span>가게</span><span>메모</span></div>
       <div class="mrow" id="m-e5aedcdf"><span class="mc eat">맛집</span><span data-mapq="400℃ PIZZA TOKYO 若宮町"><b>4.01</b> 400℃ PIZZA TOKYO</span><span>新宿区若宮町13-1 · <b>이번에 조사한 것 중 별점 최고</b><br><b style="color:var(--accent);">가구라자카 쪽이라 숙소(니시신주쿠)에서 반대 방향</b> — 왕복 1시간을 따로 빼야 합니다. 별점이 아까운 곳.</span></div>
       <div class="mrow" id="m-76ce84b8"><span class="mc eat">맛집</span><span data-mapq="とんかつ檍 蒲田本店"><b>3.72</b> とんかつ檍 (돈카츠 아오키) 카마타본점</span><span>大田区蒲田5-43-7 · 월~토 11:00–15:00 / 17:00–21:00 · 일 휴무<br><b style="color:var(--accent);">카마타는 동선 밖</b>. 신주쿠엔 계열 카레집 <b>いっぺこっぺ</b>(3.59)가 있어요.</span></div>
@@ -279,50 +283,24 @@
       <div class="mrow" id="m-fd5ed105"><span class="mc eat">맛집</span><span data-mapq="ニューヨークピザ トニーズ 東京 江東区佐賀"><b>3.19</b> New York Pizza Tony's</span><span>江東区佐賀1-2-7 · <b style="color:var(--accent);">토·일만 영업</b>(12:00~소진)<br>기요스미시라카와 근처라 <b>9/7 [선택] 기요스미 정원과 묶으면 좋았을 텐데, 9/7은 월요일이라 휴무</b>입니다. 주말인 9/6은 근교 데이.</span></div>
     </div></div>
     <div class="warn">🔎 <b>못 찾은 것 2건</b> — <b>오등 심보리</b>(おでん)와 <b>오미노사치 쇼</b>는 타베로그에서 일치하는 가게를 찾지 못했습니다. <b>일본어 표기나 위치(역 이름)</b>를 알려주시면 다시 찾아볼게요. <b>라멘 아프로 비츠</b>는 이미 위 <b>식사 후보</b> 표에 들어가 있습니다(3.74 · 9/5·9/6 저녁 대안).</div>
-  </section>
+  </details>
 
-  <section>
-    <h2><span class="no">🎋</span> 나가시소멘 <span class="bdg">기타카마쿠라</span></h2>
-    <p class="muted" style="margin-top:-4px;"><b style="color:var(--accent2);">✅ 9/6(일) 10:50 · 근교 DAY에 배치</b> — 도쿄 시내엔 사실상 없어서 가마쿠라에서 찾았어요.</p>
-    <div class="lcard" data-cl="somen" data-map="1">
-      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">차야카도</span> <span class="bdg">기타카마쿠라</span> <span class="lsub">타베로그 3.20</span></div><span class="ljp">茶屋かど</span><div class="ld">40년 노포 찻집의 <b>옛날식 대나무 나가시소멘</b>(중정에 대나무 두 줄, 직원이 타이밍 맞춰 흘려줌). <b>3월 말~10월 말</b>만 운영 · 10:00~16:30 · 30석 · 예산 ¥1,000~1,999. JR 기타카마쿠라역 도보 10분(949m). <b style="color:var(--accent);">⚠️ 예약 불가(워크인만) · 현금 전용</b>(카드·전자머니·QR 모두 불가) — 성수기 대기 길어 <b>오픈런 권장</b>.</div></div></div>
-    </div>
-    <div class="warn">💡 <b>도쿄 시내 대안이 없는 이유</b> — 정통 나가시소멘 <b>鮒宿(조후)</b>는 주말만 운영하는데 <b>2026년 예약이 이미 전부 마감</b>(전화 예약, 6/21 접수 시작). <b>波多野(시부야 신센)</b>는 나가시소멘 포함 연회코스가 ¥5,500~, <b>Bar Ohana(기치조지)</b>는 루트 밖. 그래서 근교 DAY의 가마쿠라가 최선이에요.</div>
-  </section>
-
-  <section>
-    <h2><span class="no">🍧</span> 도쿄 빙수(카키고리) 맛집</h2>
+  <details class="foldsec" open>
+    <summary class="foldhead"><h2><span class="no">🍧</span> 도쿄 빙수(카키고리) 맛집</h2></summary>
     <p class="muted" style="margin-top:-4px;">대부분 <b>1인 1메뉴</b> 주문제, 여름 성수기라 대기가 깁니다. (뱃지 눌러 지역별로 필터)</p>
     <div class="lcard" data-cl="bingsu" data-map="1">
       <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">히미츠도</span> <span class="bdg">야나카/닛포리</span></div><span class="ljp">秘密堂</span><div class="ld">손빙수·<b>132종 계절 토핑</b>, 시그니처 딸기. ¥1,200~1,900. <b style="color:var(--accent);">⚠️ 대기 최장(성수기 1~3시간)</b> — 이름 접수 후 재방문. 오픈런 권장.</div></div></div>
       <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">와키친 칸나</span> <span class="bdg">세타가야</span></div><span class="ljp">和kitchen かんな</span><div class="ld">일본+서양 퓨전 빙수. 11:00~19:00(LO 18:30). <b style="color:var(--accent);">⚠️ 수요일 휴무</b>(→ 9/9 불가).</div></div></div>
-      <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">쿠로기</span> <span class="bdg">우에노</span></div><span class="ljp">くろぎ</span><div class="ld">카이세키 명가 디저트점. 10:00~20:00. 시그니처 <b>흑당 콩가루 빙수</b>.</div></div></div>
       <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">시무라</span> <span class="bdg">메지로</span></div><span class="ljp">志むら</span><div class="ld">노포 와가시점 찻집 빙수. 폭신 얼음·딸기·계절 한정. 연중 영업, 대기 있음.</div></div></div>
       <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">코오리야 피스</span> <span class="bdg">키치조지</span></div><span class="ljp">氷屋ぴぃす</span><div class="ld">화~토 10:00~20:00 / <b>일·월 10:00~18:00</b>. <b style="color:var(--accent);">⚠️ 현금 결제만!</b></div></div></div>
       <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">사카노우에 카페</span> <span class="bdg">도쿄</span></div><span class="ljp">坂の上カフェ</span><div class="ld"><b style="color:var(--accent);">⚠️ 정리권제</b> — 선착순 발권(일부 예약), 번호 호출 후 재방문. 캐시리스 전용, 1인 1빙수.</div></div></div>
       <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">Yuki Usagi</span> <span class="bdg">코마자와</span></div><span class="ljp">雪うさぎ</span><div class="ld">11:30~20:00(LO 19:30). <b style="color:var(--accent);">⚠️ 월요일 휴무</b>(→ 9/7 불가) +월1회 화·공휴일 다음날 휴무.</div></div></div>
     </div>
     <div class="warn">⚠️ <b>일정 체크(9/5~9/9)</b> — 칸나=수요일(9/9 ✕) · Yuki Usagi=월요일(9/7 ✕) · 코오리야 피스=일·월 18시 마감. 코오리야 피스 현금 전용 / 사카노우에 캐시리스.</div>
-  </section>
+  </details>
 
-  <section>
-    <h2><span class="no">🍣</span> 회전초밥 쿠라스시 <span class="bdg nt">전국·지점 다수</span></h2>
-    <div class="special" data-cl="kura">
-      <img loading="lazy" decoding="async" src="https://www.kurasushi.co.jp/upload/topic/2006_bikkurapon_lp.jpg" alt="쿠라스시 빗쿠라퐁">
-      <div class="info">
-        <div class="cat muted">회전초밥 체인 · 도쿄 다수 지점(시부야·이케부쿠로·아사쿠사 등)</div>
-        <h3 data-mapq="くら寿司 浅草店">쿠라스시 <span class="jp" style="color:#8a8272;font-size:14px;">くら寿司 / Kura Sushi</span></h3>
-        <p class="kv"><b style="color:var(--accent);">⭐ 9/7(월) 13:00 · 아사쿠사점 확정</b> — 아사쿠사 1-25-15 ROX 4F (센소지 도보 5분)</p>
-        <p class="kv"><b>빈 접시 5장</b>을 반납구에 넣으면 <b>'빗쿠라퐁'(ビッくらポン)</b> 게임! 당첨되면 캡슐 굿즈 🎁</p>
-        <div class="tip">💡 접시당 약 ¥115~. 항균 캡슐 레인, 터치패널 다국어 주문. 저렴+뽑기 재미.</div>
-        <div class="tip">📍 <b>지점 선택</b> — ① <b>아사쿠사점</b>(추천·9/7 확정): 아사쿠사 ROX 4F, <b>센소지 도보 5분</b>이라 관광 직후 점심으로 딱. 23시까지. ② <b>니시신주쿠점</b>(니시신주쿠 7-1-7): <b>숙소 도보권</b>, 주말 10:20~24:00 — 저녁 대안. ③ <b>글로벌 기함점 하라주쿠</b>(진구마에 4-31-10): 외국인 응대 특화, 9/9 쇼핑 DAY 중 들를 수도.</div>
-        <div class="warn">⚠️ 인기 지점은 대기 김 → <b>앱/EPARK 사전 발권</b> 추천(도착 30분 전 원격 발권 가능). 빗쿠라퐁은 5접시마다 1회 추첨식이라 꽝도 있어요. 입장 마감은 <b>폐점 30분 전</b>.</div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2><span class="no">🍟</span> 맥도날드 기간한정 디저트 <span class="bdg nt">전국</span></h2>
+  <details class="foldsec" open>
+    <summary class="foldhead"><h2><span class="no">🍟</span> 맥도날드 기간한정 디저트 <span class="bdg nt">전국</span></h2></summary>
     <p class="muted" style="margin-top:-4px;">일본 맥도날드 × 모리나가 컬래버 3종. 2026.7.15부터 <b>기간 한정</b>, ¥200~.</p>
     <div class="mcd" data-cl="mcd">
       <div class="item"><div class="emo">🥧</div><div><div class="nm">모리나가 밀크캐러멜 파이 <span class="jp">森永ミルクキャラメルパイ</span></div><div class="jp">진한+부드러운 캐러멜 크림 두 겹</div></div></div>
@@ -330,27 +308,27 @@
       <div class="item"><div class="emo">🥤</div><div><div class="nm">맥셰이크 모리나가 라무네 <span class="jp">McShake 森永ラムネ</span></div><div class="jp">6년 만에 복귀한 라무네맛 셰이크</div></div></div>
     </div>
     <div class="warn">⚠️ <b>기간 한정!</b> 7/15 출시라 통상 4~6주 판매 → <b>9월 초엔 종료됐을 가능성</b>. 방문 전 일본 맥도날드 앱/공홈 확인.</div>
-  </section>
+  </details>
 
-  <section>
-    <h2><span class="no">☕</span> 그 외 먹거리 (코메다 · 시부야 요코초)</h2>
+  <details class="foldsec" open>
+    <summary class="foldhead"><h2><span class="no">☕</span> 그 외 먹거리 (코메다 · 시부야 요코초)</h2></summary>
     <div class="lcard" data-cl="eat-etc" data-map="1">
       <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">코메다커피</span> <span class="bdg nt">전국</span></div><span class="ljp">コメダ珈琲店</span><div class="ld">나고야식 카페. 시그니처 <b>시로노와르</b>·모닝세트. <b style="color:var(--accent2);">🛍️ 커피잔 세트 굿즈</b>(취급 지점 한정).</div></div></div>
       <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">시부야 요코초</span> <span class="bdg sb">시부야</span></div><span class="ljp">渋谷横丁</span><div class="ld">미야시타파크 1F. 일본 <b>지방별 향토요리</b> 이자카야 밀집. 왁자한 포장마차 감성, 심야까지.</div></div></div>
     </div>
-  </section>
+  </details>
 
-  <section>
-    <h2><span class="no">🏮</span> 로컬 먹거리 동네 <span class="cpof">🤖 클로드피셜</span></h2>
+  <details class="foldsec" open>
+    <summary class="foldhead"><h2><span class="no">🏮</span> 로컬 먹거리 동네 <span class="cpof">🤖 클로드피셜</span></h2></summary>
     <p class="muted" style="margin-top:-4px;"><b style="color:#5b57b3;">※ 제가(클로드) 추천드리는 곳</b> — 현지인이 실제로 찾는 먹자골목이에요. 로컬 골목은 <b>현금</b> 준비.</p>
     <div class="lcard" data-cl="eat-local" data-map="1">
       <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">츠키시마 몬자 스트리트</span> <span class="bdg">츠키시마</span> <span class="cpof">🤖 클로드피셜</span></div><span class="ljp">月島もんじゃ</span><div class="ld">몬자야키 전문 골목. 철판에 직접 구워 먹는 <b>도쿄 소울푸드</b>.</div></div></div>
       <div class="litem"><div class="lbody"><div class="lt"><span class="lnm">츠키지 장외시장</span> <span class="bdg">츠키지</span> <span class="cpof">🤖 클로드피셜</span></div><span class="ljp">築地場外市場</span><div class="ld">현지 <b>해산물 아침</b>. 오전~이른 오후가 활기. 현금 유리.</div></div></div>
     </div>
     <div class="warn" style="border-left-color:#5b57b3;">💡 <b style="color:#5b57b3;">로컬 팁</b> <span class="cpof">🤖 클로드피셜</span> — 백화점 지하 <b>데파치카</b>는 저녁에 반찬·도시락 할인. "센베로(¥1,000 취함)" 이자카야는 가성비. 인기 노포는 현금·소액권 준비.</div>
-  </section>
+  </details>
 
 </div>
-<script src="../assets/app.js?v=120"></script>
+<script src="../assets/app.js?v=121"></script>
 </body>
 </html>

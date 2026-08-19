@@ -11,7 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%97%BC%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="assets/style.css?v=120">
+<link rel="stylesheet" href="assets/style.css?v=121">
 </head>
 <body data-tab="home">
 <div class="sheet">
@@ -22,7 +22,7 @@
     <p class="sub">— 니시신주쿠 거점 · 4박 5일 · 사고·먹고·가고 리스트 —</p>
     <!-- 제목 우측 장식 — absolute라 제목 가운데 정렬에 영향을 주지 않는다.
          폭이 좁아 겹칠 만하면 아래 미디어쿼리에서 흐름으로 돌아가 다음 줄에 놓인다. -->
-    <div class="duo"><img src="assets/duo.png?v=120" alt="" width="380" height="251"></div>
+    <div class="duo"><img src="assets/duo.png?v=121" alt="" width="380" height="251"></div>
   </header>
 
   <details class="banner">
@@ -37,8 +37,8 @@
     </div>
   </details>
 
-  <section>
-    <h2><span class="no">i</span> 여행 개요</h2>
+  <details class="foldsec" open>
+    <summary class="foldhead"><h2><span class="no">i</span> 여행 개요</h2></summary>
     <!-- 항공편은 개인 식별 정보가 없어 잠그지 않는다. 편명·시각만 있고 예약번호는 없다. -->
     <div class="flight">
       <div class="leg"><div class="muted">🛫 가는편 · 9/5(토)</div><div class="route">인천(ICN) ✈ 나리타(NRT)</div><div><b>09:45</b> ICN T1 → <b>12:15</b> NRT T3</div><div class="muted">제주항공 7C1175 · 2시간 30분</div><div class="fuji">🗻 <b>오른쪽 좌석</b>에 앉으면 후지산이 보여요</div></div>
@@ -48,10 +48,10 @@
          Supabase의 private_blocks(키: stay-insurance)에서 로그인한 뒤 받아 온다(app.js의 loadSecrets).
          hidden을 미리 걸어 두면 스크립트가 도는 사이 빈 칸이 깜빡이지 않는다. -->
     <div data-authonly="숙소·보험 정보라 로그인한 기기에서만 보여요." data-secret="stay-insurance" hidden></div>
-  </section>
+  </details>
 
-  <section>
-    <h2><span class="no">!</span> 준비물 및 유의사항</h2>
+  <details class="foldsec" open>
+    <summary class="foldhead"><h2><span class="no">!</span> 준비물 및 유의사항</h2></summary>
 
     <details class="acc">
       <summary><span class="acct">1️⃣ 출발 전 준비 체크리스트</span></summary>
@@ -116,10 +116,10 @@
       </ol>
       </div>
     </div>
-  </section>
+  </details>
 
-  <section id="sec-sos">
-    <h2><span class="no">🆘</span> 긴급 연락처 (일본)</h2>
+  <details class="foldsec" id="sec-sos" open>
+    <summary class="foldhead"><h2><span class="no">🆘</span> 긴급 연락처 (일본)</h2></summary>
     <table class="ov">
       <tr><th>경찰 · 사건/사고</th><td><a class="tel" href="tel:110">110</a> <span class="muted">일본 어디서나, 무료</span></td></tr>
       <tr><th>화재 · 구급차</th><td><a class="tel" href="tel:119">119</a> <span class="muted">응급환자·화재</span></td></tr>
@@ -131,10 +131,10 @@
       <tr><th>여행자보험 사고</th><td><a class="tel" href="tel:+8223602541">+82-2-360-2541</a> 한화 <b>24시간</b> <span class="muted">도난 시 폴리스리포트, 영수증 보관</span></td></tr>
     </table>
     <div class="warn">💡 <b>여권 분실 시</b> → 가까운 <b>경찰서에서 분실·도난 신고</b> 후 <b>대사관</b>에서 긴급여권 발급. 이 번호들은 <b>스크린샷 저장</b> 추천(로밍/데이터 안 될 때 대비).</div>
-  </section>
+  </details>
 
   <!-- 날씨는 앱 안에 담지 않고 tenki.jp 예보로 넘긴다 — 매일 다시 볼 값이라 링크 한 줄이면 충분.
-       하단 ☀️날씨 탭도 같은 곳으로 간다. section으로 감싸야 좌우 여백이 다른 단락과 맞는다. -->
+       하단 탭에서는 뺐고 개요 맨 아래 이 링크만 남긴다. section으로 감싸야 좌우 여백이 다른 단락과 맞는다. -->
   <section>
     <div class="wx">
       <div class="wxt">🌤️ 도쿄 날씨 예보</div>
@@ -143,6 +143,6 @@
   </section>
 
 </div>
-<script src="assets/app.js?v=120"></script>
+<script src="assets/app.js?v=121"></script>
 </body>
 </html>

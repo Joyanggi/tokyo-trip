@@ -1082,11 +1082,7 @@ function regionColor(name){
     ['buy','🛍️','사고','pages/buy.html'],
     ['eat','🍜','먹고','pages/eat.html'],
     ['go','🗺️','가고','pages/go.html'],
-    ['trip','🚃','근교','pages/trip.html'],
-    ['money','💴','지출','pages/money.html'],
-    /* 날씨만 외부 사이트(tenki.jp 도쿄 예보)라 맨 끝에 둔다. '://'가 있으면 BASE를 붙이지 않고
-       새 탭으로 연다 — 홈 화면에 설치한 PWA에서 같은 창으로 나가면 돌아올 수단이 없어서. */
-    ['weather','☀️','날씨','https://tenki.jp/forecast/3/16/?date=2']
+    ['money','💴','지출','pages/money.html']
   ];
   var curTab = document.body.getAttribute('data-tab') || 'home';
   if(!document.getElementById('nav')){
@@ -1411,6 +1407,35 @@ function regionColor(name){
       else if(cards.some(function(c){ return c.getAttribute('data-d')===todayKey(); })){ showToday(); }
     })();
   }
+
+  /* ===== 전체 펼치기·접기 (일정 외 탭) =====
+     일정 탭은 자체 .plbar(#pl-open)를 쓰므로 건드리지 않는다.
+     대상은 '섹션·그룹' 단위 접이식만 — 편의점 81종 같은 항목 카드(.evfold)까지 열면 페이지가 폭발한다. */
+  (function(){
+    if(document.getElementById('pl-open')) return;
+    var SEL='details.foldsec, details.fold, details.acc, details.subfold';
+    var cards=Array.prototype.slice.call(document.querySelectorAll(SEL));
+    if(cards.length<2) return;
+    var header=document.querySelector('.sheet > header'); if(!header) return;
+
+    var bar=document.createElement('div');
+    bar.className='plbar';
+    bar.innerHTML='<button type="button" id="fold-open">＋ 전체 펼치기</button>'+
+                  '<button type="button" id="fold-close">－ 전체 접기</button>';
+    var after=document.getElementById('fbar-wrap') || header;
+    after.insertAdjacentElement('afterend', bar);
+
+    var KEY='tokyoTripFold:'+(document.body.getAttribute('data-tab')||'');
+    function save(){ try{ localStorage.setItem(KEY, JSON.stringify(cards.map(function(c){ return c.open?1:0; }))); }catch(e){} }
+    function setAll(v){ cards.forEach(function(c){ c.open=v; }); }
+    document.getElementById('fold-open').addEventListener('click', function(){ setAll(true); save(); });
+    document.getElementById('fold-close').addEventListener('click', function(){ setAll(false); save(); });
+    cards.forEach(function(c){ c.addEventListener('toggle', function(){ if(!window.__rgFiltering) save(); }); });
+
+    var saved=null;
+    try{ saved=JSON.parse(localStorage.getItem(KEY)||'null'); }catch(e){}
+    if(saved && saved.length===cards.length) cards.forEach(function(c,i){ c.open=!!saved[i]; });
+  })();
 
   /* 오프라인 캐시 — GitHub Pages(https)에서만 동작 */
   var BASE = /\/pages\//.test(location.pathname) ? '../' : './';
