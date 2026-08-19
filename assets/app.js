@@ -1010,7 +1010,10 @@ function regionColor(name){
   var sheet = document.querySelector('.sheet');
   var header = sheet && sheet.querySelector('header');
 
-  if(header && !document.getElementById('fbar-wrap')){
+  /* 일정 탭엔 지역 필터가 필요 없다 — 하루 안에서 지역이 바뀌는 게 정상이라
+     필터를 걸면 오히려 그날 동선이 잘려 보인다. 개요·지출은 필터 대상이 없다. */
+  var NO_FILTER = { plan:1, home:1, money:1 };
+  if(header && !NO_FILTER[document.body.getAttribute('data-tab')] && !document.getElementById('fbar-wrap')){
     header.insertAdjacentHTML('afterend',
       '<div id="fbar-wrap">' +
         '<div id="fbar">' +
@@ -1192,6 +1195,7 @@ function regionColor(name){
       fbarToggle=document.getElementById('fbar-toggle'), flab=document.getElementById('flab'),
       fempty=document.getElementById('fempty'), chips=document.getElementById('chips'),
       btnHide=document.getElementById('nv-hide');
+  if(!fbarWrap) return;   /* 필터 바가 없는 탭(일정·개요·지출)에선 동작하지 않는다 */
   var cur=null; /* 활성 필터: 표준 지역명 배열 또는 null */
 
   function matches(regions){
@@ -1246,27 +1250,6 @@ function regionColor(name){
       if(anyVis) hasVisibleMatch=true;
     });
 
-    /* 일정 타임라인 — 지역 존 단위로 필터, 매칭 존이 없는 날짜 카드는 접는다 */
-    window.__rgFiltering=true; /* 아래에서 건드리는 .open 변화는 '전체펼치기' 저장 로직이 무시하도록 */
-    document.querySelectorAll('.dcard').forEach(function(card){
-      var zones=card.querySelectorAll('.zgrp'); if(!zones.length) return;
-      if(cur===null){ Array.prototype.forEach.call(zones,function(z){ z.style.display=''; }); return; }
-      var cardVis=false, filterable=false;
-      Array.prototype.forEach.call(zones,function(z){
-        var rg=regionsOf(z);
-        if(!rg.length){ z.style.display=''; return; } /* 이동 존은 중립 — 필터 판정에서 제외 */
-        filterable=true;
-        var vis=matches(rg);
-        z.style.display=vis?'':'none';
-        if(vis) cardVis=true;
-      });
-      if(filterable){
-        hasFilterable=true;
-        if(cardVis){ card.open=true; hasVisibleMatch=true; }
-        else { card.open=false; }
-      }
-    });
-    window.__rgFiltering=false;
 
     if(cur===null){
       fbar.classList.remove('active');
@@ -1924,3 +1907,27 @@ loadSecrets();
   if(saved && saved.length) window.__applyFilter(saved, {restore:true});
   else window.__applyFilter(null, {restore:true});
 })();
+
+/* ================= 앵커(#id) 착지 보정 =================
+   일정 탭의 📖상세 링크는 브라우저 기본 앵커로 이동한다. 그런데 이 페이지들은
+   로드 뒤에 목록이 더 그려져 높이가 커지므로, 로드 시점에 잡은 앵커 위치가
+   어긋난다. 레이아웃이 안정된 뒤 해시를 다시 지정해 브라우저가 앵커를 다시
+   잡게 한다(스크립트가 직접 스크롤하지 않아 부드럽게 착지한다). */
+(function(){
+  var h = location.hash;
+  if(!h || h.length < 2) return;
+  function relock(){
+    var el;
+    try{ el = document.querySelector(h); }catch(e){ return; }
+    if(!el) return;
+    var d = el.closest('details');
+    while(d){ d.open = true; var pa = d.parentElement; d = pa && pa.closest ? pa.closest('details') : null; }
+    location.hash = '';
+    location.hash = h;
+  }
+  window.addEventListener('load', function(){
+    setTimeout(relock, 700);
+    setTimeout(relock, 1800);
+  });
+})();
+
