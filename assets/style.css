@@ -124,8 +124,12 @@
      summary 의 콘텐츠 모델은 제목 요소 하나를 허용하므로 h2 를 그대로 감싼다. */
   details.fold > summary{ list-style:none; cursor:pointer; -webkit-tap-highlight-color:transparent;}
   details.fold > summary::-webkit-details-marker{ display:none;}
-  details.fold > summary h2::after{ content:'⌄'; font-size:16px; line-height:1; opacity:.85; margin-left:2px; flex:0 0 auto;}
+  /* ⌄ 는 흐름에서 빼 오른쪽에 고정한다. flex 아이템으로 두면 제목이 길 때 ⌄ 만 아랫줄로 내려간다. */
+  details.fold > summary h2{ position:relative; padding-right:34px;}
+  details.fold > summary h2::after{ content:'⌄'; position:absolute; right:13px; top:50%; transform:translateY(-50%);
+    font-size:16px; line-height:1; opacity:.85; margin:0;}
   details.fold[open] > summary h2::after{ content:'⌃';}
+  .foldsec > summary.foldhead h2{ position:relative; padding-right:34px;}
   /* 접힌 바가 연달아 놓일 땐 h2 아래 여백이 남아 사이가 벌어진다 */
   details.fold:not([open]) > summary h2{ margin-bottom:0;}
   details.fold > summary h2 .bdg{ margin-right:2px;}
@@ -495,17 +499,18 @@ details.subfold:not([open]) > summary.cvs-head{ border-radius:10px !important;}
 .foldsec > summary.foldhead{ cursor:pointer; list-style:none; padding:0;}
 .foldsec > summary.foldhead::-webkit-details-marker{ display:none;}
 .foldsec > summary.foldhead h2{ margin:0; border-radius:0; min-height:52px;}
-.foldsec > summary.foldhead h2::after{ content:'⌄'; margin-left:auto; font-size:17px; line-height:1;}
+.foldsec > summary.foldhead h2::after{ content:'⌄'; position:absolute; right:13px; top:50%; transform:translateY(-50%); margin:0; font-size:17px; line-height:1;}
 .foldsec[open] > summary.foldhead h2::after{ content:'⌃';}
 .foldsec > *:not(summary){ padding-left:13px; padding-right:13px;}
-/* 접이식으로 바꾸기 전엔 h2 아래 여백이 있어서 리드 문단에 margin-top:-4px 를 인라인으로 줬는데,
-   summary 로 바뀌면서 그 음수 여백이 머리띠에 붙어 글자가 겹쳐 보인다. 첫 요소만 여백을 되돌린다.
-   (인라인 style 을 이기려면 !important 가 필요) */
-.foldsec > summary.foldhead + *{ margin-top:11px !important;}
+/* 머리띠(summary) 바로 다음 요소의 위 여백 — 접이식 전에는 h2 의 margin-bottom 이 하던 몫이라
+   summary 로 바뀐 지금은 여기서 직접 준다. 안 주면 리드 문단이 머리띠에 붙어 겹쳐 보인다. */
+.foldsec > summary.foldhead + *,
+details.fold > summary + *{ margin-top:11px;}
 .foldsec > summary.foldhead + .mday,
 .foldsec > summary.foldhead + .lcard,
 .foldsec > summary.foldhead + details.subfold,
-.foldsec > summary.foldhead + .cvlist{ margin-top:13px !important;}
+.foldsec > summary.foldhead + .cvlist,
+details.fold > summary + .plist{ margin-top:13px;}
 .foldsec > .noodlegrid, .foldsec > .cvlist, .foldsec > .cvs-head{ margin-left:13px; margin-right:13px;}
 
 /* ================= 날짜별 확정 식사 요약 ================= */
