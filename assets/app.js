@@ -1442,6 +1442,7 @@ var NO_FILTER = { plan:1, home:1, money:1 };
       copy.querySelectorAll('.no,.cnt,.bdg,.fitb,.cpof').forEach(function(x){ x.remove(); });
       var name=copy.textContent.replace(/\(.*?\)/g,'').replace(/\s+/g,' ').trim();
       if(!c.id) c.id='sec-chip-'+i;
+      c.classList.add('schip-target');
       var b=document.createElement('button');
       b.type='button'; b.className='dchip schip'; b.setAttribute('data-target',c.id);
       b.innerHTML='<i>'+(icon?icon.textContent.trim():'•')+'</i><u>'+name+'</u>';
@@ -1455,11 +1456,10 @@ var NO_FILTER = { plan:1, home:1, money:1 };
       var b=e.target.closest('.schip'); if(!b) return;
       var t=document.getElementById(b.getAttribute('data-target')); if(!t) return;
       t.open=true;
-      /* html{scroll-behavior:smooth} 가 걸려 있으면 프로그램 스크롤이 먹지 않는다 — 잠깐 끈다 */
-      var root=document.documentElement, prev=root.style.scrollBehavior;
-      root.style.scrollBehavior='auto';
-      window.scrollTo(0, t.getBoundingClientRect().top + window.scrollY - 8);
-      root.style.scrollBehavior=prev;
+      /* 일정 탭 날짜 칩과 같은 방식 — window.scrollTo 는 html{scroll-behavior:smooth}
+         아래에서 뚝 끊겨 보이지만 scrollIntoView 는 부드럽게 움직인다.
+         위쪽 여백은 .schip-target 의 scroll-margin-top 이 맡는다. */
+      t.scrollIntoView({ behavior:'smooth', block:'start' });
       strip.querySelectorAll('.schip').forEach(function(x){ x.classList.toggle('on', x===b); });
     });
   })();
