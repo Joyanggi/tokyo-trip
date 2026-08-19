@@ -81,10 +81,17 @@
   /* 편의점 먹거리 — 81종을 한 줄씩으로 압축하고, 사진은 펼침카드 안에 둔다 */
   .cvlist{ margin-top:0; border:1px solid var(--line); border-top:none;
     border-radius:0 0 10px 10px; padding:2px 12px 4px;}
-  .cvlist .n{ display:flex; gap:7px; align-items:flex-start; padding:7px 0;
+  /* 체크박스를 뺀 뒤로는 한 칸짜리라 block 이면 된다 —
+     flex 로 두면 사진 없는 항목에서 이름과 일본어가 옆으로 붙는다 */
+  .cvlist .n{ display:block; padding:7px 0;
     border-bottom:1px solid var(--soft); font-size:13.5px; line-height:1.5;}
   .cvlist .n:last-child{ border-bottom:none;}
-  .cvlist .n > details{ flex:1; min-width:0;}
+  /* 한 편의점 안에서 오니기리·디저트를 가르는 소제목 */
+  .cvsub{ margin:2px -12px 0; padding:8px 12px 6px; border-top:1px solid var(--line);
+    background:rgba(244,237,221,.5); color:var(--accent2); font-size:12.5px; font-weight:800;}
+  .cvlist > .cvsub:first-child{ margin-top:-2px; border-top:none;}
+  .cvsub .cvsnote{ margin-left:5px; color:#8a8272; font-size:11px; font-weight:600;}
+  .cvs-head .cvsnote{ margin-left:2px; font-size:12px; font-weight:500; opacity:.85;}
   .cvlist .n > details > summary{ display:block;}
   .cvlist .n .jp{ color:#8a8272; font-size:12px; display:block;}
   .cvlist .n .fb{ margin:8px 0 4px;}
@@ -659,7 +666,6 @@ h2 .cpof{ font-size:10.5px; margin-left:5px; color:#fff;
   vertical-align:top; min-width:34px; min-height:44px; margin:-9px 0 -9px -8px; padding:9px 5px;
   cursor:pointer; -webkit-tap-highlight-color:transparent;}
 .mcd .item .ckwrap, .noodlegrid .n .ckwrap{ align-items:center;}
-.cvlist .n .ckwrap{ align-items:flex-start; padding-top:1px;}
 
 /* 문장 속 링크: 인라인 요소의 세로 패딩은 줄 높이를 바꾸지 않으면서 탭 영역만 넓혀준다 */
 .sheet a:not(.mappin):not(.tel):not(.evact a):not(.lockbtn):not(.wxb){ padding:7px 2px; margin:0 -2px;}
