@@ -7,3 +7,5 @@ private/
 # tools_build_route.py 실행 부산물
 __pycache__/
 *.pyc
+
+.claude/

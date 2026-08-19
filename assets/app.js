@@ -199,7 +199,11 @@
         if(!el.getAttribute('src')) el.setAttribute('src',el.getAttribute('data-src'));
       });
     }
-    if(details) details.addEventListener('toggle',function(){ if(details.open) loadShots(); });
+    if(details){
+      details.addEventListener('toggle',function(){ if(details.open) loadShots(); });
+      /* 펼치는 순간 만들어진 패널은 그 toggle 이벤트를 이미 놓쳤다 — 열려 있으면 바로 불러온다 */
+      if(details.open) loadShots();
+    }
     else loadShots();
     return block;
   }
@@ -435,9 +439,14 @@
       if(timeCell) timeCell.setAttribute('data-time-icon',iconText);
     }
     if(eventRow.classList.contains('move')) return;
-    if(detail.querySelector(':scope > .ev-titleline')) return;
+    /* 펼침카드 행은 제목이 <summary> 안에 있다 — 제목줄·운영시간 칩도 그 안에 만들어야 한다.
+       (본문 .fb 까지 훑으면 상세 문장에서 시간을 뜯어내 문장이 깨진다) */
+    var fold=detail.firstElementChild && detail.firstElementChild.matches('details.evfold') ? detail.firstElementChild : null;
+    var titleHost=fold ? fold.querySelector(':scope > summary') : detail;
+    if(!titleHost) return;
+    if(titleHost.querySelector(':scope > .ev-titleline')) return;
 
-    var first=detail.firstChild;
+    var first=titleHost.firstChild;
     while(first && first.nodeType===3 && !first.nodeValue.trim()) first=first.nextSibling;
     if(!first || first.nodeType!==1 || first.tagName!=='B') return;
 
@@ -445,7 +454,7 @@
     titleLine.className='ev-titleline';
     var titleMain=document.createElement('span');
     titleMain.className='ev-titlemain';
-    detail.insertBefore(titleLine,first);
+    titleHost.insertBefore(titleLine,first);
     titleLine.appendChild(titleMain);
     titleMain.appendChild(first);
 
@@ -455,7 +464,7 @@
       titleMain.appendChild(next);
       next=after;
     }
-    var hours=extractOperatingHours(detail);
+    var hours=extractOperatingHours(titleHost);
     if(hours){
       var hoursLabel=document.createElement('span');
       hoursLabel.className='ev-hours';
@@ -465,6 +474,19 @@
     }
   });
 })();
+
+/* 펼침카드(details.evfold) 안의 제목이면 패널을 카드 본문(.fb) 안에 넣는다.
+   그래야 제목 한 번 누르면 카드와 패널이 같이 열리고, 접힘 상태에선 아무것도 안 보인다. */
+function tripFoldOf(name){
+  var summary=name.closest('summary');
+  if(!summary) return null;
+  var fold=summary.parentNode;
+  return (fold && fold.classList && fold.classList.contains('evfold')) ? fold : null;
+}
+function tripPanelHost(name){
+  var fold=tripFoldOf(name);
+  return fold ? (fold.querySelector(':scope > .fb') || fold) : name.closest('.d');
+}
 
 /* 일정 속 식당명을 누르면 먹고 페이지와 같은 상세 정보를 행 하단에 펼친다. */
 (function(){
@@ -570,7 +592,8 @@
     detail.querySelectorAll('.ev-place-link[aria-expanded="true"]').forEach(function(link){
       link.setAttribute('aria-expanded','false');
     });
-    var panel=detail.querySelector(':scope > .ev-meal-panel');
+    var host=tripPanelHost(name);
+    var panel=host.querySelector(':scope > .ev-meal-panel');
     var isSame=panel && panel.getAttribute('data-meal-key')===key;
     var willOpen=!isSame || panel.hidden;
 
@@ -587,10 +610,21 @@
       panel=document.createElement('div');
       panel.className='ev-meal-panel';
       panel.id='ev-meal-panel-'+(++panelSeq);
-      detail.appendChild(panel);
+      host.appendChild(panel);
     }
     if(!isSame){
-      panel.replaceChildren(build(meals[key],null,'맛집 상세'));
+      var fold=tripFoldOf(name);
+      var block=build(meals[key],fold,fold ? '📸 사진 · 추천 메뉴' : '맛집 상세');
+      /* 카드 본문이 이미 평점·영업시간을 적고 있으니 패널에선 지운다 (같은 값을 두 번 읽게 하지 않는다) */
+      if(fold && block){
+        var dupRatings=block.querySelector('.meal-plan-detail-ratings');
+        if(dupRatings) dupRatings.remove();
+        block.querySelectorAll('.meal-plan-detail-meta-row').forEach(function(metaRow){
+          var dt=metaRow.querySelector('dt');
+          if(dt && dt.textContent.trim()==='운영 시간') metaRow.remove();
+        });
+      }
+      panel.replaceChildren(block);
       var alternatives=detail.querySelectorAll(':scope > .ev-meal-alt-source');
       if(alternatives.length){
         var altSection=document.createElement('section');
@@ -618,10 +652,13 @@
     if(!key) return;
     addKoreanName(name,key);
     name.classList.add('ev-meal-link');
-    name.setAttribute('role','button');
-    name.setAttribute('tabindex','0');
-    name.setAttribute('aria-expanded','false');
-    name.setAttribute('title','사진과 추천 메뉴 보기');
+    var foldEl=tripFoldOf(name);
+    if(!foldEl){
+      name.setAttribute('role','button');
+      name.setAttribute('tabindex','0');
+      name.setAttribute('aria-expanded','false');
+      name.setAttribute('title','사진과 추천 메뉴 보기');
+    }
     var detail=name.closest('.d');
     if(!detail.hasAttribute('data-meal-summary-cleaned')){
       cleanMealMetadata(name,detail);
@@ -630,6 +667,16 @@
     detail.querySelectorAll(':scope > .alt').forEach(function(alternative){
       alternative.classList.add('ev-meal-alt-source');
     });
+    /* 펼침카드는 <summary>가 여닫이를 맡는다 — 제목에 클릭 핸들러를 또 달면 두 번 토글된다 */
+    if(foldEl){
+      foldEl.addEventListener('toggle',function(){
+        if(!foldEl.open) return;
+        var body=foldEl.querySelector(':scope > .fb') || foldEl;
+        var built=body.querySelector(':scope > .ev-meal-panel');
+        if(!built || built.hidden) toggleMeal(name,key);
+      });
+      return;
+    }
     name.addEventListener('click',function(event){
       if(event.target.closest('a,button')) return;
       toggleMeal(name,key);
@@ -821,16 +868,6 @@
       tip:'직원에게 사진과 “V5131 TATAMI” 품번을 함께 보여주세요. 온라인 품절이어도 오프라인 잔여 재고가 있을 수 있어 대형 그랜드 스테이지부터 확인하는 편이 좋습니다.'
     },
     {
-      aliases:['아트모스 시부야','아식스 하라주쿠 플래그십'], name:'ASICS GEL-KAYANO 14',
-      kicker:'쇼핑 상세', sourceLabel:'쇼핑 목록에서 보기 ↗',
-      image:'https://images.asics.com/is/image/asics/1201A019_101_SR_RT_GLB',
-      source:'buy.html',
-      summary:'2000년대 러닝화 실루엣을 살린 레트로 스니커즈. 실버 메시와 크림 계열 패널이 겹치는 형태라 사진으로 모델을 확인하면 찾기 쉬워요.',
-      highlight:'스타일코드 1201A019 계열 · GEL-KAYANO 14', stay:'원하는 사이즈 착화 필수', admission:'인기 컬러는 매장별 재고 편차 큼',
-      labels:['찾을 제품','착화','구매 정보'], tipTitle:'🔎 찾는 팁',
-      tip:'컬러가 많으므로 “젤카야노 14”만 말하지 말고 원하는 컬러 사진과 스타일코드를 보여주세요. 당일 오래 걸을 예정이면 구매 직후보다 다음 날부터 신는 편이 안전합니다.'
-    },
-    {
       aliases:['래그태그 시부야','2nd STREET 하라주쿠'], name:'PORTER FREE STYLE 카드케이스',
       kicker:'쇼핑 상세', sourceLabel:'쇼핑 목록에서 보기 ↗',
       image:'https://shopping.c.yimg.jp/lib/selection/707-08227-70.jpg',
@@ -948,8 +985,9 @@
   }
   function togglePlace(title,place){
     var detail=title.closest('.d');
-    var panel=detail.querySelector(':scope > .ev-place-panel');
-    if(!panel){ panel=buildPanel(place); detail.appendChild(panel); }
+    var host=tripPanelHost(title);
+    var panel=host.querySelector(':scope > .ev-place-panel');
+    if(!panel){ panel=buildPanel(place); host.appendChild(panel); }
     var willOpen=panel.hidden;
     detail.querySelectorAll(':scope > .ev-meal-panel').forEach(function(meal){ meal.hidden=true; });
     detail.querySelectorAll('.ev-meal-link[aria-expanded="true"]').forEach(function(link){ link.setAttribute('aria-expanded','false'); });
@@ -962,6 +1000,17 @@
     if(title.classList.contains('ev-meal-link')) return;
     var place=placeFor(title); if(!place) return;
     title.classList.add('ev-place-link');
+    /* 펼침카드는 <summary>가 여닫이를 맡는다 — 제목에 클릭 핸들러를 또 달면 두 번 토글된다 */
+    var foldEl=tripFoldOf(title);
+    if(foldEl){
+      foldEl.addEventListener('toggle',function(){
+        if(!foldEl.open) return;
+        var body=foldEl.querySelector(':scope > .fb') || foldEl;
+        var built=body.querySelector(':scope > .ev-place-panel');
+        if(!built || built.hidden) togglePlace(title,place);
+      });
+      return;
+    }
     title.setAttribute('role','button'); title.setAttribute('tabindex','0'); title.setAttribute('aria-expanded','false');
     title.setAttribute('title',place.kicker==='쇼핑 상세' ? '상품 사진과 구매 팁 보기' : '사진과 현장 팁 보기');
     title.addEventListener('click',function(event){
