@@ -1439,7 +1439,7 @@ var NO_FILTER = { plan:1, home:1, money:1 };
       var icon=h2.querySelector('.no');
       /* 제목에서 아이콘·진행률·지역뱃지·판정태그를 뺀 순수 제목만 남긴다 */
       var copy=h2.cloneNode(true);
-      copy.querySelectorAll('.no,.cnt,.bdg,.fitb').forEach(function(x){ x.remove(); });
+      copy.querySelectorAll('.no,.cnt,.bdg,.fitb,.cpof').forEach(function(x){ x.remove(); });
       var name=copy.textContent.replace(/\(.*?\)/g,'').replace(/\s+/g,' ').trim();
       if(!c.id) c.id='sec-chip-'+i;
       var b=document.createElement('button');
