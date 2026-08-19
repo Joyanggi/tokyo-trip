@@ -1061,7 +1061,8 @@ function regionColor(name){
 
   /* 일정 탭엔 지역 필터가 필요 없다 — 하루 안에서 지역이 바뀌는 게 정상이라
      필터를 걸면 오히려 그날 동선이 잘려 보인다. 개요·지출은 필터 대상이 없다. */
-  var NO_FILTER = { plan:1, home:1, money:1 };
+  /* 지역 필터를 쓰지 않는 탭 */
+var NO_FILTER = { plan:1, home:1, money:1 };
   if(header && !NO_FILTER[document.body.getAttribute('data-tab')] && !document.getElementById('fbar-wrap')){
     header.insertAdjacentHTML('afterend',
       '<div id="fbar-wrap">' +
@@ -1111,7 +1112,7 @@ function regionColor(name){
         counts[r]++;
       });
     }
-    document.querySelectorAll('.sheet > section .bdg').forEach(tally);
+    document.querySelectorAll('.sheet > section .bdg, .sheet > details.foldsec .bdg').forEach(tally);
     document.querySelectorAll('.zgrp[data-rg]').forEach(tally);
     order.sort(function(a,b){ return counts[b]-counts[a]; });
     chips.insertAdjacentHTML('beforeend', '<button class="chip all" type="button" data-r="">전체 보기</button>' +
@@ -1169,7 +1170,7 @@ function regionColor(name){
   /* 섹션별 진행률 (h2에 n/m). 접히는 소제목(details.acc)은 닫아두면 안이 안 보이므로
      summary 에도 같은 방식으로 제 몫만 세어 붙인다. */
   function updateCounts(){
-    document.querySelectorAll('.sheet > section, details.acc').forEach(function(sec){
+    document.querySelectorAll('.sheet > section, .sheet > details.foldsec, details.acc').forEach(function(sec){
       var boxes=sec.querySelectorAll('input.ckbox'); if(!boxes.length) return;
       /* 'h2, summary' 한 방에 찾으면 details.fold 처럼 summary 가 h2 를 감싼 경우
          트리 순서상 조상인 summary 가 먼저 잡힌다 — h2 를 먼저 본다. */
@@ -1264,7 +1265,7 @@ function regionColor(name){
     cur=(segs&&segs.length)?segs:null;
     var hasFilterable=false, hasVisibleMatch=(cur===null);
 
-    document.querySelectorAll('.sheet > section').forEach(function(sec){
+    document.querySelectorAll('.sheet > section, .sheet > details.foldsec').forEach(function(sec){
       var h2=sec.querySelector('h2'); var hb=h2?h2.querySelector('.bdg'):null;
       var rows=sec.querySelectorAll('.litem');
       var hasBdgRow=false;
@@ -1407,6 +1408,61 @@ function regionColor(name){
       else if(cards.some(function(c){ return c.getAttribute('data-d')===todayKey(); })){ showToday(); }
     })();
   }
+
+  /* ===== 헤더 날씨 링크 (모든 탭) =====
+     매일 다시 보는 값이라 앱 안에 담지 않고 tenki.jp 예보로 넘긴다.
+     PWA에서 같은 창으로 나가면 돌아올 수단이 없어 새 탭으로 연다. */
+  (function(){
+    var header=document.querySelector('.sheet > header');
+    if(!header || header.querySelector('.wxlink')) return;
+    var a=document.createElement('a');
+    a.className='wxlink';
+    a.href='https://tenki.jp/forecast/3/16/?date=2';
+    a.target='_blank'; a.rel='noopener';
+    a.title='tenki.jp 도쿄 예보 (새 탭)';
+    a.innerHTML='<span class="wxi">🌤️</span>도쿄 날씨';
+    header.appendChild(a);
+  })();
+
+  /* ===== 섹션 칩 (사고·먹고·가고) =====
+     일정 탭의 날짜 칩과 같은 자리·같은 모양. 카드가 많은 탭에서 원하는 묶음으로 바로 뛴다. */
+  (function(){
+    if(document.getElementById('pl-open')) return;
+    var cards=[].slice.call(document.querySelectorAll('.sheet details.foldsec, .sheet details.fold'));
+    cards=cards.filter(function(c){ return c.querySelector(':scope > summary h2'); });
+    if(cards.length<3) return;
+    var header=document.querySelector('.sheet > header'); if(!header) return;
+
+    var strip=document.createElement('div'); strip.className='dchips schips';
+    cards.forEach(function(c,i){
+      var h2=c.querySelector(':scope > summary h2');
+      var icon=h2.querySelector('.no');
+      /* 제목에서 아이콘·진행률·지역뱃지·판정태그를 뺀 순수 제목만 남긴다 */
+      var copy=h2.cloneNode(true);
+      copy.querySelectorAll('.no,.cnt,.bdg,.fitb').forEach(function(x){ x.remove(); });
+      var name=copy.textContent.replace(/\(.*?\)/g,'').replace(/\s+/g,' ').trim();
+      if(!c.id) c.id='sec-chip-'+i;
+      var b=document.createElement('button');
+      b.type='button'; b.className='dchip schip'; b.setAttribute('data-target',c.id);
+      b.innerHTML='<i>'+(icon?icon.textContent.trim():'•')+'</i><u>'+name+'</u>';
+      strip.appendChild(b);
+    });
+
+    var after=document.querySelector('.plbar.foldbar') || document.getElementById('fbar-wrap') || header;
+    after.insertAdjacentElement('afterend', strip);
+
+    strip.addEventListener('click', function(e){
+      var b=e.target.closest('.schip'); if(!b) return;
+      var t=document.getElementById(b.getAttribute('data-target')); if(!t) return;
+      t.open=true;
+      /* html{scroll-behavior:smooth} 가 걸려 있으면 프로그램 스크롤이 먹지 않는다 — 잠깐 끈다 */
+      var root=document.documentElement, prev=root.style.scrollBehavior;
+      root.style.scrollBehavior='auto';
+      window.scrollTo(0, t.getBoundingClientRect().top + window.scrollY - 8);
+      root.style.scrollBehavior=prev;
+      strip.querySelectorAll('.schip').forEach(function(x){ x.classList.toggle('on', x===b); });
+    });
+  })();
 
   /* ===== 전체 펼치기·접기 (일정 외 탭) =====
      일정 탭은 자체 .plbar(#pl-open)를 쓰므로 건드리지 않는다.

@@ -40,6 +40,14 @@
   .fuji b{ color:var(--accent2);}
   /* 🌤️ 날씨 — 개요 아래 외부 예보 링크 카드(하단 ☀️날씨 탭과 같은 곳).
      제목과 버튼을 한 줄에 놓고, 폭이 모자라면 버튼이 다음 줄로 내려간다. */
+  /* 헤더 오른쪽 위 날씨 링크 — 스탬프와 같은 줄에 두면 제목이 밀려서 절대 배치로 얹는다 */
+  header{ position:relative;}
+  .wxlink{ position:absolute; top:12px; right:12px; display:inline-flex; align-items:center; gap:4px;
+    min-height:32px; padding:4px 11px; border-radius:999px; background:var(--tag); border:1px solid var(--line);
+    color:var(--accent2); font-size:11.5px; font-weight:800; line-height:1; letter-spacing:-.2px;
+    text-decoration:none; white-space:nowrap; -webkit-tap-highlight-color:transparent;}
+  .wxlink:hover{ background:var(--line);}
+  .wxlink .wxi{ font-size:13px;}
   .wx{ margin-top:14px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:10px 14px;
     display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
   .wxt{ font-size:15px; font-weight:700;}
@@ -578,7 +586,10 @@ details.fold > summary + .plist{ margin-top:13px;}
 
 /* ================= 식사 후보 표 ================= */
 .mday{ border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-top:14px; background:#fff;}
-.mdh{ color:#fff; font-weight:800; font-size:14.5px; padding:9px 13px;}
+/* 표 머리띠 — 섹션 머리띠(짙은 초록)와 같은 무게로 칠하면 카드 안에 카드가 있는 꼴이라
+   층위가 안 보인다. 색은 왼쪽 띠로만 남기고 배경은 연하게. */
+.mdh{ color:var(--accent2); font-weight:800; font-size:14px; padding:8px 12px;
+  background:var(--tag); border-left:4px solid var(--mdh-c,#8a8272); border-bottom:1px solid var(--line);}
 .mtb{ padding:2px 0;}
 .madd{ margin:12px 10px 10px; padding-top:9px; border-top:1px dashed var(--line);}
 .madd-title{ color:var(--accent2); font-size:11.5px; font-weight:800; letter-spacing:.2px;}
@@ -680,6 +691,21 @@ details.fold > summary + .plist{ margin-top:13px;}
 .dchip.on{ background:var(--ink); border-color:var(--ink); color:var(--paper);}
 .dchip.on i, .dchip.on u{ color:rgba(255,253,247,.72);}
 
+/* 섹션 칩 (사고·먹고·가고) — 날짜 칩과 같은 모양이되 한 줄짜리라 조금 낮다 */
+.schips{ margin-top:2px;}
+.schip{ min-width:0; min-height:52px; padding:8px 12px; border-top-width:1px;}
+.schip i{ font-size:15px; line-height:1.1;}
+.schip u{ max-width:120px; font-size:11.5px; color:var(--ink); margin-top:2px;}
+.schip.on u{ color:var(--paper);}
+
+/* 동선 판정 태그 — 이 항목을 일정에 넣을 수 있는지 한눈에 */
+.fitb{ display:inline-block; vertical-align:middle; margin-left:3px; padding:1px 7px;
+  border-radius:999px; font-size:10px; font-weight:800; line-height:1.55; white-space:nowrap;}
+.fitb.yes{ color:#256b56; background:rgba(37,107,86,.10); border:1px solid rgba(37,107,86,.32);}
+.fitb.no{ color:#857c6b; background:rgba(138,130,114,.12); border:1px solid rgba(138,130,114,.32);}
+.fitline{ margin-top:11px; color:#8a8272; font-size:11.5px; font-weight:700;}
+.fitline .fitb{ margin-left:0; margin-right:3px;}
+
 /* 일정 행 액션 버튼 */
 .evact{ display:flex; flex-wrap:wrap; justify-content:flex-end; gap:3px; margin:5px 0 1px; align-items:center;}
 .evact a, .evact button{ display:inline-flex; align-items:center; justify-content:center; min-height:28px;
@@ -707,7 +733,7 @@ details.fold > summary + .plist{ margin-top:13px;}
 .mcd .item .ckwrap, .noodlegrid .n .ckwrap{ align-items:center;}
 
 /* 문장 속 링크: 인라인 요소의 세로 패딩은 줄 높이를 바꾸지 않으면서 탭 영역만 넓혀준다 */
-.sheet a:not(.mappin):not(.tel):not(.evact a):not(.lockbtn):not(.wxb){ padding:7px 2px; margin:0 -2px;}
+.sheet a:not(.mappin):not(.tel):not(.evact a):not(.lockbtn):not(.wxb):not(.wxlink){ padding:7px 2px; margin:0 -2px;}
 .evact a{ padding:3px 8px; margin:0;}
 
 
