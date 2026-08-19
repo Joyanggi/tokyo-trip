@@ -1,5 +1,5 @@
 /* 도쿄 여행 안내문 — 오프라인 캐시 (네트워크 우선, 실패 시 캐시) */
-var CACHE = 'tokyo-trip-v105';
+var CACHE = 'tokyo-trip-v106';
 
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) {

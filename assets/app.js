@@ -1004,7 +1004,7 @@ function regionColor(name){
   return 'hsl('+h+',48%,42%)';
 }
 
-/* ================= 공용 크롬 주입 (하단 nav·지역 필터바·라이트박스·footer) ================= */
+/* ================= 공용 크롬 주입 (하단 nav·지역 필터바·라이트박스) ================= */
 (function(){
   var BASE = /\/pages\//.test(location.pathname) ? '../' : './';
   var sheet = document.querySelector('.sheet');
@@ -1021,12 +1021,6 @@ function regionColor(name){
         '<div id="chips"></div>' +
       '</div>' +
       '<div class="empty" id="fempty"></div>'
-    );
-  }
-  if(sheet && !sheet.querySelector('footer')){
-    sheet.insertAdjacentHTML('beforeend',
-      '<footer>작성: 도쿄 탐방 준비위원회 · 항목이 추가되면 계속 업데이트됩니다 📋<br>' +
-      '가격·재고는 변동될 수 있으니 방문 시 현장 기준으로 재확인하세요.</footer>'
     );
   }
 
