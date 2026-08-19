@@ -1907,30 +1907,3 @@ loadSecrets();
   if(saved && saved.length) window.__applyFilter(saved, {restore:true});
   else window.__applyFilter(null, {restore:true});
 })();
-
-/* ================= 앵커(#id) 착지 =================
-   일정 탭의 📖상세 링크로 들어오면 해당 줄까지 내려준다.
-
-   ⚠️ html{scroll-behavior:smooth} 가 걸려 있으면 이 사이트에서는 브라우저의
-   기본 앵커 이동도, window.scrollTo 도 먹히지 않는다(스크롤이 0에 머문다).
-   그래서 착지하는 순간에만 scroll-behavior 를 auto 로 낮췄다가 되돌린다.
-   목록이 뒤늦게 그려져 높이가 바뀌므로 두 번 잡아준다. */
-(function(){
-  var h = location.hash;
-  if(!h || h.length < 2) return;
-  function jump(){
-    var el;
-    try{ el = document.querySelector(h); }catch(e){ return; }
-    if(!el) return;
-    var d = el.closest('details');
-    while(d){ d.open = true; var pa = d.parentElement; d = pa && pa.closest ? pa.closest('details') : null; }
-    var root = document.documentElement, prev = root.style.scrollBehavior;
-    root.style.scrollBehavior = 'auto';
-    var y = window.scrollY + el.getBoundingClientRect().top - Math.round(window.innerHeight * 0.30);
-    window.scrollTo(0, Math.max(0, y));
-    root.style.scrollBehavior = prev;
-  }
-  function start(){ setTimeout(jump, 300); setTimeout(jump, 1200); }
-  if(document.readyState === 'complete') start();
-  else window.addEventListener('load', start);
-})();

@@ -152,25 +152,6 @@
   });
 
 
-  /* ---------- 📖 상세 — 먹고·사고·가고 탭의 해당 항목으로 보낸다 ----------
-     일정 탭은 시각·동선만 짧게 두고, 평점·영업시간·예약 같은 상세는 각 탭에 한 번만
-     둔다(중복 제거). data-more="탭|검색키" 가 붙은 행에만 버튼이 생긴다. */
-  document.querySelectorAll('.dcard[data-d] .ev[data-more]').forEach(function (row) {
-    var v = row.getAttribute('data-more'); if (!v) return;
-    var p = v.split('|'); if (p.length < 2) return;
-    var act = row.querySelector('.evact');
-    if (!act) {
-      act = el('div', 'evact');
-      var dcell = row.querySelector('.d'); if (!dcell) return;
-      dcell.appendChild(act);
-    }
-    if (act.querySelector('.moreinfo')) return;
-    var a = el('a', 'moreinfo');
-    a.href = p[0].trim() + '.html#' + p[1].trim();
-    a.textContent = '📖 상세';
-    act.appendChild(a);
-  });
-
   /* .ics 내보내기 */
   function icsFor(di, i) {
     var day = R[di], p = day.pts[i];
