@@ -1908,26 +1908,29 @@ loadSecrets();
   else window.__applyFilter(null, {restore:true});
 })();
 
-/* ================= 앵커(#id) 착지 보정 =================
-   일정 탭의 📖상세 링크는 브라우저 기본 앵커로 이동한다. 그런데 이 페이지들은
-   로드 뒤에 목록이 더 그려져 높이가 커지므로, 로드 시점에 잡은 앵커 위치가
-   어긋난다. 레이아웃이 안정된 뒤 해시를 다시 지정해 브라우저가 앵커를 다시
-   잡게 한다(스크립트가 직접 스크롤하지 않아 부드럽게 착지한다). */
+/* ================= 앵커(#id) 착지 =================
+   일정 탭의 📖상세 링크로 들어오면 해당 줄까지 내려준다.
+
+   ⚠️ html{scroll-behavior:smooth} 가 걸려 있으면 이 사이트에서는 브라우저의
+   기본 앵커 이동도, window.scrollTo 도 먹히지 않는다(스크롤이 0에 머문다).
+   그래서 착지하는 순간에만 scroll-behavior 를 auto 로 낮췄다가 되돌린다.
+   목록이 뒤늦게 그려져 높이가 바뀌므로 두 번 잡아준다. */
 (function(){
   var h = location.hash;
   if(!h || h.length < 2) return;
-  function relock(){
+  function jump(){
     var el;
     try{ el = document.querySelector(h); }catch(e){ return; }
     if(!el) return;
     var d = el.closest('details');
     while(d){ d.open = true; var pa = d.parentElement; d = pa && pa.closest ? pa.closest('details') : null; }
-    location.hash = '';
-    location.hash = h;
+    var root = document.documentElement, prev = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+    var y = window.scrollY + el.getBoundingClientRect().top - Math.round(window.innerHeight * 0.30);
+    window.scrollTo(0, Math.max(0, y));
+    root.style.scrollBehavior = prev;
   }
-  window.addEventListener('load', function(){
-    setTimeout(relock, 700);
-    setTimeout(relock, 1800);
-  });
+  function start(){ setTimeout(jump, 300); setTimeout(jump, 1200); }
+  if(document.readyState === 'complete') start();
+  else window.addEventListener('load', start);
 })();
-
