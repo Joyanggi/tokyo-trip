@@ -200,7 +200,11 @@
   .litem .lsub{ font-size:11.5px; color:#8a8272; margin-left:auto; white-space:nowrap;}
   .litem .ljp{ color:#8a8272; font-size:11.5px; display:block; margin:1px 0;}
   .litem .ld{ font-size:12.5px; color:#5c5648; margin-top:2px;}
-  .litem .lt a.mappin{ margin:0 0 0 auto; width:34px; height:34px; font-size:15px;}
+  /* 핀을 흐름에서 빼 오른쪽 위에 고정 — flex-wrap 안에 두면 이름이 길 때 핀만 다음 줄로
+     떨어져 빈 줄이 생긴다(체크박스를 없앤 뒤 특히 눈에 띈다). */
+  .litem{ position:relative;}
+  .litem .lt{ padding-right:40px;}
+  .litem .lt a.mappin{ position:absolute; top:8px; right:10px; margin:0; width:34px; height:34px; font-size:15px;}
   .litem .lt .bdg{ margin-left:5px;}
   .cvs li img, .noodlegrid .n img, .cvlist .n .fb img, .special img, .mcd img, .place img, .prow>img{ cursor:zoom-in;}
   #lb{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.88); z-index:99999; align-items:center; justify-content:center; padding:16px; cursor:zoom-out;}
@@ -490,6 +494,14 @@ details.subfold:not([open]) > summary.cvs-head{ border-radius:10px !important;}
 .foldsec > summary.foldhead h2::after{ content:'⌄'; margin-left:auto; font-size:17px; line-height:1;}
 .foldsec[open] > summary.foldhead h2::after{ content:'⌃';}
 .foldsec > *:not(summary){ padding-left:13px; padding-right:13px;}
+/* 접이식으로 바꾸기 전엔 h2 아래 여백이 있어서 리드 문단에 margin-top:-4px 를 인라인으로 줬는데,
+   summary 로 바뀌면서 그 음수 여백이 머리띠에 붙어 글자가 겹쳐 보인다. 첫 요소만 여백을 되돌린다.
+   (인라인 style 을 이기려면 !important 가 필요) */
+.foldsec > summary.foldhead + *{ margin-top:11px !important;}
+.foldsec > summary.foldhead + .mday,
+.foldsec > summary.foldhead + .lcard,
+.foldsec > summary.foldhead + details.subfold,
+.foldsec > summary.foldhead + .cvlist{ margin-top:13px !important;}
 .foldsec > .noodlegrid, .foldsec > .cvlist, .foldsec > .cvs-head{ margin-left:13px; margin-right:13px;}
 
 /* ================= 날짜별 확정 식사 요약 ================= */
