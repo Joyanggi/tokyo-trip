@@ -1419,7 +1419,7 @@ function regionColor(name){
     var header=document.querySelector('.sheet > header'); if(!header) return;
 
     var bar=document.createElement('div');
-    bar.className='plbar';
+    bar.className='plbar foldbar';
     bar.innerHTML='<button type="button" id="fold-open">＋ 전체 펼치기</button>'+
                   '<button type="button" id="fold-close">－ 전체 접기</button>';
     var after=document.getElementById('fbar-wrap') || header;
