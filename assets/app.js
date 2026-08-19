@@ -1083,7 +1083,6 @@ function regionColor(name){
     ['eat','🍜','먹고','pages/eat.html'],
     ['go','🗺️','가고','pages/go.html'],
     ['trip','🚃','근교','pages/trip.html'],
-    ['local','🤖','로컬','pages/local.html'],
     ['money','💴','지출','pages/money.html'],
     /* 날씨만 외부 사이트(tenki.jp 도쿄 예보)라 맨 끝에 둔다. '://'가 있으면 BASE를 붙이지 않고
        새 탭으로 연다 — 홈 화면에 설치한 PWA에서 같은 창으로 나가면 돌아올 수단이 없어서. */

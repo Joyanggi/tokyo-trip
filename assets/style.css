@@ -78,6 +78,18 @@
   .mcd .emo{ font-size:26px; flex:0 0 auto; width:34px; text-align:center;}
   .mcd .nm{ font-weight:700; font-size:14.5px;}
   .mcd .jp{ color:#8a8272; font-size:12.5px;}
+  /* 편의점 먹거리 — 81종을 한 줄씩으로 압축하고, 사진은 펼침카드 안에 둔다 */
+  .cvlist{ margin-top:0; border:1px solid var(--line); border-top:none;
+    border-radius:0 0 10px 10px; padding:2px 12px 4px;}
+  .cvlist .n{ display:flex; gap:7px; align-items:flex-start; padding:7px 0;
+    border-bottom:1px solid var(--soft); font-size:13.5px; line-height:1.5;}
+  .cvlist .n:last-child{ border-bottom:none;}
+  .cvlist .n > details{ flex:1; min-width:0;}
+  .cvlist .n > details > summary{ display:block;}
+  .cvlist .n .jp{ color:#8a8272; font-size:12px; display:block;}
+  .cvlist .n .fb{ margin:8px 0 4px;}
+  .cvlist .n .fb img{ display:block; width:100%; max-width:184px; height:auto;
+    border-radius:8px; border:1px solid var(--line); background:#f6f2e8;}
   .noodlegrid{ display:grid; grid-template-columns:repeat(2,1fr); gap:6px 16px; margin-top:8px;}
   .noodlegrid .n{ display:flex; gap:10px; align-items:center; font-size:13.5px; padding:6px 0; border-bottom:1px solid var(--soft);}
   .noodlegrid .n img{ width:58px; height:58px; object-fit:contain; background:#f6f2e8; border-radius:8px; border:1px solid var(--line); flex:0 0 auto;}
@@ -183,13 +195,20 @@
   .litem .ld{ font-size:12.5px; color:#5c5648; margin-top:2px;}
   .litem .lt a.mappin{ margin:0 0 0 auto; width:34px; height:34px; font-size:15px;}
   .litem .lt .bdg{ margin-left:5px;}
-  .cvs li img, .noodlegrid .n img, .special img, .mcd img, .place img, .prow>img{ cursor:zoom-in;}
+  .cvs li img, .noodlegrid .n img, .cvlist .n .fb img, .special img, .mcd img, .place img, .prow>img{ cursor:zoom-in;}
   #lb{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.88); z-index:99999; align-items:center; justify-content:center; padding:16px; cursor:zoom-out;}
   #lb.open{ display:flex;}
   #lb img{ max-width:96%; max-height:96%; border-radius:10px; box-shadow:0 12px 48px rgba(0,0,0,.6); cursor:zoom-out;}
   #lb .hint{ position:fixed; top:14px; right:20px; color:#fff; font-size:13px; opacity:.75;}
   input.ckbox, input.expck{ width:24px; height:24px; flex:0 0 auto; margin-right:5px; accent-color:#2e6e5a; cursor:pointer; vertical-align:middle;}
-  .n.ckd, .prow.ckd, .special.ckd, .mcd .item.ckd, .litem.ckd{ opacity:.45;}
+  /* 🤖 클로드피셜 — 사용자가 고른 항목이 아니라 제가 추천한 항목임을 작게 표시 */
+.cpof{ display:inline-block; vertical-align:middle; margin-left:2px; padding:1px 6px;
+  border:1px solid rgba(91,87,179,.35); border-radius:999px; background:rgba(91,87,179,.09);
+  color:#5b57b3; font-size:10px; font-weight:800; line-height:1.5; white-space:nowrap;}
+/* 섹션 제목은 짙은 배경 위라 보라색 글씨가 묻힌다 — 흰 계열로 뒤집는다 */
+h2 .cpof{ font-size:10.5px; margin-left:5px; color:#fff;
+  border-color:rgba(255,255,255,.45); background:rgba(255,255,255,.16);}
+.n.ckd, .prow.ckd, .special.ckd, .mcd .item.ckd, .litem.ckd{ opacity:.45;}
   .n.ckd > span, .prow.ckd .pnm, .litem.ckd .lnm{ text-decoration:line-through;}
   /* 문장 안에 섞이는 핀은 24px — 더 키우면 줄 높이를 밀어 문단이 들쭉날쭉해진다.
      자기 칸을 갖는 목록 행(.litem/.prow)의 핀만 32px로 크게 쓴다. */
@@ -221,16 +240,16 @@
 
   /* ================= 하단 내비게이션 (탭 이동 전용) ================= */
   html{ scroll-behavior:smooth; }
-  body{ padding-bottom:calc(80px + env(safe-area-inset-bottom)); }
+  body{ padding-bottom:calc(98px + env(safe-area-inset-bottom)); }
   /* 좌우 패딩이 없으면 아이폰 디스플레이 모서리 곡률에 첫/마지막 탭(개요·지출)이 잘린다.
      아래 패딩은 홈 인디케이터와 겹치지 않도록 safe-area 위에 10px 더 준다. */
   #nav{ position:fixed; left:0; right:0; bottom:0; z-index:9500; background:rgba(43,43,43,.97); display:flex; align-items:stretch; gap:1px;
-    padding:5px max(14px,env(safe-area-inset-left)) calc(10px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-right));
+    padding:7px max(12px,env(safe-area-inset-left)) calc(13px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-right));
     box-shadow:0 -3px 14px rgba(0,0,0,.3);}
-  #nav a{ flex:1; min-width:0; min-height:54px; background:none; border:none; color:#f4eddd; text-decoration:none; font-family:inherit;
-    font-size:10.5px; line-height:1.25; letter-spacing:-.3px; padding:5px 1px; cursor:pointer; border-radius:9px; white-space:nowrap;
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; -webkit-tap-highlight-color:transparent;}
-  #nav .ico{ display:block; font-size:20px; line-height:1.15;}
+  #nav a{ flex:1; min-width:0; min-height:66px; background:none; border:none; color:#f4eddd; text-decoration:none; font-family:inherit;
+    font-size:11.5px; line-height:1.25; letter-spacing:-.3px; padding:6px 1px; cursor:pointer; border-radius:11px; white-space:nowrap;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; -webkit-tap-highlight-color:transparent;}
+  #nav .ico{ display:block; font-size:24px; line-height:1.1;}
   #nav a.on{ background:rgba(255,255,255,.18);}
   /* 섹션별 체크 진행률 */
   h2 .cnt{ margin-left:auto; background:rgba(255,255,255,.92); color:var(--accent2); font-size:11px; font-weight:800; padding:1px 9px; border-radius:10px; flex:0 0 auto;}
@@ -406,7 +425,7 @@
   @media(max-width:640px){
     /* padding 단축 속성이 위의 padding-bottom(내비 높이)을 덮어쓰지 않도록 4값으로 명시.
        이게 없으면 모바일에서 마지막 내용이 하단 내비에 가린다. */
-    body{ padding:8px 5px calc(80px + env(safe-area-inset-bottom)); }
+    body{ padding:8px 5px calc(98px + env(safe-area-inset-bottom)); }
     .sheet{ border-radius:4px; }
     header{ padding:22px 16px 14px; }
     header h1{ font-size:22px; }
@@ -453,7 +472,7 @@
 .foldsec > summary.foldhead h2::after{ content:'⌄'; margin-left:auto; font-size:17px; line-height:1;}
 .foldsec[open] > summary.foldhead h2::after{ content:'⌃';}
 .foldsec > *:not(summary){ padding-left:13px; padding-right:13px;}
-.foldsec > .noodlegrid, .foldsec > .cvs-head{ margin-left:13px; margin-right:13px;}
+.foldsec > .noodlegrid, .foldsec > .cvlist, .foldsec > .cvs-head{ margin-left:13px; margin-right:13px;}
 
 /* ================= 날짜별 확정 식사 요약 ================= */
 .meal-plan-days{ display:grid; gap:14px;}
@@ -640,6 +659,7 @@
   vertical-align:top; min-width:34px; min-height:44px; margin:-9px 0 -9px -8px; padding:9px 5px;
   cursor:pointer; -webkit-tap-highlight-color:transparent;}
 .mcd .item .ckwrap, .noodlegrid .n .ckwrap{ align-items:center;}
+.cvlist .n .ckwrap{ align-items:flex-start; padding-top:1px;}
 
 /* 문장 속 링크: 인라인 요소의 세로 패딩은 줄 높이를 바꾸지 않으면서 탭 영역만 넓혀준다 */
 .sheet a:not(.mappin):not(.tel):not(.evact a):not(.lockbtn):not(.wxb){ padding:7px 2px; margin:0 -2px;}
