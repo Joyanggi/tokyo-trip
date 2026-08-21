@@ -1114,21 +1114,42 @@ var NO_FILTER = { plan:1, home:1, money:1 };
     );
   }
 
-  /* 📍 지역 칩 — 이 페이지에 실제로 있는 지역만, 등장 빈도순으로 만든다(하드코딩 목록 대신) */
+  /* 📍 지역 칩 — 이 페이지에 실제로 있는 지역만 만든다.
+     현지인이 아니면 지역명만 보고 '여기가 숙소에서 가까운지'를 알 수 없어서,
+     권역으로 묶고 일정상 어느 날 가는 곳인지 라벨에 적어 둔다. */
+  var CHIP_GROUPS = [
+    { label:'숙소·신주쿠',        note:'9/5 · 매일 밤 돌아오는 곳', regions:['신주쿠','니시신주쿠','신주쿠3초메','센다가야'] },
+    { label:'시부야·하라주쿠',    note:'9/9 출국일 코스',          regions:['시부야','신센','하라주쿠','오모테산도','에비스','나카메구로'] },
+    { label:'우에노·아사쿠사',    note:'9/7 코스',                 regions:['우에노','오카치마치','아사쿠사','갓파바시','야나카','닛포리','유시마','간다'] },
+    { label:'롯폰기·미나토',      note:'9/7 저녁',                 regions:['롯폰기','아자부다이','아카사카','도쿄타워'] },
+    { label:'도쿄역·긴자',        note:'일정에 없음 · 숙소에서 20분쯤', regions:['마루노우치','도쿄역','니혼바시','긴자','신바시','츠키지','츠키시마'] },
+    { label:'그 외 도쿄',         note:'따로 시간을 내야 하는 곳',  regions:['이케부쿠로','메지로','기요스미','가구라자카','세타가야','시모키타자와','코마자와','키치조지','텐노즈'] },
+    { label:'도쿄 밖 (근교)',     note:'9/6 근교 · 9/8 디즈니',     regions:['마이하마','가마쿠라','기타카마쿠라','하세','에노시마','가와사키','요코하마'] },
+    { label:'어디서나',           note:'전국 체인',                 regions:['전국'] }
+  ];
   var chips = document.getElementById('chips');
   if(chips && !chips.childElementCount){
-    var counts={}, order=[];
-    function tally(el){
-      regionsOf(el).forEach(function(r){
-        if(!(r in counts)){ counts[r]=0; order.push(r); }
-        counts[r]++;
-      });
-    }
+    var present={};
+    function tally(el){ regionsOf(el).forEach(function(r){ present[r]=(present[r]||0)+1; }); }
     document.querySelectorAll('.sheet > section .bdg, .sheet > details.foldsec .bdg').forEach(tally);
     document.querySelectorAll('.zgrp[data-rg]').forEach(tally);
-    order.sort(function(a,b){ return counts[b]-counts[a]; });
-    chips.insertAdjacentHTML('beforeend', '<button class="chip all" type="button" data-r="">전체 보기</button>' +
-      order.map(function(r){ return '<button class="chip" type="button" data-r="'+r+'">'+r+'</button>'; }).join(''));
+
+    var html = '<button class="chip all" type="button" data-r="">전체 보기</button>';
+    var placed = {};
+    CHIP_GROUPS.forEach(function(g){
+      var mine = g.regions.filter(function(r){ return present[r]; });
+      if(!mine.length) return;
+      mine.forEach(function(r){ placed[r]=1; });
+      html += '<div class="chipgrp"><b>'+g.label+'</b><span>'+g.note+'</span></div>';
+      html += mine.map(function(r){ return '<button class="chip" type="button" data-r="'+r+'">'+r+'</button>'; }).join('');
+    });
+    /* 그룹에 못 들어간 지역이 있으면 마지막에 모아 둔다 — 새 지역을 추가해도 사라지지 않게 */
+    var rest = Object.keys(present).filter(function(r){ return !placed[r]; });
+    if(rest.length){
+      html += '<div class="chipgrp"><b>그 밖</b><span>분류 전</span></div>';
+      html += rest.map(function(r){ return '<button class="chip" type="button" data-r="'+r+'">'+r+'</button>'; }).join('');
+    }
+    chips.insertAdjacentHTML('beforeend', html);
   }
 })();
 
