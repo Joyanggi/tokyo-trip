@@ -713,6 +713,9 @@ details.fold > summary + .plist{ margin-top:13px;}
   border-radius:999px; font-size:10px; font-weight:800; line-height:1.55; white-space:nowrap;}
 .fitb.yes{ color:#256b56; background:rgba(37,107,86,.10); border:1px solid rgba(37,107,86,.32);}
 .fitb.no{ color:#857c6b; background:rgba(138,130,114,.12); border:1px solid rgba(138,130,114,.32);}
+/* 예약 링크 버튼 — 목록 행 안에서는 한 줄 아래에 두고 좌우 여백을 죽인다 */
+.litem .ld a.wxb{ display:inline-flex; margin-top:6px; padding:5px 14px; min-height:32px;
+  font-size:11.5px; font-weight:800;}
 .fitline{ margin-top:11px; color:#8a8272; font-size:11.5px; font-weight:700;}
 .fitline .fitb{ margin-left:0; margin-right:3px;}
 
