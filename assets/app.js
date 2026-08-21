@@ -1027,8 +1027,20 @@ function tripPanelHost(name){
 /* ================= 지역 정규화 · 색상 =================
    .bdg 뱃지 텍스트나 .zgrp의 data-rg를 표준 지역명 배열로 바꾸고,
    지역명마다 안정적인(해시 기반) 색을 하나만 부여한다 — .bdg/.litem 띠/.zgrp가 전부 이 색을 공유. */
-var REGION_ALIAS = { '전국 공통':'전국' };
-var REGION_DROP = ['지점 다수', "Sac's Bar", 'ABC마트', '지바', '서밋', '숙소 근처']; /* 지역이 아니라 브랜드·설명 토큰 */
+var REGION_ALIAS = { '전국 공통':'전국', '신주쿠구':'신주쿠' };
+/* 지역 화이트리스트 — 뱃지에는 지역 말고도 브랜드(Sac's Bar·마츠키요)·영업시간(24시간)·
+   장소 종류(역 상가)가 같이 적혀 있다. 예전엔 이런 걸 블랙리스트로 하나씩 뺐는데,
+   뱃지를 새로 쓸 때마다 엉뚱한 게 필터 선택지로 새어 나왔다. 그래서 뒤집었다 —
+   여기 있는 것만 지역으로 인정하고, 나머지는 화면에만 보이고 필터에는 안 쓴다.
+   목록에 없는 토큰만 남은 항목은 regionsOf 가 빈 배열을 주고, matches() 가 항상 통과시킨다
+   (드럭스토어처럼 전국에 있는 것들이라 그게 맞다). */
+var REGIONS = ['전국',
+  '신주쿠','니시신주쿠','신주쿠3초메','시부야','신센','하라주쿠','오모테산도','나카메구로',
+  '롯폰기','아자부다이','아카사카','긴자','신바시','마루노우치','니혼바시','도쿄역',
+  '아사쿠사','갓파바시','우에노','오카치마치','야나카','닛포리','이케부쿠로','에비스',
+  '메지로','세타가야','시모키타자와','가구라자카','키치조지','코마자와','기요스미',
+  '츠키지','츠키시마','텐노즈','도쿄타워','센다가야','간다','유시마',
+  '마이하마','가마쿠라','기타카마쿠라','하세','에노시마','가와사키','요코하마'];
 function regionsOf(el){
   if(!el) return [];
   var cached = el.getAttribute('data-rg');
@@ -1036,8 +1048,8 @@ function regionsOf(el){
     var raw = el.textContent.split(/[·\/]/).map(function(s){return s.trim();}).filter(Boolean);
     var out=[];
     raw.forEach(function(s){
-      if(REGION_DROP.indexOf(s)>=0) return;
       var r = REGION_ALIAS[s] || s;
+      if(REGIONS.indexOf(r)<0) return;      /* 지역이 아니면 필터에 쓰지 않는다 */
       if(out.indexOf(r)<0) out.push(r);
     });
     cached = out.join('|');
@@ -1449,7 +1461,8 @@ var NO_FILTER = { plan:1, home:1, money:1 };
       strip.appendChild(b);
     });
 
-    var after=document.querySelector('.plbar.foldbar') || document.getElementById('fbar-wrap') || header;
+    /* 일정 탭과 같은 순서로 — 칩줄이 먼저, 전체 펼치기/접기 버튼이 그 아래. */
+    var after=document.getElementById('fbar-wrap') || header;
     after.insertAdjacentElement('afterend', strip);
 
     strip.addEventListener('click', function(e){
@@ -1478,7 +1491,8 @@ var NO_FILTER = { plan:1, home:1, money:1 };
     bar.className='plbar foldbar';
     bar.innerHTML='<button type="button" id="fold-open">＋ 전체 펼치기</button>'+
                   '<button type="button" id="fold-close">－ 전체 접기</button>';
-    var after=document.getElementById('fbar-wrap') || header;
+    /* 칩줄이 이미 들어와 있으면 그 아래에 붙인다(일정 탭의 날짜칩 → 버튼 순서와 동일) */
+    var after=document.querySelector('.schips') || document.getElementById('fbar-wrap') || header;
     after.insertAdjacentElement('afterend', bar);
 
     var KEY='tokyoTripFold:'+(document.body.getAttribute('data-tab')||'');
@@ -2027,9 +2041,10 @@ loadSecrets();
 (function(){
   var RK='tokyoTripRegion', saved=null;
   try{ var raw=localStorage.getItem(RK); if(raw) saved=JSON.parse(raw); }catch(e){}
-  /* 과거 설명 뱃지에서 잘못 저장된 비지역 필터는 원래 '지역 전체' 상태로 되돌린다. */
+  /* 예전에 브랜드·영업시간 같은 게 필터로 저장돼 버린 기기가 있다 —
+     화이트리스트에 없는 값은 버리고 '지역 전체'로 되돌린다. */
   if(saved && saved.length){
-    saved=saved.filter(function(r){ return REGION_DROP.indexOf(r)<0; });
+    saved=saved.filter(function(r){ return REGIONS.indexOf(REGION_ALIAS[r] || r)>=0; });
     if(!saved.length){ try{ localStorage.removeItem(RK); }catch(e){} }
   }
   if(!window.__applyFilter) return;
